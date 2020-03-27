@@ -318,11 +318,8 @@ int transfer_byte(int from, int to, int is_control) {
 	if(ret == 1) {
 		if(is_control) {
 			if(c == '\x01') { // C-a
-				fprintf(stderr, "Quit = press 'q' // ");
-				fprintf(stderr, "Speed = press 's' // ");
-				fprintf(stderr, "Port = press 't' // ");
-				fprintf(stderr, "Restart = press 'r' // ");
-				fprintf(stderr, "Default = press 'd'\n\r");
+				fprintf(stderr, "Press button!\n\r");
+				fprintf(stderr, "Quit : 'q', Speed : 's', Port : 't', Restart : 'r', Setting : 'd'\r\n");
 				read(from, &c, 1);
 				if(c == 'q' || c == 'Q') {
 					return -1;
