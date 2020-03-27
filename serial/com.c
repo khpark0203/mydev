@@ -56,6 +56,8 @@ char devicename[256];
 int speed;
 char config_file[256] = {0};
 
+int no_log = 0;
+
 void print_speed(void)
 {
 	fprintf(stderr, "*****Speed*****\n\r");
@@ -143,19 +145,20 @@ int set_default_config(void)
 {
 	FILE* fp = fopen(config_file, "w");
 	if(fp) {
-		int n = 0;
 		int s = 0;
-		char w[100] = {0};
+		char port[256] = {0};
+		char w[512] = {0};
 		fprintf(stderr, "Default Setting!\n\r");
-		fprintf(stderr, "/dev/ttyUSB[Number], Number = ?\n\r");
-		scanf("%d", &n);
-		fprintf(stderr, "Setting!!!! /dev/ttyUSB%d\n\r\n\r", n);
-		fprintf(stderr, "Select speed\n\r");
+		fprintf(stderr, "Port = ? (current = %s)\n\r", devicename);
+		scanf("%s", port);
+		strncpy(devicename, port, sizeof(devicename));
+		fprintf(stderr, "\r\nSelect speed\n\r");
 		print_speed();
 		scanf("%d", &s);
 		set_speed(s);
 		fprintf(stderr, "Setting!!!! Speed = %d\n\r\n\r", speed);
-		snprintf(w, sizeof(w), "port=/dev/ttyUSB%d\nspeed=%d", n, speed);
+		snprintf(w, sizeof(w), "port=%s\nspeed=%d", port, speed);
+		fprintf(stderr, "\r\n********Default config********\r\n%s\n\r******************************\n\r", w);
 		fputs(w, fp);
 		fclose(fp);
 		get_config();
@@ -168,10 +171,7 @@ int start(void)
 {
 	char cmd[512] = {0};
 	snprintf(cmd, sizeof(cmd), "fuser %s", devicename);
-	if(system(cmd)) {
-		
-	}
-	else {
+	if(!WEXITSTATUS(system(cmd))) {
 		fprintf(stderr, "%s is already running\n\r", devicename);
 		return -3;
 	}
@@ -186,9 +186,12 @@ int start(void)
 		exit(-1);
 	}
 	
-	fprintf(stderr, "port = %s\n\r", devicename);
-	fprintf(stderr, "speed = %d\n\r", speed);
-	fprintf(stderr, "Ctrl+a : menu\n\r");
+	if(!no_log) {
+		fprintf(stderr, "port = %s\n\r", devicename);
+		fprintf(stderr, "speed = %d\n\r", speed);
+		fprintf(stderr, "Ctrl+a : menu\n\r");
+	}
+	no_log = 0;
 
 	tcgetattr(STDIN_FILENO,&oldkey);
 	newkey.c_cflag = B115200 | CRTSCTS | CS8 | CLOCAL | CREAD;
@@ -271,10 +274,15 @@ int main(int argc, char *argv[])
 			fprintf(stderr, "example: 'com /dev/ttyUSB0 115200'\r\n");
 		}
 		else if(strcmp(argv[1], "config") == 0) {
+			get_config();
 			set_default_config();
 		}
+		else if(strcmp(argv[1], "ls-config") == 0) {
+			get_config();
+			fprintf(stderr, "port : %s\r\nspeed : %d\r\n", devicename, speed);
+		}
 		else {
-			fprintf(stderr, "argv : help, config\r\n");
+			fprintf(stderr, "argv : help, ls-config, config\r\n");
 		}
 		return 0;
 	}
@@ -304,7 +312,21 @@ int main(int argc, char *argv[])
 		strncpy(devicename, argv[1], sizeof(devicename));
 	}
 	
-	while(start() > 0);
+	int ret = 0;
+	while(1)
+	{
+		ret = start();
+		if(ret <= 0)
+			break;
+		if(ret == 3) {
+			int cur_speed = speed;
+			char dev[256] = {0};
+			strncpy(dev, devicename, sizeof(dev));
+			set_default_config();
+			strncpy(devicename, dev, sizeof(devicename));
+			speed = cur_speed;
+		}
+	}
 	return 0;
 }
 
@@ -319,7 +341,7 @@ int transfer_byte(int from, int to, int is_control) {
 		if(is_control) {
 			if(c == '\x01') { // C-a
 				fprintf(stderr, "Press button!\n\r");
-				fprintf(stderr, "Quit : 'q', Speed : 's', Port : 't', Restart : 'r', Setting : 'd'\r\n");
+				fprintf(stderr, "Quit : 'q', Speed : 's', Port : 't', Restart : 'r', Change default : 'd'\r\n");
 				read(from, &c, 1);
 				if(c == 'q' || c == 'Q') {
 					return -1;
@@ -344,38 +366,8 @@ int transfer_byte(int from, int to, int is_control) {
 					return 1;
 				}
 				else if(c == 'd' || c == 'D') {
-					FILE* fp = fopen(config_file, "w");
-					if(fp) {
-						char n = 0;
-						char s = 0;
-						char w[100] = {0};
-						fprintf(stderr, "Default Setting!\n\r");
-						fprintf(stderr, "/dev/ttyUSB[Number], Number = ?\n\r");
-						while(1)
-						{
-							read(from, &n, 1);
-							if(n >= 0x30 && n <= 0x39)
-								break;
-						}
-						n -= 0x30;
-						fprintf(stderr, "Setting!!!! /dev/ttyUSB%d\n\r\n\r", n);
-						fprintf(stderr, "Select speed\n\r");
-						print_speed();
-						while(1)
-						{
-							read(from, &s, 1);
-							if(s >= 0x30 && s <= 0x39)
-								break;
-						}
-						s -= 0x30;
-						set_speed(s);
-						fprintf(stderr, "Setting!!!! Speed = %d\n\r\n\r", speed);
-						snprintf(w, sizeof(w), "port=/dev/ttyUSB%d\nspeed=%d", n, speed);
-						fputs(w, fp);
-						fclose(fp);
-						get_config();
-					}
-					return 0;
+					no_log = 1;
+					return 3;
 				}
 				else if(c == 'r' || c == 'R') {
 					fprintf(stderr, "\r\nRestart!!!!!\n\r");
