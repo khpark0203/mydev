@@ -143,24 +143,25 @@ int get_config(void)
 
 int set_default_config(void)
 {
+	int s = 0;
+	char port[256] = {0};
+	char w[512] = {0};
+	fprintf(stderr, "Default Setting!\n\r");
+	fprintf(stderr, "Port = ? (current = %s)\n\r", devicename);
+	scanf("%s", port);
+	strncpy(devicename, port, sizeof(devicename));
+	fprintf(stderr, "\r\nSelect speed\n\r");
+	print_speed();
+	scanf("%d", &s);
+	set_speed(s);
+	fprintf(stderr, "Setting!!!! Speed = %d\n\r\n\r", speed);
+	
 	FILE* fp = fopen(config_file, "w");
 	if(fp) {
-		int s = 0;
-		char port[256] = {0};
-		char w[512] = {0};
-		fprintf(stderr, "Default Setting!\n\r");
-		fprintf(stderr, "Port = ? (current = %s)\n\r", devicename);
-		scanf("%s", port);
-		strncpy(devicename, port, sizeof(devicename));
-		fprintf(stderr, "\r\nSelect speed\n\r");
-		print_speed();
-		scanf("%d", &s);
-		set_speed(s);
-		fprintf(stderr, "Setting!!!! Speed = %d\n\r\n\r", speed);
 		snprintf(w, sizeof(w), "port=%s\nspeed=%d", port, speed);
-		fprintf(stderr, "\r\n********Default config********\r\n%s\n\r******************************\n\r", w);
 		fputs(w, fp);
 		fclose(fp);
+		fprintf(stderr, "\r\n********Default config********\r\n%s\n\r******************************\n\r", w);
 		get_config();
 		return 1;
 	}
@@ -169,6 +170,10 @@ int set_default_config(void)
 
 int start(void)
 {
+	if(!strlen(devicename) || !speed) {
+		fprintf(stderr, "Config file strange...\r\n");
+		set_default_config();
+	}
 	char cmd[512] = {0};
 	snprintf(cmd, sizeof(cmd), "fuser %s", devicename);
 	if(!WEXITSTATUS(system(cmd))) {
