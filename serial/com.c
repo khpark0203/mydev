@@ -143,6 +143,7 @@ int get_config(void)
 
 int set_default_config(void)
 {
+	get_config();
 	int s = 0;
 	char port[256] = {0};
 	char w[512] = {0};
