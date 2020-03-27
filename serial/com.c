@@ -362,7 +362,7 @@ int transfer_byte(int from, int to, int is_control) {
 					return 1;
 				}
 				else if(c == 't' || c == 'T') {
-					print_speed();
+					fprintf(stderr, "port => /dev/ttyUSB[Number] number ?\n\r");
 					read(from, &c, 1);
 					if(c >= 0x30 && c <= 0x39) {
 						c -= 0x30;
