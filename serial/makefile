@@ -7,6 +7,6 @@ all:
 	rm -f $(TARGET)
 	$(CC) $(SRC) -o $(TARGET)
 install:
-	sudo cp $(TARGET) $(PREFIX)
+	sudo cp -f $(TARGET) $(PREFIX)
 clean:
 	rm -f $(TARGET)

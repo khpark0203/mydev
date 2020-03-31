@@ -55,8 +55,15 @@ typedef struct {char *name; int flag; } speed_spec;
 char devicename[256];
 int speed;
 char config_file[256] = {0};
-
 int no_log = 0;
+
+typedef enum {
+	ALL,
+	PORT,
+	SPEED,
+} FLAG;
+
+int flag = 0;
 
 void print_speed(void)
 {
@@ -89,30 +96,92 @@ void set_speed(int n)
 {
 	switch(n) {
 	case 1:
-		speed = 115200;
+		speed = B115200;
 		break;
 	case 2:
-		speed = 57600;
+		speed = B57600;
 		break;
 	case 3:
-		speed = 38400;
+		speed = B38400;
 		break;
 	case 4:
-		speed = 19200;
+		speed = B19200;
 		break;
 	case 5:
-		speed = 9600;
+		speed = B9600;
 		break;
 	case 6:
-		speed = 4800;
+		speed = B4800;
 		break;
 	case 7:
-		speed = 2400;
+		speed = B2400;
 		break;
 	case 8:
-		speed = 1200;
+		speed = B1200;
 		break;
 	}
+}
+
+void scale_speed(void)
+{
+	switch(speed) {
+	case 115200:
+		speed = B115200;
+		break;
+	case 57600:
+		speed = B57600;
+		break;
+	case 38400:
+		speed = B38400;
+		break;
+	case 19200:
+		speed = B19200;
+		break;
+	case 9600:
+		speed = B9600;
+		break;
+	case 4800:
+		speed = B4800;
+		break;
+	case 2400:
+		speed = B2400;
+		break;
+	case 1200:
+		speed = B1200;
+		break;
+	}
+}
+
+int look_speed(void)
+{
+	int ret = 115200;
+	switch(speed) {
+	case B115200:
+		ret = 115200;
+		break;
+	case B57600:
+		ret = 57600;
+		break;
+	case B38400:
+		ret = 38400;
+		break;
+	case B19200:
+		ret = 19200;
+		break;
+	case B9600:
+		ret = 9600;
+		break;
+	case B4800:
+		ret = 4800;
+		break;
+	case B2400:
+		ret = 2400;
+		break;
+	case B1200:
+		ret = 1200;
+		break;
+	}
+	return ret;
 }
 
 int get_config(void)
@@ -132,6 +201,7 @@ int get_config(void)
 				}
 				else if(strstr(buf, "speed=")) {
 					speed = atoi(strchr(buf, '=') + 1);
+					scale_speed();
 				}
 			}
 			fclose(fp);
@@ -141,25 +211,31 @@ int get_config(void)
 	return 0;
 }
 
-int set_default_config(void)
+int set_default_config(int flag)
 {
 	get_config();
 	int s = 0;
 	char port[256] = {0};
 	char w[512] = {0};
 	fprintf(stderr, "Default Setting!\n\r");
-	fprintf(stderr, "Port = ? (current = %s)\n\r", devicename);
-	scanf("%s", port);
-	strncpy(devicename, port, sizeof(devicename));
-	fprintf(stderr, "\r\nSelect speed\n\r");
-	print_speed();
-	scanf("%d", &s);
-	set_speed(s);
-	fprintf(stderr, "Setting!!!! Speed = %d\n\r\n\r", speed);
+	if(flag == ALL || flag == PORT) {
+		fprintf(stderr, "Port = ? (current = %s)\n\r", devicename);
+		fprintf(stderr, "Chagne => ");
+		scanf("%s", port);
+		strncpy(devicename, port, sizeof(devicename));
+	}
+	
+	if(flag == ALL || flag == SPEED) {
+		fprintf(stderr, "\r\nSelect speed\n\r");
+		print_speed();
+		scanf("%d", &s);
+		set_speed(s);
+		fprintf(stderr, "Setting!!!! Speed = %d\n\r\n\r", look_speed());
+	}
 	
 	FILE* fp = fopen(config_file, "w");
 	if(fp) {
-		snprintf(w, sizeof(w), "port=%s\nspeed=%d", port, speed);
+		snprintf(w, sizeof(w), "port=%s\nspeed=%d", devicename, look_speed());
 		fputs(w, fp);
 		fclose(fp);
 		fprintf(stderr, "\r\n********Default config********\r\n%s\n\r******************************\n\r", w);
@@ -173,7 +249,7 @@ int start(void)
 {
 	if(!strlen(devicename) || !speed) {
 		fprintf(stderr, "Config file strange...\r\n");
-		set_default_config();
+		set_default_config(ALL);
 	}
 	char cmd[512] = {0};
 	snprintf(cmd, sizeof(cmd), "fuser %s", devicename);
@@ -194,7 +270,7 @@ int start(void)
 	
 	if(!no_log) {
 		fprintf(stderr, "port = %s\n\r", devicename);
-		fprintf(stderr, "speed = %d\n\r", speed);
+		fprintf(stderr, "speed = %d\n\r", look_speed());
 		fprintf(stderr, "Ctrl+a : menu\n\r");
 	}
 	no_log = 0;
@@ -221,7 +297,7 @@ int start(void)
 	tcsetattr(comfd,TCSANOW,&newtio);
 
 	print_status(comfd);
-
+	
 	while(!need_exit)
 	{
 		fd_set fds;
@@ -281,11 +357,11 @@ int main(int argc, char *argv[])
 		}
 		else if(strcmp(argv[1], "config") == 0) {
 			get_config();
-			set_default_config();
+			set_default_config(ALL);
 		}
 		else if(strcmp(argv[1], "ls-config") == 0) {
 			get_config();
-			fprintf(stderr, "port : %s\r\nspeed : %d\r\n", devicename, speed);
+			fprintf(stderr, "port : %s\r\nspeed : %d\r\n", devicename, look_speed());
 		}
 		else {
 			fprintf(stderr, "argv : help, ls-config, config\r\n");
@@ -300,7 +376,7 @@ int main(int argc, char *argv[])
 			}
 		}
 		else {
-			if(!set_default_config()) {
+			if(!set_default_config(ALL)) {
 				exit(1);
 			}
 		}
@@ -312,6 +388,7 @@ int main(int argc, char *argv[])
 		for(s = speeds; s->name; s++) {
 			if(strcmp(s->name, argv[2]) == 0) {
 				speed = atoi(s->name);
+				scale_speed();
 				break;
 			}
 		}
@@ -328,9 +405,12 @@ int main(int argc, char *argv[])
 			int cur_speed = speed;
 			char dev[256] = {0};
 			strncpy(dev, devicename, sizeof(dev));
-			set_default_config();
+			set_default_config(flag);
 			strncpy(devicename, dev, sizeof(devicename));
 			speed = cur_speed;
+		}
+		else if(ret == 4) {
+			get_config();		
 		}
 	}
 	return 0;
@@ -358,7 +438,7 @@ int transfer_byte(int from, int to, int is_control) {
 					if(c >= 0x31 && c <= 0x38)
 						c -= 0x30;
 					set_speed(c);
-					fprintf(stderr, "speed = %d\n\r", speed);
+					fprintf(stderr, "speed = %d\n\r", look_speed());
 					return 1;
 				}
 				else if(c == 't' || c == 'T') {
@@ -368,16 +448,31 @@ int transfer_byte(int from, int to, int is_control) {
 						c -= 0x30;
 						snprintf(devicename, sizeof(devicename), "/dev/ttyUSB%d", c);
 					}
-					fprintf(stderr, "port = %s\n\r", devicename);
 					return 1;
 				}
 				else if(c == 'd' || c == 'D') {
 					no_log = 1;
+					fprintf(stderr, "\r\nSelect config!\n\r");
+					fprintf(stderr, "All : 'a', Port : 't', Speed : 's'\n\r");
+					read(from, &c, 1);
+					switch(c) {
+					case 'a':
+						flag = ALL;
+						break;
+					case 't':
+						flag = PORT;
+						break;
+					case 's':
+						flag = SPEED;
+						break;
+					default:
+						return 1;
+					}
 					return 3;
 				}
 				else if(c == 'r' || c == 'R') {
 					fprintf(stderr, "\r\nRestart!!!!!\n\r");
-					return 1;
+					return 4;
 				}
 				else {
 					c = '\n';
