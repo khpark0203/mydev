@@ -57,6 +57,11 @@ int speed;
 char config_file[256] = {0};
 int no_log = 0;
 
+FILE* l_fp;
+int log_save = 0;
+char log_file[1024] = {0};
+char buff[1024 * 1024] = {0};
+
 typedef enum {
 	ALL,
 	PORT,
@@ -64,6 +69,27 @@ typedef enum {
 } FLAG;
 
 int flag = 0;
+
+int get_key(int is_echo)
+{
+	int ch;
+	struct termios old;
+	struct termios current; /* 현재 설정된 terminal i/o 값을 backup함 */
+	tcgetattr(0, &old); /* 현재의 설정된 terminal i/o에 일부 속성만 변경하기 위해 복사함 */
+	current = old; /* buffer i/o를 중단함 */
+	current.c_lflag &= ~ICANON;
+	if (is_echo) { // 입력값을 화면에 표시할 경우
+		current.c_lflag |= ECHO;
+	}
+	else { // 입력값을 화면에 표시하지 않을 경우
+		current.c_lflag &= ~ECHO;
+	} /* 변경된 설정값으로 설정합니다.*/
+	tcsetattr(0, TCSANOW, &current);
+	ch = getchar();
+	tcsetattr(0, TCSANOW, &old);
+	return ch;
+}
+
 
 void print_speed(void)
 {
@@ -209,6 +235,39 @@ int get_config(void)
 		}
 	}
 	return 0;
+}
+
+void set_log_path(void)
+{
+	char cmd[2048] = {0};
+	fprintf(stderr, "Input log path : ");
+	scanf("%s", log_file);
+	if(access(log_file, F_OK) == 0) {
+		fprintf(stderr, "Log file : '%s' Already exist!\r\n", log_file);
+		fprintf(stderr, "Do you want overwrite? 'y' or 'n'\r\n");
+		char c = 0;
+		c = get_key(0);
+		while(!(c == 'n' || c == 'y'))
+		{
+			// fprintf(stderr, "Do you want overwrite? 'y' or 'n'\r\n");
+			c = get_key(0);
+		}
+		if(c == 'n') {
+			fprintf(stderr, "Log don't save!!\r\n");
+			return;
+		}
+	}
+	
+	l_fp = fopen(log_file, "w");
+	log_save = 1;
+	if(!l_fp) {
+		fprintf(stderr, "No Directory!!! : '%s'\r\n", log_file);
+		log_save = 0;
+		memset(log_file, 0, sizeof(log_file));
+		return;
+	}
+	fprintf(stderr, "Log save start : '%s'\r\n", log_file);
+	memset(buff, 0, sizeof(buff));
 }
 
 int set_default_config(int flag)
@@ -412,6 +471,9 @@ int main(int argc, char *argv[])
 		else if(ret == 4) {
 			get_config();		
 		}
+		else if(ret == 5) {
+			set_log_path();
+		}
 	}
 	return 0;
 }
@@ -427,7 +489,7 @@ int transfer_byte(int from, int to, int is_control) {
 		if(is_control) {
 			if(c == '\x01') { // C-a
 				fprintf(stderr, "Press button!\n\r");
-				fprintf(stderr, "Quit : 'q', Speed : 's', Port : 't', Restart : 'r', Change default : 'd'\r\n");
+				fprintf(stderr, "Quit : 'q', Speed : 's', Port : 't', Restart : 'r', Change default : 'd', Log save : 'l'\r\n");
 				read(from, &c, 1);
 				if(c == 'q' || c == 'Q') {
 					return -1;
@@ -474,6 +536,22 @@ int transfer_byte(int from, int to, int is_control) {
 					fprintf(stderr, "\r\nRestart!!!!!\n\r");
 					return 4;
 				}
+				else if(c == 'l' || c == 'L') {
+					no_log = 1;
+					if(log_save) {
+						fprintf(stderr, "\r\nDo you want to stop log?? 'y' or 'n'\r\n");
+						fprintf(stderr, "Log is saving : '%s'\r\n", log_file);
+						read(from, &c, 1);
+						if(c == 'y' || c == 'Y' || c == 13) {
+							fprintf(stderr, "Saving log stopeed!! : '%s'\r\n", log_file);
+							log_save = 0;
+							memset(log_file, 0, sizeof(log_file));
+							fclose(l_fp);
+						}
+						return 1;
+					}
+					return 5;
+				}
 				else {
 					c = '\n';
 				}	
@@ -483,8 +561,14 @@ int transfer_byte(int from, int to, int is_control) {
 				return 0;
 			}
 		}
-		while(write(to, &c, 1) == -1)
+		while(1)
 		{
+			if(log_save) {
+				fwrite(&c, 1, 1, l_fp);
+			}
+			if(write(to, &c, 1) != -1) {
+				break;
+			}
 			if(errno != EAGAIN && errno != EINTR) {
 				perror("write failed");
 				break;
