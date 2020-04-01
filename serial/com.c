@@ -274,14 +274,12 @@ int set_default_config(int flag)
 {
 	get_config();
 	int s = 0;
-	char port[256] = {0};
 	char w[512] = {0};
 	fprintf(stderr, "Default Setting!\n\r");
 	if(flag == ALL || flag == PORT) {
 		fprintf(stderr, "Port = ? (current = %s)\n\r", devicename);
-		fprintf(stderr, "Chagne => ");
-		scanf("%s", port);
-		strncpy(devicename, port, sizeof(devicename));
+		fprintf(stderr, "Chagne => /dev/tty");
+		scanf("%s", &devicename[8]);
 	}
 	
 	if(flag == ALL || flag == SPEED) {
