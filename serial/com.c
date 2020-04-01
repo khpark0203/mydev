@@ -60,7 +60,6 @@ int no_log = 0;
 FILE* l_fp;
 int log_save = 0;
 char log_file[1024] = {0};
-char buff[1024 * 1024] = {0};
 
 typedef enum {
 	ALL,
@@ -267,7 +266,6 @@ void set_log_path(void)
 		return;
 	}
 	fprintf(stderr, "Log save start : '%s'\r\n", log_file);
-	memset(buff, 0, sizeof(buff));
 }
 
 int set_default_config(int flag)
