@@ -1,0 +1,12 @@
+if [ $# -eq 0 ]; then
+	echo "Enter argv.."
+	exit 0
+fi
+
+if [ $1 = "rebase" ]; then
+	git stash
+	git svn rebase
+	git stash pop
+else
+	echo "argv : rebase"
+fi

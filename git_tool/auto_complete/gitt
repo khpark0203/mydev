@@ -1,0 +1,17 @@
+_gitt()
+{
+    local cur
+ 
+    COMPREPLY=()
+    _get_comp_words_by_ref cur
+ 
+    if [ $COMP_CWORD = 1 ]; then
+        COMPREPLY=( $( compgen -W 'remove callback list ignore noignore' -- "$cur" ) )
+	elif [ $COMP_CWORD -ge 2 ]; then
+		if [ ${COMP_WORDS[1]} != "list" ]; then
+        	COMPREPLY=( $( compgen -W '`ls`' -- "$cur" ) )
+		fi
+    fi
+}
+complete -F _gitt gitt
+complete -F _gitt mgit
