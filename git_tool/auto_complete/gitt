@@ -1,3 +1,14 @@
+_file_set() {
+	if [ $1 -eq 0 ]; then
+		complete -F _gitt gitt
+		complete -F _gitt mgit
+	else
+		complete -A file -F _gitt gitt
+		complete -A file -F _gitt mgit
+	fi
+}
+
+
 _gitt()
 {
     local cur
@@ -9,9 +20,16 @@ _gitt()
         COMPREPLY=( $( compgen -W 'remove callback list ignore noignore' -- "$cur" ) )
 	elif [ $COMP_CWORD -ge 2 ]; then
 		if [ ${COMP_WORDS[1]} != "list" ]; then
-        	COMPREPLY=( $( compgen -W '`ls`' -- "$cur" ) )
+			if [ ${COMP_WORDS[1]} != "callback" ]; then
+				_file_set 1
+			else
+				_file_set 0
+				COMPREPLY=( $( compgen -W "`git ls-tree HEAD | awk '{print $NF}'`" -- "$cur" ) )
+			fi
+		else
+			_file_set 0
 		fi
     fi
 }
-complete -F _gitt gitt
-complete -F _gitt mgit
+
+_file_set 0
