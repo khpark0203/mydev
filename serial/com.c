@@ -49,6 +49,7 @@
 #define CONFIG_FILE ".comrc"
 
 int transfer_byte(int from, int to, int is_control);
+int look_speed(void);
 
 typedef struct {char *name; int flag; } speed_spec;
 
@@ -115,6 +116,8 @@ void print_status(int fd) {
 	if(arg & TIOCM_DTR) fprintf(stderr, "DTR ");
 	if(arg & TIOCM_RNG) fprintf(stderr, "RI ");
 	fprintf(stderr, "\r\n");
+	fprintf(stderr, "Current port : %s\r\n", devicename);
+	fprintf(stderr, "Current speed : %d\r\n", look_speed());
 }
 
 void set_speed(int n)
