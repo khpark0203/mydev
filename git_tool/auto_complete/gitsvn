@@ -7,7 +7,7 @@ _gitsvn()
  
     if [ $COMP_CWORD = 1 ]
     then
-        COMPREPLY=( $( compgen -W 'rebase update up commit dcommit' -- "$cur" ) )
+        COMPREPLY=( $( compgen -W 'rebase update commit dcommit' -- "$cur" ) )
     fi 
 }
 complete -F _gitsvn gitsvn

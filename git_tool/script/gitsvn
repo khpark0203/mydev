@@ -3,10 +3,12 @@ if [ $# -eq 0 ]; then
 	exit 0
 fi
 
-if [ $1 = "rebase" ]; then
+if [ $1 = "rebase" ] || [ $1 = "up" ] || [ $1 = "update" ]; then
 	git stash
 	git svn rebase
 	git stash pop
+elif [ $1 = "dcommit" ] || [ $1 = "commit" ]; then
+	git svn decommit
 else
-	echo "argv : rebase"
+	echo "argv : rebase, update, commit"
 fi
