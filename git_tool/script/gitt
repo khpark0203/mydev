@@ -35,6 +35,12 @@ elif [ $1 = "callback" ] || [ $1 = "noignore" ]; then
 	fi
 elif [ $1 = "list" ]; then
 	git ls-tree HEAD | awk '{print $NF}'
+elif [ $1 = "update" ] || [ $1 = "up" ] || [ $1 = "rebase" ]; then
+	git stash
+	git svn rebase
+	git stash pop
+elif [ $1 = "dcommit" ]; then
+	git svn dcommit
 else
-	echo "argv : remove, callback, ignore, noignore, list"
+	echo "argv : remove, callback, ignore, noignore, list, rebase, dcommit"
 fi

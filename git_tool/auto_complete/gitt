@@ -18,7 +18,7 @@ _gitt()
  
     if [ $COMP_CWORD = 1 ]; then
 		_file_set 0
-        COMPREPLY=( $( compgen -W 'remove callback list ignore noignore' -- "$cur" ) )
+        COMPREPLY=( $( compgen -W 'remove callback list ignore noignore rebase update dcommit' -- "$cur" ) )
 	elif [ $COMP_CWORD -ge 2 ]; then
 		if [ ${COMP_WORDS[1]} != "list" ]; then
 			if [ ${COMP_WORDS[1]} != "callback" ]; then
