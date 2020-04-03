@@ -488,7 +488,7 @@ int transfer_byte(int from, int to, int is_control) {
 		if(is_control) {
 			if(c == '\x01') { // C-a
 				fprintf(stderr, "Press button!\n\r");
-				fprintf(stderr, "Quit : 'q', Speed : 's', Port : 't', Restart : 'r', Change default : 'd', Log save : 'l'\r\n");
+				fprintf(stderr, "Quit : 'q', Speed : 's', Port : 'p', Restart : 'r', Change default : 'd', Log save : 'l'\r\n");
 				read(from, &c, 1);
 				if(c == 'q' || c == 'Q') {
 					return -1;
@@ -502,7 +502,7 @@ int transfer_byte(int from, int to, int is_control) {
 					fprintf(stderr, "speed = %d\n\r", look_speed());
 					return 1;
 				}
-				else if(c == 't' || c == 'T') {
+				else if(c == 'p' || c == 'P') {
 					fprintf(stderr, "port => /dev/ttyUSB[Number] number ?\n\r");
 					read(from, &c, 1);
 					if(c >= 0x30 && c <= 0x39) {
