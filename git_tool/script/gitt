@@ -10,9 +10,9 @@ if [ $1 = "remove" ] || [ $1 = "ignore" ]; then
 	fi
 	
 	if [ $2 = "*" ]; then
-		git ls-files -z | xargs -0 git update-index --skip-worktree
+		git ls-files -z | xargs -0 git update-index --assume-unchanged
 	else
-		git ls-files -z "${@:2}" | xargs -0 git update-index --skip-worktree
+		git ls-files -z "${@:2}" | xargs -0 git update-index --assume-unchanged
 	fi
 	
 	if [ $1 = "remove" ]; then
@@ -25,9 +25,9 @@ elif [ $1 = "callback" ] || [ $1 = "noignore" ]; then
 	fi
 
 	if [ $2 = "*" ]; then
-		git ls-files -z | xargs -0 git update-index --no-skip-worktree
+		git ls-files -z | xargs -0 git update-index --no-assume-unchanged
 	else
-		git ls-files -z "${@:2}" | xargs -0 git update-index --no-skip-worktree
+		git ls-files -z "${@:2}" | xargs -0 git update-index --no-assume-unchanged
 	fi
 	
 	if [ $1 = "callback" ]; then
