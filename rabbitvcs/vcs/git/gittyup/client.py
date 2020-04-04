@@ -840,7 +840,7 @@ class GittyupClient(object):
         return commit_id
 
     def delete(self, name):
-        cmd = ["git", "rm", name]
+        cmd = ["git", "rm", "-r", name]
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
