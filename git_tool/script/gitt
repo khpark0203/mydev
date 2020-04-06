@@ -39,8 +39,8 @@ elif [ $1 = "update" ] || [ $1 = "up" ] || [ $1 = "rebase" ]; then
 	git stash
 	git svn rebase
 	git stash pop
-elif [ $1 = "dcommit" ]; then
+elif [ $1 = "dcommit" ] || [ $1 = "commit" ]; then
 	git svn dcommit
 else
-	echo "argv : remove, callback, ignore, noignore, list, rebase, dcommit"
+	echo "argv : remove, callback, ignore, noignore, list, rebase, commit, dcommit"
 fi
