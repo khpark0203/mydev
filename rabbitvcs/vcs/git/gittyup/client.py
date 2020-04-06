@@ -840,12 +840,12 @@ class GittyupClient(object):
         return commit_id
 
     def delete(self, name):
-        cmd = ["git", "rm", "-r", name]
-        try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
-        except GittyupCommandError as e:
-            self.callback_notify(e)
- 
+        for i in range(len(name)):
+            cmd = ["git", "rm", "-r", name[i]]
+            try:
+                (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+            except GittyupCommandError as e:
+                self.callback_notify(e)
 
     def remove(self, paths):
         """

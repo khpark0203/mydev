@@ -556,8 +556,6 @@ class Git(object):
 
         """
 
-        name = name[0]
-
         return self.client.delete(name)
 
     def move(self, source, dest):
