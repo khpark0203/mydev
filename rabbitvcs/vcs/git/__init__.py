@@ -556,7 +556,7 @@ class Git(object):
 
         """
 
-        name = name[0][name[0].rfind('/') + 1:]
+        name = name[0]
 
         return self.client.delete(name)
 
