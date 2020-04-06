@@ -56,7 +56,6 @@ typedef struct {char *name; int flag; } speed_spec;
 char devicename[256];
 int speed;
 char config_file[256] = {0};
-int no_log = 0;
 
 FILE* l_fp;
 int log_save = 0;
@@ -326,13 +325,6 @@ int start(void)
 		exit(-1);
 	}
 	
-	if(!no_log) {
-		fprintf(stderr, "port = %s\n\r", devicename);
-		fprintf(stderr, "speed = %d\n\r", look_speed());
-		fprintf(stderr, "Ctrl+a : menu\n\r");
-	}
-	no_log = 0;
-
 	tcgetattr(STDIN_FILENO,&oldkey);
 	newkey.c_cflag = B115200 | CRTSCTS | CS8 | CLOCAL | CREAD;
 	newkey.c_iflag = IGNPAR;
@@ -512,7 +504,6 @@ int transfer_byte(int from, int to, int is_control) {
 					return 1;
 				}
 				else if(c == 'd' || c == 'D') {
-					no_log = 1;
 					fprintf(stderr, "\r\nSelect config!\n\r");
 					fprintf(stderr, "All : 'a', Port : 't', Speed : 's'\n\r");
 					read(from, &c, 1);
@@ -536,7 +527,6 @@ int transfer_byte(int from, int to, int is_control) {
 					return 4;
 				}
 				else if(c == 'l' || c == 'L') {
-					no_log = 1;
 					if(log_save) {
 						fprintf(stderr, "\r\nDo you want to stop log?? 'y' or 'n'\r\n");
 						fprintf(stderr, "Log is saving : '%s'\r\n", log_file);
