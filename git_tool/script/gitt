@@ -38,7 +38,10 @@ elif [ $1 = "list" ]; then
 elif [ $1 = "update" ] || [ $1 = "up" ] || [ $1 = "rebase" ]; then
 	git stash
 	git svn rebase
-	git stash pop
+	STASH_NUM=`git stash list | wc -l`
+	if [ $STASH_NUM -ge 1 ]; then
+		git stash pop
+	fi
 elif [ $1 = "dcommit" ] || [ $1 = "commit" ]; then
 	git svn dcommit
 else
