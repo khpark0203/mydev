@@ -18,17 +18,15 @@ _gitt()
  
     if [ $COMP_CWORD = 1 ]; then
 		_file_set 0
-        COMPREPLY=( $( compgen -W 'remove callback list ignore noignore rebase update commit dcommit' -- "$cur" ) )
+        COMPREPLY=( $( compgen -W 'remove callback list pop ignore noignore rebase update commit dcommit' -- "$cur" ) )
 	elif [ $COMP_CWORD -ge 2 ]; then
-		if [ ${COMP_WORDS[1]} != "list" ]; then
-			if [ ${COMP_WORDS[1]} != "callback" ]; then
-				_file_set 1
-			else
-				_file_set 0
-				COMPREPLY=( $( compgen -W "`git ls-tree HEAD | awk '{print $NF}'`" -- "$cur" ) )
-			fi
-		else
+		if [ ${COMP_WORDS[1]} = "list" ] || [ ${COMP_WORDS[1]} = "pop" ]; then
 			_file_set 0
+		elif [ ${COMP_WORDS[1]} = "callback" ]; then
+			_file_set 0
+			COMPREPLY=( $( compgen -W "`git ls-tree HEAD | awk '{print $NF}'`" -- "$cur" ) )
+		else
+			_file_set 1
 		fi
     fi
 }

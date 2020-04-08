@@ -42,8 +42,10 @@ elif [ $1 = "update" ] || [ $1 = "up" ] || [ $1 = "rebase" ]; then
 	if [ $STASH_NUM -ge 1 ]; then
 		git stash pop
 	fi
+elif [ $1 = "pop" ]; then
+	git stash pop
 elif [ $1 = "dcommit" ] || [ $1 = "commit" ]; then
 	git svn dcommit
 else
-	echo "argv : remove, callback, ignore, noignore, list, rebase, commit, dcommit"
+	echo "argv : remove, callback, ignore, noignore, list, pop, rebase, commit, dcommit"
 fi
