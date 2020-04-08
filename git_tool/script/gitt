@@ -36,10 +36,11 @@ elif [ $1 = "callback" ] || [ $1 = "noignore" ]; then
 elif [ $1 = "list" ]; then
 	git ls-tree HEAD | awk '{print $NF}'
 elif [ $1 = "update" ] || [ $1 = "up" ] || [ $1 = "rebase" ]; then
+	EX_STASH_NUM=`git stash list | wc -l`
 	git stash
-	git svn rebase
 	STASH_NUM=`git stash list | wc -l`
-	if [ $STASH_NUM -ge 1 ]; then
+	git svn rebase
+	if [ $STASH_NUM -gt $EX_STASH_NUM ]; then
 		git stash pop
 	fi
 elif [ $1 = "pop" ]; then
