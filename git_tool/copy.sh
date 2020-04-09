@@ -4,8 +4,7 @@ if [ $# -eq 0 ]; then
 fi
 
 COPY_SCRIPT="copy_tool.sh"
+echo "GO COPY $1"
 
 cd $1
 ./$COPY_SCRIPT
-
-echo "GO COPY $1"
