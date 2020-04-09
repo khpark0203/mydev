@@ -551,6 +551,20 @@ class GittyupClient(object):
         relative_path = self.get_relative_path(path)
         return (relative_path in staged_files)
 
+    def add_commit(self, paths, log):
+        cmd = ["git", "commit"]
+        for path in paths:
+            cmd.append(path)
+            
+        cmd.append("-m")
+        cmd.append(log)
+        
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+        except GittyupCommandError as e:
+            self.callback_notify(e)
+            
+        
     def branch(self, name, commit_sha=None, track=False):
         """
         Create a new branch
