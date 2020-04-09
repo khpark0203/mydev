@@ -568,6 +568,13 @@ class GittyupClient(object):
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
+            
+        try:
+            index = stdout[0].find("HEAD")
+        except:
+            pass
+        else:
+            commit_id = stdout[0][index+5:index+12]
 
         branch_full = self.repo.refs.read_ref(b"HEAD")
 
@@ -576,7 +583,7 @@ class GittyupClient(object):
 
             if (branch_components != None):
                 branch = branch_components.group(1)
-                self.notify("[%s] -> %s" % (S(branch_full), S(branch)))
+                self.notify("[%s] -> %s" % (S(commit_id), S(branch)))
                 self.notify("To branch: " + S(branch))
         
     def branch(self, name, commit_sha=None, track=False):
