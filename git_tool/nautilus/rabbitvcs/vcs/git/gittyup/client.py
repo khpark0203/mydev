@@ -580,7 +580,7 @@ class GittyupClient(object):
 
         if branch_full is not None:
             branch_components = re.search(b"refs/heads/(.+)", branch_full)
-
+            
             if (branch_components != None):
                 branch = branch_components.group(1)
                 self.notify("[%s] -> %s" % (S(commit_id), S(branch)))
