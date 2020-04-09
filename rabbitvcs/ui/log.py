@@ -212,6 +212,11 @@ class Log(InterfaceView):
 
         helper.launch_diff_tool(*paths)
 
+    def on_revisions_table_key_event(self, treeview, event, *args):
+        self.paths_table.clear()
+        self.message.set_text("")
+        self.update_revision_message()
+        
     def on_revisions_table_mouse_event(self, treeview, event, *args):
         if len(self.revisions_table.get_selected_rows()) == 0:
             self.message.set_text("")
@@ -385,7 +390,8 @@ class SVNLog(Log):
                 _("Date"), _("Message"),
                 _("Color")],
             callbacks={
-                "mouse-event":   self.on_revisions_table_mouse_event
+                "mouse-event":   self.on_revisions_table_mouse_event,
+                "key-event":   self.on_revisions_table_key_event
             }
         )
 
@@ -681,7 +687,8 @@ class GitLog(Log):
                 }
             }],
             callbacks={
-                "mouse-event":   self.on_revisions_table_mouse_event
+                "mouse-event":   self.on_revisions_table_mouse_event,
+                "key-event":   self.on_revisions_table_key_event
             }
         )
 

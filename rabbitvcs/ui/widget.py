@@ -434,6 +434,7 @@ class TableBase(object):
         self.treeview.connect("button-press-event", self.__button_press_event)
         self.treeview.connect("button-release-event", self.__button_release_event)
         self.treeview.connect("key-press-event", self.__key_press_event)
+        self.treeview.connect("key-release-event", self.__key_release_event)
         self.treeview.connect("select-cursor-row", self.__row_selected)
         # Necessary for self.selected_rows to remain sane
         self.treeview.connect("select-all", self.__all_selected)
@@ -667,6 +668,11 @@ class TableBase(object):
             self.callbacks["all-unselected"](treeview)
 
     def __key_press_event(self, treeview, event, *args):
+        self.update_selection()
+        if "key-event" in self.callbacks:
+            self.callbacks["key-event"](treeview, event, *args)
+            
+    def __key_release_event(self, treeview, event, *args):
         self.update_selection()
         if "key-event" in self.callbacks:
             self.callbacks["key-event"](treeview, event, *args)
