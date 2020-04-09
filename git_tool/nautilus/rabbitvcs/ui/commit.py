@@ -368,20 +368,27 @@ class GitCommit(Commit):
         staged = 0
         for item in items:
             staged += 1
-
         ticks = staged + len(items)*2
-    
+        
         self.action = rabbitvcs.ui.action.GitAction(
             self.git,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         self.action.set_pbar_ticks(ticks)
-        self.action.set_header("Commit")
-        self.action.set_status("Running Commit Command...")
-        helper.save_log_message(self.message.get_text())
-        self.git.add_commit(items, self.message.get_text())
-        self.action.set_status("Completed Commit")
-        self.action.finish()
+        self.action.append(self.action.set_header, _("Commit"))
+        self.action.append(self.action.set_status, _("Running Commit Command..."))
+        self.action.append(
+            helper.save_log_message,
+            self.message.get_text()
+        )
+        self.action.append(
+            self.git.add_commit,
+            items,
+            self.message.get_text()
+        )
+        self.action.append(self.action.set_status, _("Completed Commit"))
+        self.action.append(self.action.finish)
+        self.action.schedule()
 
     def on_files_table_toggle_event(self, row, col):
         # Adds path: True/False to the dict

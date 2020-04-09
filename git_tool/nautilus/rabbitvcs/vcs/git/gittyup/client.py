@@ -555,6 +555,11 @@ class GittyupClient(object):
         cmd = ["git", "commit"]
         for path in paths:
             cmd.append(path)
+            self.notify({
+                "action": "Commited",
+                "path": path,
+                "mime_type": guess_type(path)[0]
+            })
             
         cmd.append("-m")
         cmd.append(log)
@@ -563,7 +568,16 @@ class GittyupClient(object):
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
-            
+
+        branch_full = self.repo.refs.read_ref(b"HEAD")
+
+        if branch_full is not None:
+            branch_components = re.search(b"refs/heads/(.+)", branch_full)
+
+            if (branch_components != None):
+                branch = branch_components.group(1)
+                self.notify("[%s] -> %s" % (S(branch_full), S(branch)))
+                self.notify("To branch: " + S(branch))
         
     def branch(self, name, commit_sha=None, track=False):
         """
