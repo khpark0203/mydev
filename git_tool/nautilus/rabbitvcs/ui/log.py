@@ -133,7 +133,8 @@ class Log(InterfaceView):
         self.vcs = rabbitvcs.vcs.VCS()
 
         sm = rabbitvcs.util.settings.SettingsManager()
-        self.datetime_format = sm.get("general", "datetime_format")
+        # self.datetime_format = sm.get("general", "datetime_format")
+        self.datetime_format = "%y.%m.%d (%a) %p %I:%M"
 
         self.filter_text = None
         self.path = path
