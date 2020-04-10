@@ -100,7 +100,7 @@ class GitPush(Push):
     def on_ok_clicked(self, widget, data=None):
         self.hide()
         
-        if self.giv_svn:
+        if self.git_svn:
             self.action = rabbitvcs.ui.action.GitAction(
                 self.git,
                 register_gtk_quit=self.gtk_quit_is_set()
