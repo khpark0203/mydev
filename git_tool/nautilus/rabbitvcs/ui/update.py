@@ -82,6 +82,11 @@ class GitUpdate(InterfaceView):
             self.get_widget("repository_container"),
             self.git
         )
+        
+        self.git_svn = False
+        
+        if self.repository_selector.repository_opt.get_active_text() == "":
+            self.git_svn = True
 
     def on_apply_changes_toggled(self, widget, data=None):
         self.get_widget("merge").set_sensitive(self.get_widget("apply_changes").get_active())
@@ -89,44 +94,57 @@ class GitUpdate(InterfaceView):
 
     def on_ok_clicked(self, widget, data=None):
         self.hide()
-
-        rebase = self.get_widget("rebase").get_active()
-
-        git_function_params = []
-
-        apply_changes = self.get_widget("apply_changes").get_active()
-
-        repository = self.repository_selector.repository_opt.get_active_text()
-        branch = self.repository_selector.branch_opt.get_active_text()
-        fetch_all = self.get_widget("all").get_active()
-
-        self.action = GitAction(
-            self.git,
-            register_gtk_quit=self.gtk_quit_is_set(),
-            run_in_thread=False
-        )
-        self.action.append(self.action.set_header, _("Update"))
-        self.action.append(self.action.set_status, _("Updating..."))
-
-        if apply_changes:
-            if rebase:
-                git_function_params.append("rebase")
-
-            if fetch_all:
-                git_function_params.append("all")
-                repository = ""
-                branch = ""
-
-            self.action.append(self.git.pull, repository, branch, git_function_params)
+        
+        if self.git_svn:
+            self.action = GitAction(
+                self.git,
+                register_gtk_quit=self.gtk_quit_is_set(),
+                run_in_thread=False
+            )
+            self.action.append(self.action.set_header, _("Rebase"))
+            self.action.append(self.action.set_status, _("Rebasing..."))
+            self.action.append(self.git.git_svn_update);
+            self.action.append(self.action.set_status, _("Completed Rebase"))
+            self.action.append(self.action.finish)
+            self.action.schedule()
         else:
-            if fetch_all:
-                self.action.append(self.git.fetch_all)
-            else:
-                self.action.append(self.git.fetch, repository, branch)
+            rebase = self.get_widget("rebase").get_active()
 
-        self.action.append(self.action.set_status, _("Completed Update"))
-        self.action.append(self.action.finish)
-        self.action.schedule()
+            git_function_params = []
+
+            apply_changes = self.get_widget("apply_changes").get_active()
+
+            repository = self.repository_selector.repository_opt.get_active_text()
+            branch = self.repository_selector.branch_opt.get_active_text()
+            fetch_all = self.get_widget("all").get_active()
+
+            self.action = GitAction(
+                self.git,
+                register_gtk_quit=self.gtk_quit_is_set(),
+                run_in_thread=False
+            )
+            self.action.append(self.action.set_header, _("Update"))
+            self.action.append(self.action.set_status, _("Updating..."))
+
+            if apply_changes:
+                if rebase:
+                    git_function_params.append("rebase")
+
+                if fetch_all:
+                    git_function_params.append("all")
+                    repository = ""
+                    branch = ""
+
+                self.action.append(self.git.pull, repository, branch, git_function_params)
+            else:
+                if fetch_all:
+                    self.action.append(self.git.fetch_all)
+                else:
+                    self.action.append(self.git.fetch, repository, branch)
+
+            self.action.append(self.action.set_status, _("Completed Update"))
+            self.action.append(self.action.finish)
+            self.action.schedule()
 
 
 classes_map = {

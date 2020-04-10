@@ -551,6 +551,23 @@ class GittyupClient(object):
         relative_path = self.get_relative_path(path)
         return (relative_path in staged_files)
 
+    def git_svn_update(self):
+        cmds = [["git", "stash"], ["git", "svn", "rebase"], ["git", "stash", "pop"]]
+        for cmd in cmds:
+            try:
+                (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+            except GittyupCommandError as e:
+                self.callback_notify(e)
+                
+    def git_svn_push(self):
+        cmds = ["git", "svn", "dcommit"]
+        
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+        except GittyupCommandError as e:
+            self.callback_notify(e)
+        
+
     def add_commit(self, paths, log):
         cmd = ["git", "commit"]
         for path in paths:

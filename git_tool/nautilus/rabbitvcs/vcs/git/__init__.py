@@ -607,6 +607,24 @@ class Git(object):
 
         return self.client.push(repository, refspec, tags, force_with_lease)
 
+    def git_svn_update(self):
+        """
+        For git-svn update
+        """
+        
+        return self.client.git_svn_update()
+        
+    def git_svn_log(self):
+        
+        return self.client.git_svn_log()
+        
+    def git_svn_push(self):
+        """
+        For git-svn push
+        """
+        
+        return self.client.git_svn_push()
+
     def add_commit(self, paths, log):
         """
         Add and Commit from all remote repositories.

@@ -54,7 +54,8 @@ class Push(InterfaceView):
         self.vcs = rabbitvcs.vcs.VCS()
 
         sm = rabbitvcs.util.settings.SettingsManager()
-        self.datetime_format = sm.get("general", "datetime_format")
+        # self.datetime_format = sm.get("general", "datetime_format")
+        self.datetime_format = "%y.%m.%d (%a) %p %I:%M"
 
     #
     # Event handlers
@@ -90,26 +91,42 @@ class GitPush(Push):
         self.get_widget("tags").set_active(True)
         self.get_widget("force_with_lease").set_active(False)
 
+        self.git_svn = False
+        if self.repository_selector.repository_opt.get_active_text() == "":
+            self.git_svn = True
+
         self.initialize_logs()
 
     def on_ok_clicked(self, widget, data=None):
         self.hide()
+        
+        if self.giv_svn:
+            self.action = rabbitvcs.ui.action.GitAction(
+                self.git,
+                register_gtk_quit=self.gtk_quit_is_set()
+            )
+            self.action.append(self.action.set_header, _("Push"))
+            self.action.append(self.action.set_status, _("Running Push Command..."))
+            self.action.append(self.git.git_svn_push)
+            self.action.append(self.action.set_status, _("Completed Push"))
+            self.action.append(self.action.finish)
+            self.action.schedule()
+        else:
+            repository = self.repository_selector.repository_opt.get_active_text()
+            branch = self.repository_selector.branch_opt.get_active_text()
+            tags = self.get_widget("tags").get_active()
+            force_with_lease = self.get_widget("force_with_lease").get_active()
 
-        repository = self.repository_selector.repository_opt.get_active_text()
-        branch = self.repository_selector.branch_opt.get_active_text()
-        tags = self.get_widget("tags").get_active()
-        force_with_lease = self.get_widget("force_with_lease").get_active()
-
-        self.action = rabbitvcs.ui.action.GitAction(
-            self.git,
-            register_gtk_quit=self.gtk_quit_is_set()
-        )
-        self.action.append(self.action.set_header, _("Push"))
-        self.action.append(self.action.set_status, _("Running Push Command..."))
-        self.action.append(self.git.push, repository, branch, tags, force_with_lease)
-        self.action.append(self.action.set_status, _("Completed Push"))
-        self.action.append(self.action.finish)
-        self.action.schedule()
+            self.action = rabbitvcs.ui.action.GitAction(
+                self.git,
+                register_gtk_quit=self.gtk_quit_is_set()
+            )
+            self.action.append(self.action.set_header, _("Push"))
+            self.action.append(self.action.set_status, _("Running Push Command..."))
+            self.action.append(self.git.push, repository, branch, tags, force_with_lease)
+            self.action.append(self.action.set_status, _("Completed Push"))
+            self.action.append(self.action.finish)
+            self.action.schedule()
 
     def initialize_logs(self):
         """
