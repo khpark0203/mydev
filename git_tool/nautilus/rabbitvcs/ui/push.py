@@ -149,11 +149,15 @@ class GitPush(Push):
         helper.run_in_main_thread(self.load_logs_exit)
 
     def load_push_log(self):
-        repository = self.repository_selector.repository_opt.get_active_text()
-        branch = self.repository_selector.branch_opt.get_active_text()
+        if self.git_svn:
+            self.push_log = self.git.log(revision=None)
+        else:
+            repository = self.repository_selector.repository_opt.get_active_text()
+            branch = self.repository_selector.branch_opt.get_active_text()
 
-        refspec = "refs/remotes/%s/%s" % (repository, branch)
-        self.push_log = self.git.log(revision=self.git.revision(refspec), showtype="push")
+            refspec = "refs/remotes/%s/%s" % (repository, branch)
+            self.push_log = self.git.log(revision=self.git.revision(refspec), showtype="push")
+            
 
     def on_branch_changed(self, repository, branch):
         self.load_push_log()
@@ -165,9 +169,13 @@ class GitPush(Push):
         repository = self.repository_selector.repository_opt.get_active_text()
         branch = self.repository_selector.branch_opt.get_active_text()
 
+        
         if not repository or not branch:
-            self.get_widget("ok").set_sensitive(False)
-            return
+            if self.git_svn:
+                pass
+            else:
+                self.get_widget("ok").set_sensitive(False)
+                return
 
         has_commits = False
         for item in self.push_log:

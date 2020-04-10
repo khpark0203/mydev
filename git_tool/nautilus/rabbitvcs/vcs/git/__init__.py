@@ -614,10 +614,6 @@ class Git(object):
         
         return self.client.git_svn_update()
         
-    def git_svn_log(self):
-        
-        return self.client.git_svn_log()
-        
     def git_svn_push(self):
         """
         For git-svn push
@@ -797,7 +793,10 @@ class Git(object):
         if current_locale[0] is not None:
             locale.setlocale(locale.LC_ALL, "C")
 
-        items = self.client.log(path, skip, limit, revision.primitive(), showtype)
+        if revision == None:
+            items = self.client.git_svn_log()
+        else:
+            items = self.client.log(path, skip, limit, revision.primitive(), showtype)
         returner = []
         for item in items:
             revision = self.revision(item["commit"])

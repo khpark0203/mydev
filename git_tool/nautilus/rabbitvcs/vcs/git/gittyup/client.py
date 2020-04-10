@@ -566,6 +566,94 @@ class GittyupClient(object):
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
+            
+    def git_svn_log(self):
+        
+        cmd = ["git", "log", "--branches", "--not", "--remotes", "--pretty=fuller"]
+        
+
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+        except GittyupCommandError as e:
+            self.callback_notify(e)
+            return []
+
+        revisions = []
+        revision = {}
+        changed_file = {}
+        pattern_from = re.compile(r' \(from (.*)\)')
+        last_commitId = ""
+        for line in stdout:
+            if line == "":
+                continue
+            
+            if line[0:6] == "commit":
+                match = pattern_from.search(line)
+                commit_line = re.sub(" \(from.*\)","", line).split(" ")
+                fromPath = ""
+                if match:
+                    fromPath = match.group(1)
+                if revision:
+                    if "changed_paths" not in revision:
+                        revision["changed_paths"] = {}
+                    if last_commitId != commit_line[1]:
+                        revisions.append(revision)
+                        revision = {}
+                    else:
+                        del revision["message"]
+
+
+                if len(fromPath) > 0:
+                    if "changed_paths" not in revision:
+                        revision["changed_paths"] =[]
+                    changed_file = {
+                        "additions": "-",
+                        "removals": "-",
+                        "path": "Diff with parent : %s " % fromPath
+                    }
+                    revision["changed_paths"].append(changed_file)
+
+                changed_file = {}
+                revision["commit"] = commit_line[1]
+                last_commitId = revision["commit"]
+                revision["parents"] = []
+                for parent in commit_line[2:]:
+                    revision["parents"].append(parent)
+            elif line[0:7] == "Author:":
+                revision["author"] = line[7:].strip()
+            elif line[0:11] == "AuthorDate:":
+                revision["author_date"] = line[11:].strip()
+            elif line[0:7] == "Commit:":
+                revision["committer"] = line[7:].strip()
+            elif line[0:11] == "CommitDate:":
+                revision["commit_date"] = line[11:].strip()
+            elif line[0:4] == "    ":
+                message = line[4:]
+                if "message" not in revision:
+                    revision["message"] = ""
+                else:
+                    revision["message"] += "\n"
+
+                revision["message"] = revision["message"] + message
+            elif line[0].isdigit() or line[0] in "-":
+                file_line = line.split("\t")
+                if "changed_paths" not in revision:
+                    revision["changed_paths"] = []
+
+                if len(file_line) == 3:
+                    changed_file = {
+                        "additions": file_line[0],
+                        "removals": file_line[1],
+                        "path": self.string_unescape(file_line[2])
+                    }
+                    if changed_file['path'][0] == '"' and changed_file['path'][-1] == '"':
+                        changed_file['path'] = changed_file['path'][1:-1]
+                    revision["changed_paths"].append(changed_file)
+
+        if revision:
+            revisions.append(revision)
+
+        return revisions
         
 
     def add_commit(self, paths, log):
