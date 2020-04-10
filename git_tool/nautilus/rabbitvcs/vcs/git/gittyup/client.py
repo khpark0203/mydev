@@ -570,11 +570,12 @@ class GittyupClient(object):
             self.callback_notify(e)
             
         try:
-            index = stdout[0].find("]")
+            end_index = stdout[0].find("]")
+            start_index = stdout[0][:end_index].rfind(" ") + 1
         except:
             pass
         else:
-            commit_id = stdout[0][index-7:index]
+            commit_id = stdout[0][start_index:end_index]
 
         branch_full = self.repo.refs.read_ref(b"HEAD")
 
