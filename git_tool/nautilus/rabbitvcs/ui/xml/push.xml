@@ -19,7 +19,7 @@
     <property name="window_position">center-always</property>
     <property name="icon_name">rabbitvcs</property>
     <property name="default_width">450</property>
-    <property name="default_height">600</property>
+    <property name="default_height">500</property>
     <signal name="destroy" handler="on_destroy" swapped="no"/>
     <signal name="key-press-event" handler="on_key_pressed" swapped="no"/>
     <child>
