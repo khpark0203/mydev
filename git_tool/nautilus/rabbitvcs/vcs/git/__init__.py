@@ -607,6 +607,13 @@ class Git(object):
 
         return self.client.push(repository, refspec, tags, force_with_lease)
 
+    def git_svn_clone(self, url, path):
+        """
+        For git-svn update
+        """
+        
+        return self.client.git_svn_clone(url, path)
+        
     def git_svn_update(self):
         """
         For git-svn update

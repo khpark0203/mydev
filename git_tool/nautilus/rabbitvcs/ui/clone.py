@@ -55,10 +55,14 @@ class GitClone(Checkout):
 
         self.default_text()
         self.check_form()
+        self.git_svn = False
 
     def on_ok_clicked(self, widget):
         url = self.repositories.get_active_text().strip()
         path = self._get_path().strip()
+        
+        if url[:4] == "svn:":
+            self.git_svn = True
 
         if not url or not path:
             rabbitvcs.ui.dialog.MessageBox(_("The repository URL and destination path are both required fields."))
@@ -72,11 +76,19 @@ class GitClone(Checkout):
         self.action.append(self.action.set_header, _("Clone"))
         self.action.append(self.action.set_status, _("Running Clone Command..."))
         self.action.append(helper.save_repository_path, url)
-        self.action.append(
-            self.git.clone,
-            url,
-            path
-        )
+        
+        if self.git_svn:
+            self.action.append(
+                self.git.git_svn_clone,
+                url,
+                path
+            )
+        else:
+            self.action.append(
+                self.git.clone,
+                url,
+                path
+            )
         self.action.append(self.action.set_status, _("Completed Clone"))
         self.action.append(self.action.finish)
         self.action.schedule()
