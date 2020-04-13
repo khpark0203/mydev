@@ -554,8 +554,6 @@ class GittyupClient(object):
     def git_svn_clone(self, url, path):
         cmd = ["git", "svn", "clone", url, path]
         base_dir = os.path.split(path)[0]
-        print(url)
-        print(path)
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
