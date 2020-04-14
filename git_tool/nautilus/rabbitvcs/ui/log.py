@@ -178,7 +178,16 @@ class Log(InterfaceView):
             Gdk.keyval_name(event.keyval).lower() == "c"):
             if len(self.revisions_table.get_selected_rows()) > 0:
                 self.copy_revision_text()
-
+        elif (event.state & Gdk.ModifierType.CONTROL_MASK and
+            Gdk.keyval_name(event.keyval).lower() == "f"):
+                self.get_widget("revisions_search").grab_focus()
+        elif self.get_widget("revisions_search").is_focus():
+            if Gdk.keyval_name(event.keyval).lower() == "tab":
+                self.get_widget("hbox-search").grab_focus()
+            elif (event.state & Gdk.ModifierType.SHIFT_MASK and
+                Gdk.keyval_name(event.keyval).lower() == "iso_left_tab"):
+                self.get_widget("paths_table").grab_focus()
+        
     def on_stop_on_copy_toggled(self, widget):
         self.stop_on_copy = self.get_widget("stop_on_copy").get_active()
         if not self.is_loading:

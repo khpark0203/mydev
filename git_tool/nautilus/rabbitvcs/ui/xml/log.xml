@@ -308,31 +308,31 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkGrid" id="hbox-search">
+                      <object class="GtkTextView" id="revisions_search">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can_focus">True</property>
                         <property name="hexpand">True</property>
-                        <property name="column_spacing">3</property>
-                        <child>
-                          <object class="GtkTextView" id="revisions_search">
-                            <property name="visible">True</property>
-                            <!-- <property name="can_focus">False</property> -->
-                            <property name="hexpand">True</property>
-                            <property name="border_width">1</property>
-                            <property name="pixels_above_lines">3</property>
-                            <property name="left_margin">4</property>
-                            <property name="right_margin">3</property>
-                            <property name="indent">4</property>
-                            <property name="buffer">search_buffer</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
+                        <property name="border_width">1</property>
+                        <property name="pixels_above_lines">3</property>
+                        <property name="left_margin">4</property>
+                        <property name="right_margin">3</property>
+                        <property name="indent">4</property>
+                        <property name="buffer">search_buffer</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkGrid" id="hbox-search">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <!-- <property name="hexpand">True</property> -->
+                        <property name="column_spacing">3</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">2</property>
                         <property name="top_attach">0</property>
                       </packing>
                     </child>
