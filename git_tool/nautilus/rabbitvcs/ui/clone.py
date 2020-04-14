@@ -49,7 +49,7 @@ class GitClone(Checkout):
         self.git = self.vcs.git()
 
         self.get_widget("Checkout").set_title(_("Clone"))
-        self.get_widget("repo_chooser").hide()
+        self.get_widget("repo_chooser").show()
         self.get_widget("options_box").hide()
         self.get_widget("revision_selector_box").hide()
 
