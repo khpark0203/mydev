@@ -582,7 +582,7 @@ class GittyupClient(object):
                 self.callback_notify(e)
                 
     def git_svn_push(self):
-        cmds = ["git", "svn", "dcommit"]
+        cmd = ["git", "svn", "dcommit"]
         
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
