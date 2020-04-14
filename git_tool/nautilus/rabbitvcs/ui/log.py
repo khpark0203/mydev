@@ -187,6 +187,9 @@ class Log(InterfaceView):
             elif (event.state & Gdk.ModifierType.SHIFT_MASK and
                 Gdk.keyval_name(event.keyval).lower() == "iso_left_tab"):
                 self.get_widget("paths_table").grab_focus()
+            elif Gdk.keyval_name(event.keyval).lower() == "down":
+                self.revisions_table.focus(0, 0)
+                self.get_widget("hbox-search").grab_focus()
         
     def on_stop_on_copy_toggled(self, widget):
         self.stop_on_copy = self.get_widget("stop_on_copy").get_active()
