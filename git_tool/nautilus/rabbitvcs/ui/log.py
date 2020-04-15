@@ -188,7 +188,10 @@ class Log(InterfaceView):
                 Gdk.keyval_name(event.keyval).lower() == "iso_left_tab"):
                 self.get_widget("paths_table").grab_focus()
             elif Gdk.keyval_name(event.keyval).lower() == "down":
-                self.revisions_table.focus(0, 0)
+                if len(self.revisions_table.get_selected_rows()) > 0:
+                    self.revisions_table.focus(self.revisions_table.get_selected_rows()[0], 0)
+                else:
+                    self.revisions_table.focus(0, 0)
                 self.get_widget("hbox-search").grab_focus()
         
     def on_stop_on_copy_toggled(self, widget):
