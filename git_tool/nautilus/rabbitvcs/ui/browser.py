@@ -632,6 +632,7 @@ class BrowserContextMenu(object):
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNBrowser,
+    rabbitvcs.vcs.VCS_GIT: SVNBrowser,
     rabbitvcs.vcs.VCS_DUMMY: SVNBrowser
 }
 

@@ -1341,6 +1341,8 @@ class MainContextMenu(object):
                     (MenuCompareToolMultiple, None),
                     (MenuShowChanges, None),
                 ]),
+                (MenuRepoBrowser, None),
+                (MenuSeparator, None),
                 (MenuShowLog, None),
                 (MenuStage, None),
                 (MenuUnstage, None),
