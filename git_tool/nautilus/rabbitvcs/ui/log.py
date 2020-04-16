@@ -186,7 +186,7 @@ class Log(InterfaceView):
                 self.get_widget("hbox-search").grab_focus()
             elif (event.state & Gdk.ModifierType.SHIFT_MASK and
                 Gdk.keyval_name(event.keyval).lower() == "iso_left_tab"):
-                self.get_widget("paths_table").grab_focus()
+                self.get_widget("hpaned1").grab_focus()
             elif Gdk.keyval_name(event.keyval).lower() == "down":
                 if len(self.revisions_table.get_selected_rows()) > 0:
                     self.revisions_table.focus(self.revisions_table.get_selected_rows()[0], 0)
