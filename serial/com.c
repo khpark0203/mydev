@@ -542,6 +542,12 @@ int transfer_byte(int from, int to, int is_control) {
 					return 5;
 				}
 				else {
+					if(c == '\x1B') {
+						c = '\n';
+						fprintf(stderr, "Clicked button = esc\r\n\n");
+					}
+					else
+						fprintf(stderr, "Clicked button = %c\r\n\n", c);
 					c = '\n';
 				}	
 			}
