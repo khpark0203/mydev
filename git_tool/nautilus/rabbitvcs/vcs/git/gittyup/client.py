@@ -582,7 +582,26 @@ class GittyupClient(object):
                 self.callback_notify(e)
                 
     def git_svn_push(self):
-        cmd = ["git", "svn", "dcommit"]
+        cmds = [["git", "stash", "list"], ["git", "stash"], ["git", "stash", "list"], ["git", "svn", "dcommit"], ["git", "stash", "pop"]]
+        i = 0
+        ex_stash_num = 0
+        stash_num = 0
+        for cmd in cmds:
+            try:
+                if i == 0:
+                    (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
+                    ex_stash_num = len(stdout)
+                elif i == 2:
+                    (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
+                    stash_num = len(stdout)
+                elif i == 4:
+                    if stash_num > ex_stash_num:
+                        (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+                else:
+                    (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+                i += 1
+            except GittyupCommandError as e:
+                self.callback_notify(e)
         
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
