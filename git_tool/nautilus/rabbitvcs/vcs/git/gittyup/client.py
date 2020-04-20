@@ -602,11 +602,6 @@ class GittyupClient(object):
                 i += 1
             except GittyupCommandError as e:
                 self.callback_notify(e)
-        
-        try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
-        except GittyupCommandError as e:
-            self.callback_notify(e)
             
     def git_svn_log(self):
         
