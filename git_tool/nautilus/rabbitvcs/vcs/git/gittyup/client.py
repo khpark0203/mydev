@@ -583,8 +583,11 @@ class GittyupClient(object):
                         (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
                         if len(stdout):
                             index = stdout[0].find("WIP")
-                            self.notify(stdout[0][:index])
-                            self.notify(" => " + stdout[0][index:])
+                            if index >= 0:
+                                self.notify(stdout[0][:index])
+                                self.notify(" => " + stdout[0][index:])
+                            else:
+                                self.notify(stdout[0])
                     else:
                         (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
                 i += 1
@@ -615,8 +618,11 @@ class GittyupClient(object):
                         (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
                         if len(stdout):
                             index = stdout[0].find("WIP")
-                            self.notify(stdout[0][:index])
-                            self.notify(" => " + stdout[0][index:])
+                            if index >= 0:
+                                self.notify(stdout[0][:index])
+                                self.notify(" => " + stdout[0][index:])
+                            else:
+                                self.notify(stdout[0])
                     else:
                         (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
                 i += 1
