@@ -574,9 +574,19 @@ class GittyupClient(object):
                     stash_num = len(stdout)
                 elif i == 4:
                     if stash_num > ex_stash_num:
-                        (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+                        (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
+                        if len(stdout):
+                            self.notify(stdout[-2])
+                            self.notify(stdout[-1])
                 else:
-                    (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+                    if i == 1:
+                        (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
+                        if len(stdout):
+                            index = stdout[0].find("WIP")
+                            self.notify(stdout[0][:index])
+                            self.notify(" => " + stdout[0][index:])
+                    else:
+                        (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
                 i += 1
             except GittyupCommandError as e:
                 self.callback_notify(e)
@@ -596,9 +606,19 @@ class GittyupClient(object):
                     stash_num = len(stdout)
                 elif i == 4:
                     if stash_num > ex_stash_num:
-                        (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+                        (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
+                        if len(stdout):
+                            self.notify(stdout[-2])
+                            self.notify(stdout[-1])
                 else:
-                    (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+                    if i == 1:
+                        (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
+                        if len(stdout):
+                            index = stdout[0].find("WIP")
+                            self.notify(stdout[0][:index])
+                            self.notify(" => " + stdout[0][index:])
+                    else:
+                        (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
                 i += 1
             except GittyupCommandError as e:
                 self.callback_notify(e)
