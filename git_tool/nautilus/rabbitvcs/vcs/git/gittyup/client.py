@@ -576,7 +576,6 @@ class GittyupClient(object):
                     if stash_num > ex_stash_num:
                         (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
                         if len(stdout):
-                            self.notify(stdout[-2])
                             self.notify(stdout[-1])
                 else:
                     if i == 1:
@@ -611,7 +610,6 @@ class GittyupClient(object):
                     if stash_num > ex_stash_num:
                         (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
                         if len(stdout):
-                            self.notify(stdout[-2])
                             self.notify(stdout[-1])
                 else:
                     if i == 1:
