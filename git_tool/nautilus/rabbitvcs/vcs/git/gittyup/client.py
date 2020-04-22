@@ -1042,7 +1042,7 @@ class GittyupClient(object):
 
     def delete(self, name):
         for i in range(len(name)):
-            cmd = ["git", "rm", "-r", name[i]]
+            cmd = ["git", "rm", "-rf", name[i]]
             try:
                 (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
             except GittyupCommandError as e:
@@ -1056,8 +1056,6 @@ class GittyupClient(object):
         @param  paths: A list of paths to remove
 
         """
-
-        print(paths)
 
         if isinstance(paths, (str, six.text_type)):
             paths = [paths]
