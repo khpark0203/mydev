@@ -579,7 +579,11 @@ class GittyupClient(object):
                     if stash_num > ex_stash_num:
                         (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
                         if len(stdout):
-                            self.notify(stdout[-1])
+                            self.notify("=================Stash pop list=================")
+                            for s in stdout:
+                                if "modified" in s:
+                                    self.notify(s)
+                            self.notify("==============================================")
                 else:
                     if i == 1:
                         (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
@@ -613,7 +617,11 @@ class GittyupClient(object):
                     if stash_num > ex_stash_num:
                         (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
                         if len(stdout):
-                            self.notify(stdout[-1])
+                            self.notify("=================Stash pop list=================")
+                            for s in stdout:
+                                if "modified" in s:
+                                    self.notify(s)
+                            self.notify("==============================================")
                 else:
                     if i == 1:
                         (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
