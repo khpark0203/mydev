@@ -41,7 +41,7 @@ elif [ $1 = "update" ] || [ $1 = "up" ] || [ $1 = "rebase" ]; then
 	STASH_NUM=`git stash list | wc -l`
 	git svn rebase
 	if [ $STASH_NUM -gt $EX_STASH_NUM ]; then
-		git stash pop | tail -1
+		git stash pop | grep "수정함:"
 	fi
 elif [ $1 = "pop" ]; then
 	git stash pop
@@ -51,7 +51,7 @@ elif [ $1 = "dcommit" ] || [ $1 = "commit" ]; then
 	STASH_NUM=`git stash list | wc -l`
 	git svn dcommit
 	if [ $STASH_NUM -gt $EX_STASH_NUM ]; then
-		git stash pop | tail -1
+		git stash pop | grep "수정함:"
 	fi
 else
 	echo "argv : remove, callback, ignore, noignore, list, pop, rebase, commit, dcommit"
