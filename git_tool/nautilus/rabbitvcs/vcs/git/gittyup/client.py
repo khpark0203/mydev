@@ -87,7 +87,8 @@ class GittyupClient(object):
 
         self.numberOfCommandStages = 0
         self.numberOfCommandStagesExecuted = 0
-
+        self.git_svn = False
+        
         if path:
             try:
                 self.repo = dulwich.repo.Repo(path)
@@ -372,6 +373,8 @@ class GittyupClient(object):
         path_to_check = S(path)
         while path_to_check != "/" and path_to_check != "":
             if os.path.isdir(os.path.join(path_to_check, ".git")):
+                if os.path.isdir(os.path.join(path_to_check, ".git/svn")):
+                    self.git_svn = True
                 return path_to_check
 
             path_to_check = os.path.split(path_to_check)[0]

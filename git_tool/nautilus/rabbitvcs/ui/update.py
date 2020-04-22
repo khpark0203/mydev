@@ -82,11 +82,7 @@ class GitUpdate(InterfaceView):
             self.get_widget("repository_container"),
             self.git
         )
-        
-        self.git_svn = False
-        
-        if self.repository_selector.repository_opt.get_active_text() == "":
-            self.git_svn = True
+        self.git_svn = self.git.client.git_svn
 
     def on_apply_changes_toggled(self, widget, data=None):
         self.get_widget("merge").set_sensitive(self.get_widget("apply_changes").get_active())

@@ -91,11 +91,8 @@ class GitPush(Push):
         self.get_widget("tags").set_active(True)
         self.get_widget("force_with_lease").set_active(False)
 
-        self.git_svn = False
-        if self.repository_selector.repository_opt.get_active_text() == "":
-            self.git_svn = True
-
         self.initialize_logs()
+        self.git_svn = self.git.client.git_svn
 
     def on_ok_clicked(self, widget, data=None):
         self.hide()

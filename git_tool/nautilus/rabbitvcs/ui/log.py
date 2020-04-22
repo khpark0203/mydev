@@ -724,6 +724,8 @@ class GitLog(Log):
         self.start_point = 0
         self.initialize_root_url()
         self.load_or_refresh()
+        
+        self.git_svn = self.git.client.git_svn
 
     #
     # Log-loading callback methods
@@ -806,6 +808,21 @@ class GitLog(Log):
             msg = helper.html_escape(helper.format_long_text(item.message, cols = 80, line1only = True))
             author = item.author
             date = helper.format_datetime(item.date, self.datetime_format)
+            if self.git_svn:
+                day_night = date.find(")") + 2
+                am = True if date[day_night:day_night+2] == "오전" else False
+                time_start = date.find(":") - 2
+                time_end = time_start + 2
+                time = int(date[time_start:time_end])
+                time += 9
+                
+                if time >= 12:
+                    am = not am
+                
+                sub_hour = "오전 " if am else "오후 "
+                
+                hour = "%02d" % (time if time <= 12 else time - 12)
+                date = date[:day_night] + sub_hour + hour + date[time_end:]
 
             if item.head:
                 self.head_row = index
