@@ -632,7 +632,7 @@ class GittyupClient(object):
             
     def git_svn_log(self):
         
-        cmd = ["git", "log", "--branches", "--not", "--remotes", "--pretty=fuller"]
+        cmd = ["git", "log", "--branches", "--not", "--remotes", "--date=local", "--pretty=fuller"]
         
 
         try:
