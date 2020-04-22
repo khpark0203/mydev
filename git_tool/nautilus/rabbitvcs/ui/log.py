@@ -683,7 +683,7 @@ class GitLog(Log):
         Log.__init__(self, path)
 
         self.git = self.vcs.git(path)
-        self.limit = 500
+        self.limit = 100
 
         self.get_widget("stop_on_copy").hide()
 
@@ -721,11 +721,13 @@ class GitLog(Log):
                 "sortable": False
             }
         )
+        
+        self.git_svn = self.git.client.git_svn
+        
         self.start_point = 0
         self.initialize_root_url()
         self.load_or_refresh()
         
-        self.git_svn = self.git.client.git_svn
 
     #
     # Log-loading callback methods
