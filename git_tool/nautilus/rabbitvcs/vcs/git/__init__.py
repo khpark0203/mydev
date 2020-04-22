@@ -807,7 +807,7 @@ class Git(object):
         returner = []
         for item in items:
             revision = self.revision(item["commit"])
-            date = datetime.strptime(item["commit_date"][0:-6], "%a %b %d %H:%M:%S %Y")
+            date = datetime.strptime(item["commit_date"], "%a %b %d %H:%M:%S %Y")
 
             try:
                 author = item.get("author", False) or item["committer"]
