@@ -52,6 +52,7 @@ class GitStage(Add):
         window.set_title(_("Stage"))
         self.git = self.vcs.git(self.paths[0])
         self.statuses = self.git.STATUSES_FOR_STAGE
+        self.git_svn = self.git.client.git_svn
 
     def populate_files_table(self):
         self.files_table.clear()
@@ -78,7 +79,10 @@ class GitStage(Add):
         self.action.append(self.action.set_header, _("Stage"))
         self.action.append(self.action.set_status, _("Running Stage Command..."))
         for item in items:
-            self.action.append(self.git.stage, item)
+            if self.git_svn:
+                self.action.append(self.git.git_svn_stage, item)
+            else:
+                self.action.append(self.git.stage, item)
         self.action.append(self.action.set_status, _("Completed Stage"))
         self.action.append(self.action.finish)
         self.action.schedule()
