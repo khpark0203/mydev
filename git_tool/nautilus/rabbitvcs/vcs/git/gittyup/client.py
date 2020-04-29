@@ -566,6 +566,19 @@ class GittyupClient(object):
                 "path": path,
                 "mime_type": guess_type(path)[0]
             })
+            
+    def git_svn_unstage(self, path):
+        cmd = ["git", "reset", "HEAD", path]
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+        except GittyupCommandError as e:
+            self.callback_notify(e)
+        else:
+            self.notify({
+                "action": "UnStaged",
+                "path": path,
+                "mime_type": guess_type(path)[0]
+            })
 
     def git_svn_clone(self, url, path):
         cmd = ["git", "svn", "clone", url, path]

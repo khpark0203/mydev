@@ -621,6 +621,13 @@ class Git(object):
         
         return self.client.git_svn_stage(paths)
         
+    def git_svn_unstage(self, paths):
+        """
+        For git-svn update
+        """
+        
+        return self.client.git_svn_unstage(paths)
+        
     def git_svn_update(self):
         """
         For git-svn update

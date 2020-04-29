@@ -52,6 +52,7 @@ class GitUnstage(Add):
         window.set_title(_("Unstage"))
         self.git = self.vcs.git(self.paths[0])
         self.statuses = self.git.STATUSES_FOR_UNSTAGE
+        self.git_svn = self.git.client.git_svn
 
     def populate_files_table(self):
         self.files_table.clear()
@@ -78,7 +79,10 @@ class GitUnstage(Add):
         self.action.append(self.action.set_header, _("Unstage"))
         self.action.append(self.action.set_status, _("Running Unstage Command..."))
         for item in items:
-            self.action.append(self.git.unstage, item)
+            if self.git_svn:
+                self.action.append(self.git.git_svn_unstage, item)
+            else:
+                self.action.append(self.git.unstage, item)
         self.action.append(self.action.set_status, _("Completed Unstage"))
         self.action.append(self.action.finish)
         self.action.schedule()
