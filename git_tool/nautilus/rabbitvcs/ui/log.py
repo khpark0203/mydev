@@ -687,27 +687,48 @@ class GitLog(Log):
 
         self.get_widget("stop_on_copy").hide()
 
+        self.git_svn = self.git.client.git_svn
         self.revision_number_column = 1
 
-        self.revisions_table = rabbitvcs.ui.widget.Table(
-            self.get_widget("revisions_table"),
-            [rabbitvcs.ui.widget.TYPE_GRAPH, GObject.TYPE_STRING,
-                rabbitvcs.ui.widget.TYPE_MARKUP,
-                rabbitvcs.ui.widget.TYPE_MARKUP, rabbitvcs.ui.widget.TYPE_MARKUP],
-            [_("Graph"), _("Revision"), _("Author"),
-                _("Date"), _("Message")],
-            filters=[{
-                "callback": rabbitvcs.ui.widget.git_revision_filter,
-                "user_data": {
-                    "column": 1
+        if self.git_svn:
+            self.revisions_table = rabbitvcs.ui.widget.Table(
+                self.get_widget("revisions_table"),
+                [rabbitvcs.ui.widget.TYPE_GRAPH, GObject.TYPE_STRING, GObject.TYPE_STRING,
+                    rabbitvcs.ui.widget.TYPE_MARKUP,
+                    rabbitvcs.ui.widget.TYPE_MARKUP, rabbitvcs.ui.widget.TYPE_MARKUP],
+                [_("Graph"), _("Revision"), _("Rev"), _("Author"),
+                    _("Date"), _("Message")],
+                filters=[{
+                    "callback": rabbitvcs.ui.widget.git_revision_filter,
+                    "user_data": {
+                        "column": 1
+                    }
+                }],
+                callbacks={
+                    "mouse-event":   self.on_revisions_table_mouse_event,
+                    "key-event":   self.on_revisions_table_key_event
                 }
-            }],
-            callbacks={
-                "mouse-event":   self.on_revisions_table_mouse_event,
-                "key-event":   self.on_revisions_table_key_event
-            }
-        )
-
+            )
+        else:
+            self.revisions_table = rabbitvcs.ui.widget.Table(
+                self.get_widget("revisions_table"),
+                [rabbitvcs.ui.widget.TYPE_GRAPH, GObject.TYPE_STRING,
+                    rabbitvcs.ui.widget.TYPE_MARKUP,
+                    rabbitvcs.ui.widget.TYPE_MARKUP, rabbitvcs.ui.widget.TYPE_MARKUP],
+                [_("Graph"), _("Revision"), _("Author"),
+                    _("Date"), _("Message")],
+                filters=[{
+                    "callback": rabbitvcs.ui.widget.git_revision_filter,
+                    "user_data": {
+                        "column": 1
+                    }
+                }],
+                callbacks={
+                    "mouse-event":   self.on_revisions_table_mouse_event,
+                    "key-event":   self.on_revisions_table_key_event
+                }
+            )
+	
         self.paths_table = rabbitvcs.ui.widget.Table(
             self.get_widget("paths_table"),
             [GObject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_HIDDEN_OBJECT,
@@ -721,8 +742,6 @@ class GitLog(Log):
                 "sortable": False
             }
         )
-        
-        self.git_svn = self.git.client.git_svn
         
         self.start_point = 0
         self.initialize_root_url()
@@ -805,9 +824,17 @@ class GitLog(Log):
             graph_column.set_fixed_width(graph_width)
 
         index = 0
+        enter = "⏎"
         for (item, node, in_lines, out_lines) in grapher:
             revision = S(item.revision)
-            msg = helper.html_escape(helper.format_long_text(item.message, cols = 80, line1only = True))
+            msg = helper.html_escape(helper.format_long_text(item.message, cols = None, line1only = False))
+            revision_num = "-"
+            if self.git_svn:
+                if msg.find("⏎⏎git-svn-id: ") != -1:
+                    revision_basic = msg.split("⏎⏎git-svn-id: ")[-1].split(" ")[0]
+                    revision_num_idx = revision_basic.rfind("@")
+                    revision_num = revision_basic[revision_num_idx + 1:]
+                    msg = msg[:msg.find("⏎⏎git-svn-id:")]
             author = item.author
             date = helper.format_datetime(item.date, self.datetime_format)
 
@@ -834,14 +861,24 @@ class GitLog(Log):
             for tag in self.tagItems:
                 if tag['id'] == revision:
                     msg = "<i>[" + tag['name'] + "]</i> " + msg
-
-            self.revisions_table.append([
-                graph_render,
-                revision,
-                author,
-                date,
-                msg
-            ])
+                    
+            if self.git_svn:
+                self.revisions_table.append([
+                    graph_render,
+                    revision,
+                    revision_num,
+                    author,
+                    date,
+                    msg
+                ])
+            else:
+	            self.revisions_table.append([
+                    graph_render,
+                    revision,
+                    author,
+                    date,
+                    msg
+                ])
 
             index += 1
 
