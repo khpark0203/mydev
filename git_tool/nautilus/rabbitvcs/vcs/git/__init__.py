@@ -1011,8 +1011,8 @@ class Git(object):
         return self.client.clean(path, remove_dir, remove_ignored_too,
             remove_only_ignored, dry_run, force)
 
-    def cancel_commit(self, num):
-        return self.client.cancel_commit(num)
+    def cancel_commit(self, num, rev):
+        return self.client.cancel_commit(num, rev)
     
     def reset(self, path, revision, type=None):
         """

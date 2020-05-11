@@ -999,24 +999,18 @@ class GitLog(Log):
     def cancel_commit(self):
         selected_row = self.revisions_table.get_selected_rows()
         if len(selected_row):
-            first_revision = self.display_items[selected_row[0]].revision
-            # git 
-            if len(selected_row) == 1:
-                if selected_row[0] == 0:
-                    self.git.cancel_commit(len(selected_row))
-                    self.load()
-                else:
+            rev = []
+            for i in range(len(selected_row)):
+                rev.append(str(self.display_items[selected_row[i]].revision))
+            is_ok = True
+            i = 0
+            for row in selected_row:
+                if row != i:
+                    is_ok = False
                     return
-            elif len(selected_row) > 1:
-                is_ok = True
-                i = 0
-                for row in selected_row:
-                    if row != i:
-                        is_ok = False
-                        return
-                    i += 1
-                if is_ok:
-                    self.git.cancel_commit(len(selected_row))
+                i += 1
+            if is_ok:
+                if self.git.cancel_commit(len(selected_row), rev):
                     self.load()
 
 class SVNLogDialog(SVNLog):

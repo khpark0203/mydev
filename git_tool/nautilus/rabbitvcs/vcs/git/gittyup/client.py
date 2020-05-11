@@ -2151,21 +2151,30 @@ class GittyupClient(object):
             self.callback_notify(e)
             return
             
-    def cancel_commit(self, num):
-        cmd = ["git", "reset", "HEAD"]
-        
-        if num:
-            cmd[2] += "~{}".format(num)
-        else:
-            return
-
-        print(cmd)
-
-        try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
-        except GittyupCommandError as e:
-            self.callback_notify(e)
-            return
+    def cancel_commit(self, num, rev):
+        load_ret = False
+        for i in range(num):
+            cmd = ["git", "log", "--remotes"]
+            
+            try:
+                (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+                remote_rev = stdout[0].split(" ")[1]
+            except GittyupCommandError as e:
+                self.callback_notify(e)
+                return
+            
+            if remote_rev == rev[i]:
+                return load_ret
+            else:
+                cmd = ["git", "reset", "HEAD^"]
+                
+                try:
+                    (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+                except GittyupCommandError as e:
+                    self.callback_notify(e)
+                    return
+                load_ret = True
+        return load_ret
 
     def set_callback_notify(self, func):
         self.callback_notify = func
