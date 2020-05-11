@@ -2141,8 +2141,25 @@ class GittyupClient(object):
             cmd.append("--%s" % type)
 
         cmd.append(revision)
-        if relative_path:
-            cmd.append(relative_path)
+        if not (type == "hard" or type == "soft"):
+            if relative_path:
+                cmd.append(relative_path)
+
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+        except GittyupCommandError as e:
+            self.callback_notify(e)
+            return
+            
+    def cancel_commit(self, num):
+        cmd = ["git", "reset", "HEAD"]
+        
+        if num:
+            cmd[2] += "~{}".format(num)
+        else:
+            return
+
+        print(cmd)
 
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()

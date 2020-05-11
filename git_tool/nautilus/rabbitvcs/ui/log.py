@@ -996,6 +996,29 @@ class GitLog(Log):
     def initialize_root_url(self):
         self.root_url = self.git.get_repository() + "/"
 
+    def cancel_commit(self):
+        selected_row = self.revisions_table.get_selected_rows()
+        if len(selected_row):
+            first_revision = self.display_items[selected_row[0]].revision
+            # git 
+            if len(selected_row) == 1:
+                if selected_row[0] == 0:
+                    self.git.cancel_commit(len(selected_row))
+                    self.load()
+                else:
+                    return
+            elif len(selected_row) > 1:
+                is_ok = True
+                i = 0
+                for row in selected_row:
+                    if row != i:
+                        is_ok = False
+                        return
+                    i += 1
+                if is_ok:
+                    self.git.cancel_commit(len(selected_row))
+                    self.load()
+
 class SVNLogDialog(SVNLog):
     def __init__(self, path, ok_callback=None, multiple=False, merge_candidate_revisions=None):
         """
@@ -1132,6 +1155,11 @@ class MenuEditRevisionProperties(MenuItem):
     identifier = "RabbitVCS::Edit_Revision_Properties"
     label = _("Edit revision properties...")
     icon = "rabbitvcs-editprops"
+    
+class MenuCancelCommit(MenuItem):
+    identifier = "RabbitVCS::Cancel_Commit"
+    label = _("Cancel commit")
+    icon = "rabbitvcs-cancelcommit"
 
 class MenuSeparatorLast(MenuSeparator):
     identifier = "RabbitVCS::Separator_Last"
@@ -1217,6 +1245,9 @@ class LogTopContextMenuConditions(object):
         return (self.vcs_name == rabbitvcs.vcs.VCS_GIT)
 
     def reset(self, data=None):
+        return (self.vcs_name == rabbitvcs.vcs.VCS_GIT)
+
+    def cancel_commit(self, data=None):
         return (self.vcs_name == rabbitvcs.vcs.VCS_GIT)
 
 class LogTopContextMenuCallbacks(object):
@@ -1404,6 +1435,9 @@ class LogTopContextMenuCallbacks(object):
             "--vcs=%s" % self.caller.get_vcs_name()
         ])
 
+    def cancel_commit(self, widget, data=None):
+        self.caller.cancel_commit()
+
     def edit_author(self, widget, data=None):
         author = ""
         if len(self.revisions) == 1:
@@ -1502,6 +1536,7 @@ class LogTopContextMenu(object):
             (MenuExport, None),
             (MenuMerge, None),
             (MenuReset, None),
+            (MenuCancelCommit, None),
             (MenuSeparatorLast, None),
             (MenuEditAuthor, None),
             (MenuEditLogMessage, None),
