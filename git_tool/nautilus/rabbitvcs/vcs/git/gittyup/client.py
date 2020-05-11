@@ -2153,15 +2153,15 @@ class GittyupClient(object):
             
     def cancel_commit(self, num, rev):
         load_ret = False
+        cmd = ["git", "log", "--remotes"]
+        
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+            remote_rev = stdout[0].split(" ")[1]
+        except GittyupCommandError as e:
+            self.callback_notify(e)
+            return load_ret
         for i in range(num):
-            cmd = ["git", "log", "--remotes"]
-            
-            try:
-                (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
-                remote_rev = stdout[0].split(" ")[1]
-            except GittyupCommandError as e:
-                self.callback_notify(e)
-                return
             
             if remote_rev == rev[i]:
                 return load_ret
@@ -2172,7 +2172,7 @@ class GittyupClient(object):
                     (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
                 except GittyupCommandError as e:
                     self.callback_notify(e)
-                    return
+                    return load_ret
                 load_ret = True
         return load_ret
 
