@@ -167,7 +167,7 @@ class MessageCallbackNotifier(VCSNotifier):
 
     @gtk_unsafe
     def set_header(self, header):
-        self.set_title(header)
+        self.set_title(header.replace("&amp;", "&"))
 
         self.get_widget("action").set_markup(
             "<span size=\"xx-large\"><b>%s</b></span>" % header
