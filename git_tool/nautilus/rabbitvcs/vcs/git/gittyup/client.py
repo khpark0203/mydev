@@ -788,7 +788,7 @@ class GittyupClient(object):
                 branch = branch_components.group(1)
                 self.notify("[%s] -> %s" % (S(commit_id), S(branch)))
                 self.notify("To branch: " + S(branch))
-        
+                
     def branch(self, name, commit_sha=None, track=False):
         """
         Create a new branch
@@ -2150,6 +2150,19 @@ class GittyupClient(object):
         except GittyupCommandError as e:
             self.callback_notify(e)
             return
+            
+    def get_num_not_pushed(self):
+        num = 0
+        cmd = ["git", "log", "--branches", "--not", "--remotes"]
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+            for s in stdout:
+                if s[:7] == "commit ":
+                    num += 1
+        except GittyupCommandError as e:
+            self.callback_notify(e)
+        
+        return num
             
     def get_revision_remote_latest(self):
         cmd = ["git", "log", "--remotes"]

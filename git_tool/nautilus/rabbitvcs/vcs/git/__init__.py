@@ -649,6 +649,14 @@ class Git(object):
         
         return self.client.add_commit(paths, log)
 
+    def commit_and_push(self):
+        
+        return self.client.commit_and_push()
+        
+    def get_num_not_pushed(self):
+        
+        return self.client.get_num_not_pushed()
+
     def fetch_all(self):
         """
         Fetch objects from all remote repositories.  This will not merge the files

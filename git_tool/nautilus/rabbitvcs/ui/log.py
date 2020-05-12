@@ -1025,7 +1025,7 @@ class GitLog(Log):
                 rev = []
                 for i in range(len(selected_row)):
                     rev.append(str(self.display_items[selected_row[i]].revision))
-                text = "Do want really cancel committed revisions?\n\n"
+                text = "Do you want to really cancel committed revisions?\n\n"
                 limit_rev = self.git.get_revision_remote_latest()
                 if len(rev):
                     dialog_flag = False

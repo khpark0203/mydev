@@ -118,6 +118,8 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         for path in paths:
             if self.vcs.is_in_a_or_a_working_copy(path):
                 self.paths.append(S(path))
+        
+        self.commit_and_push = False
 
     #
     # Helper functions
@@ -213,6 +215,21 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             )
             self.SETTINGS.write()
 
+    def on_toggle_commit_and_push(self, widget, *args):
+        self.commit_and_push = False
+        if self.get_widget("toggle_commit_and_push").get_active():
+            commit_num = self.git.get_num_not_pushed()
+            if commit_num > 0:
+                confirmation = rabbitvcs.ui.dialog.Confirmation(
+                    _("Committed revision already exist.\nDo you want to push all?\n\nAlready committed count : {}".format(commit_num))
+                )
+                if confirmation.run() == Gtk.ResponseType.OK:
+                    self.commit_and_push = True
+            elif commit_num == 0:
+                self.commit_and_push = True
+                
+        self.get_widget("toggle_commit_and_push").set_active(self.commit_and_push)
+        
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(1)
         pathrev1 = helper.create_path_revision_string(paths[0], "base")
@@ -277,6 +294,7 @@ class SVNCommit(Commit):
         Commit.__init__(self, paths, base_dir, message)
 
         self.get_widget("commit_to_box").show()
+        self.get_widget("toggle_commit_and_push").hide()
 
         self.get_widget("to").set_text(
             S(self.vcs.svn().get_repo_url(self.base_dir)).display()
@@ -356,6 +374,7 @@ class GitCommit(Commit):
         self.items = None
         if len(self.paths):
             self.initialize_items()
+        self.git_svn = self.git.client.git_svn
 
     def on_ok_clicked(self, widget, data=None):
         items = self.files_table.get_activated_rows(1)
@@ -387,6 +406,19 @@ class GitCommit(Commit):
             self.message.get_text()
         )
         self.action.append(self.action.set_status, _("Completed Commit"))
+        
+        if self.commit_and_push:
+            if self.git_svn:
+                push_function = self.git.git_svn_push
+            else:
+                push_function = self.git.push
+            self.action.append(self.action.set_header, _("Push"))
+            self.action.append(self.action.set_status, _("Running Push Command..."))
+            self.action.append(
+                push_function,
+            )
+            self.action.append(self.action.set_status, _("Completed Push"))
+        
         self.action.append(self.action.finish)
         self.action.schedule()
 

@@ -254,6 +254,23 @@
                         <property name="hexpand">True</property>
                         <property name="orientation">vertical</property>
                         <child>
+                          <object class="GtkCheckButton" id="toggle_commit_and_push">
+                            <property name="label" translatable="yes">Commit &amp; Push</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="halign">start</property>
+                            <property name="hexpand">True</property>
+                            <property name="active">False</property>
+                            <property name="draw_indicator">True</property>
+                            <signal name="toggled" handler="on_toggle_commit_and_push" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">2</property>
+                          </packing>
+                        </child>
+                        <child>
                           <object class="GtkCheckButton" id="toggle_show_unversioned">
                             <property name="label" translatable="yes">Show unversioned files</property>
                             <property name="visible">True</property>
