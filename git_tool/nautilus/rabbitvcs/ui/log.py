@@ -1012,6 +1012,9 @@ class GitLog(Log):
         self.root_url = self.git.get_repository() + "/"
 
     def cancel_commit(self):
+        if self.filter_text:
+            rabbitvcs.ui.dialog.MessageBox(_("Don't cancel commit when search anything"))
+            return
         selected_row = self.revisions_table.get_selected_rows()
         if len(selected_row):
             is_ok = True
@@ -1044,7 +1047,7 @@ class GitLog(Log):
                 else:
                     rabbitvcs.ui.dialog.MessageBox(_("Already pushed revision"))
             else:
-                rabbitvcs.ui.dialog.MessageBox(_("Already pushed revision"))
+                rabbitvcs.ui.dialog.MessageBox(_("Fail (Reason 1 or 2)\n\n1. Already pushed revision\n2. Not first revision"))
 class SVNLogDialog(SVNLog):
     def __init__(self, path, ok_callback=None, multiple=False, merge_candidate_revisions=None):
         """
