@@ -412,7 +412,7 @@ class GitCommit(Commit):
                 push_function = self.git.git_svn_push
             else:
                 push_function = self.git.push
-            self.action.append(self.action.set_header, _("Push"))
+            self.action.append(self.action.set_header, _("Commit & Push"))
             self.action.append(self.action.set_status, _("Running Push Command..."))
             self.action.append(
                 push_function,
