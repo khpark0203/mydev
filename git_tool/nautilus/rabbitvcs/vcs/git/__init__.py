@@ -776,6 +776,9 @@ class Git(object):
         """
 
         return self.client.tag_list()
+        
+    def get_revision_remote_latest(self):
+        return self.client.get_revision_remote_latest()
 
 
     def log(self, path=None, skip=0, limit=None, revision=Revision("HEAD"), showtype="all"):

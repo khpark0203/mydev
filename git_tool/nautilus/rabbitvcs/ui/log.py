@@ -155,6 +155,7 @@ class Log(InterfaceView):
         )
 
         self.stop_on_copy = False
+        self.show_only_commit = False
         self.revision_clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
 
     #
@@ -198,6 +199,11 @@ class Log(InterfaceView):
         self.stop_on_copy = self.get_widget("stop_on_copy").get_active()
         if not self.is_loading:
             self.refresh()
+            
+    def on_show_only_commit_toggled(self, widget):
+        self.show_only_commit = self.get_widget("show_only_commit").get_active()
+        self.cache.empty()
+        self.load()
 
     def on_refresh_clicked(self, widget):
         self.limit = int(self.get_widget("limit").get_text())
@@ -396,6 +402,8 @@ class SVNLog(Log):
 
         self.svn = self.vcs.svn()
         self.merge_candidate_revisions = merge_candidate_revisions
+        
+        self.get_widget("show_only_commit").hide()
 
         self.revisions_table = rabbitvcs.ui.widget.Table(
             self.get_widget("revisions_table"),
@@ -915,13 +923,20 @@ class GitLog(Log):
             notification=False,
             run_in_thread=True
         )
+        
+        if self.show_only_commit:
+            self.action.append(
+                self.git.log,
+                revision=None
+            )
+        else:
+            self.action.append(
+                self.git.log,
+                path=self.path,
+                skip=self.start_point,
+                limit=self.limit+1
+            )
 
-        self.action.append(
-            self.git.log,
-            path=self.path,
-            skip=self.start_point,
-            limit=self.limit+1
-        )
         self.action.append(self.refresh)
         self.action.schedule()
 
@@ -999,9 +1014,6 @@ class GitLog(Log):
     def cancel_commit(self):
         selected_row = self.revisions_table.get_selected_rows()
         if len(selected_row):
-            rev = []
-            for i in range(len(selected_row)):
-                rev.append(str(self.display_items[selected_row[i]].revision))
             is_ok = True
             i = 0
             for row in selected_row:
@@ -1010,8 +1022,25 @@ class GitLog(Log):
                     return
                 i += 1
             if is_ok:
-                if self.git.cancel_commit(len(selected_row), rev):
-                    self.load()
+                rev = []
+                for i in range(len(selected_row)):
+                    rev.append(str(self.display_items[selected_row[i]].revision))
+                text = "Do want really cancel commit?\n\n"
+                limit_rev = self.git.get_revision_remote_latest()
+                if len(rev):
+                    dialog_flag = False
+                    for i in range(len(rev)):
+                        if rev[i] == limit_rev:
+                            break
+                        text += "{}. {}\n".format(i + 1, rev[i][:7])
+                        dialog_flag = True
+                if dialog_flag:
+                    confirmation = rabbitvcs.ui.dialog.Confirmation(
+                        _(text)
+                    )
+                    if confirmation.run() == Gtk.ResponseType.OK:
+                        if self.git.cancel_commit(len(selected_row), rev):
+                            self.load()
 
 class SVNLogDialog(SVNLog):
     def __init__(self, path, ok_callback=None, multiple=False, merge_candidate_revisions=None):
