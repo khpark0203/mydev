@@ -1019,13 +1019,13 @@ class GitLog(Log):
             for row in selected_row:
                 if row != i:
                     is_ok = False
-                    return
+                    break
                 i += 1
             if is_ok:
                 rev = []
                 for i in range(len(selected_row)):
                     rev.append(str(self.display_items[selected_row[i]].revision))
-                text = "Do want really cancel commit?\n\n"
+                text = "Do want really cancel committed revisions?\n\n"
                 limit_rev = self.git.get_revision_remote_latest()
                 if len(rev):
                     dialog_flag = False
@@ -1041,7 +1041,10 @@ class GitLog(Log):
                     if confirmation.run() == Gtk.ResponseType.OK:
                         if self.git.cancel_commit(len(selected_row), rev):
                             self.load()
-
+                else:
+                    rabbitvcs.ui.dialog.MessageBox(_("Already pushed revision"))
+            else:
+                rabbitvcs.ui.dialog.MessageBox(_("Already pushed revision"))
 class SVNLogDialog(SVNLog):
     def __init__(self, path, ok_callback=None, multiple=False, merge_candidate_revisions=None):
         """
