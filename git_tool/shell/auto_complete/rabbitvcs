@@ -6,7 +6,7 @@ _rabbitvcs()
     _get_comp_words_by_ref cur
  
     if [ $COMP_CWORD = 1 ]; then
-        COMPREPLY=( $( compgen -W 'update commit push log revert' -- "$cur" ) )
+        COMPREPLY=( $( compgen -W 'update commit push log revert reset' -- "$cur" ) )
     fi
 }
 
