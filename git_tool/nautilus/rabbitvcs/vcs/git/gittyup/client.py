@@ -2156,8 +2156,8 @@ class GittyupClient(object):
         cmd = ["git", "log", "--branches", "--not", "--remotes"]
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
-            for s in stdout:
-                if s[:7] == "commit ":
+            for i in range(len(stdout) - 1):
+                if stdout[i][:7] == "commit " and stdout[i+1][:8] == "Author: ":
                     num += 1
         except GittyupCommandError as e:
             self.callback_notify(e)
