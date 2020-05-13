@@ -362,7 +362,6 @@ class GitCommit(Commit):
 
         self.get_widget("commit_to_box").show()
         self.get_widget("toggle_commit_and_push").show()
-        self.get_widget("options_box").set_property("height_request", 70)
 
         active_branch = self.git.get_active_branch()
         if active_branch:

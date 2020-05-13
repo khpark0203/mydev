@@ -253,6 +253,7 @@
                         <property name="can_focus">False</property>
                         <property name="hexpand">True</property>
                         <property name="orientation">vertical</property>
+                        <property name="height_request">46</property>
                         <child>
                           <object class="GtkCheckButton" id="toggle_commit_and_push">
                             <property name="label" translatable="yes">Commit &amp; Push</property>
@@ -266,8 +267,8 @@
                             <signal name="toggled" handler="on_toggle_commit_and_push" swapped="no"/>
                           </object>
                           <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">2</property>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">0</property>
                           </packing>
                         </child>
                         <child>
