@@ -202,9 +202,8 @@ class Log(InterfaceView):
             
     def on_show_only_commit_toggled(self, widget):
         self.show_only_commit = self.get_widget("show_only_commit").get_active()
-        if not self.is_loading:
-            self.cache.empty()
-            self.load()
+        self.cache.empty()
+        self.load()
 
     def on_refresh_clicked(self, widget):
         self.limit = int(self.get_widget("limit").get_text())
