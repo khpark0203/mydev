@@ -202,8 +202,9 @@ class Log(InterfaceView):
             
     def on_show_only_commit_toggled(self, widget):
         self.show_only_commit = self.get_widget("show_only_commit").get_active()
-        self.cache.empty()
-        self.load()
+        if not self.is_loading:
+            self.cache.empty()
+            self.load()
 
     def on_refresh_clicked(self, widget):
         self.limit = int(self.get_widget("limit").get_text())
@@ -926,8 +927,7 @@ class GitLog(Log):
         
         if self.show_only_commit:
             self.action.append(
-                self.git.log,
-                revision=None
+                self.git.log_not_pushed
             )
         else:
             self.action.append(
@@ -1012,11 +1012,9 @@ class GitLog(Log):
         self.root_url = self.git.get_repository() + "/"
 
     def cancel_commit(self):
-        if self.filter_text:
-            rabbitvcs.ui.dialog.MessageBox(_("Don't cancel commit when search anything"))
-            return
         selected_row = self.revisions_table.get_selected_rows()
         if len(selected_row):
+            not_pushed_rev = self.git.get_not_pushed_inform("rev")
             is_ok = True
             i = 0
             for row in selected_row:
@@ -1029,14 +1027,12 @@ class GitLog(Log):
                 for i in range(len(selected_row)):
                     rev.append(str(self.display_items[selected_row[i]].revision))
                 text = "Do you want to really cancel committed revisions?\n\n"
-                limit_rev = self.git.get_revision_remote_latest()
                 if len(rev):
                     dialog_flag = False
                     for i in range(len(rev)):
-                        if rev[i] == limit_rev:
-                            break
-                        text += "{}. {}\n".format(i + 1, rev[i][:7])
-                        dialog_flag = True
+                        if rev[i] in not_pushed_rev:
+                            text += "{}. {}\n".format(i + 1, rev[i][:7])
+                            dialog_flag = True
                 if dialog_flag:
                     confirmation = rabbitvcs.ui.dialog.Confirmation(
                         _(text)
@@ -1047,7 +1043,15 @@ class GitLog(Log):
                 else:
                     rabbitvcs.ui.dialog.MessageBox(_("Already pushed revision"))
             else:
-                rabbitvcs.ui.dialog.MessageBox(_("Fail (Reason 1 or 2)\n\n1. Already pushed revision\n2. Not first revision"))
+                warning = ""
+                if len(selected_row) == 1:
+                    if str(self.display_items[selected_row[i]].revision) in not_pushed_rev:
+                        warning = "Not first revision"
+                    else:
+                        warning = "Already pushed revision"
+                else:
+                    warning = "Select 'first(rev) ~ want(rev)' and 'continuos'"
+                rabbitvcs.ui.dialog.MessageBox(_(warning))
 class SVNLogDialog(SVNLog):
     def __init__(self, path, ok_callback=None, multiple=False, merge_candidate_revisions=None):
         """

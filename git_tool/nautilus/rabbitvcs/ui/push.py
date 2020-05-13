@@ -147,7 +147,7 @@ class GitPush(Push):
 
     def load_push_log(self):
         if self.git_svn:
-            self.push_log = self.git.log(revision=None)
+            self.push_log = self.git.log_not_pushed()
         else:
             repository = self.repository_selector.repository_opt.get_active_text()
             branch = self.repository_selector.branch_opt.get_active_text()

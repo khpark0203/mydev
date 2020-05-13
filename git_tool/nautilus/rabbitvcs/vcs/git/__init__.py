@@ -653,9 +653,12 @@ class Git(object):
         
         return self.client.commit_and_push()
         
-    def get_num_not_pushed(self):
+    def get_not_pushed_inform(self, what):
+        """
+        waht : count, rev
+        """
         
-        return self.client.get_num_not_pushed()
+        return self.client.get_not_pushed_inform(what)
 
     def fetch_all(self):
         """
@@ -789,6 +792,64 @@ class Git(object):
         return self.client.get_revision_remote_latest()
 
 
+    def log_not_pushed(self):
+        import locale
+        current_locale = locale.getlocale()
+        if current_locale[0] is not None:
+            locale.setlocale(locale.LC_ALL, "C")
+            items = self.client.git_not_pushed_log()
+        returner = []
+        for item in items:
+            revision = self.revision(item["commit"])
+            date = datetime.strptime(item["commit_date"], "%a %b %d %H:%M:%S %Y")
+
+            try:
+                author = item.get("author", False) or item["committer"]
+                pos = author.find("<")
+                if pos != -1:
+                    author = author[0:pos]
+                author = author.strip()
+            except KeyError:
+                author = _("(no author)")
+
+            message = ""
+            if "message" in item:
+                message = item["message"]
+
+            changed_paths = []
+            if "changed_paths" in item:
+                for changed_path in item["changed_paths"]:
+                    action = "+%s/-%s" % (changed_path["additions"], changed_path["removals"])
+
+                    changed_paths.append(rabbitvcs.vcs.log.LogChangedPath(
+                        changed_path["path"],
+                        action,
+                        "", ""
+                    ))
+
+            parents = []
+            if "parents" in item:
+                for parent in item["parents"]:
+                    parents.append(self.revision(parent))
+
+            head = False
+            if item["commit"] == self.client.head():
+                head = True
+
+            returner.append(rabbitvcs.vcs.log.Log(
+                date,
+                revision,
+                author,
+                message,
+                changed_paths,
+                parents,
+                head
+            ))
+
+        locale.setlocale(locale.LC_ALL, current_locale)
+
+        return returner
+
     def log(self, path=None, skip=0, limit=None, revision=Revision("HEAD"), showtype="all"):
         """
         Returns a revision history list
@@ -824,10 +885,6 @@ class Git(object):
         current_locale = locale.getlocale()
         if current_locale[0] is not None:
             locale.setlocale(locale.LC_ALL, "C")
-
-        if revision == None:
-            items = self.client.git_svn_log()
-        else:
             items = self.client.log(path, skip, limit, revision.primitive(), showtype)
         returner = []
         for item in items:

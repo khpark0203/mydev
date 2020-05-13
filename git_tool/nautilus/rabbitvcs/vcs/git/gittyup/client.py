@@ -664,11 +664,13 @@ class GittyupClient(object):
             except GittyupCommandError as e:
                 self.callback_notify(e)
             
-    def git_svn_log(self):
+    def git_not_pushed_log(self):
         
-        cmd = ["git", "log", "--branches", "--not", "--remotes", "--date=local", "--pretty=fuller"]
+        if self.git_svn:
+            cmd = ["git", "log", "git-svn..master", "--date=local", "--pretty=fuller"]
+        else:
+            cmd = ["git", "log", "origin/master..master", "--date=local", "--pretty=fuller"]
         
-
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
         except GittyupCommandError as e:
@@ -2151,18 +2153,28 @@ class GittyupClient(object):
             self.callback_notify(e)
             return
             
-    def get_num_not_pushed(self):
-        num = 0
-        cmd = ["git", "log", "--branches", "--not", "--remotes"]
+    def get_not_pushed_inform(self, what):
+        if self.git_svn:
+            cmd = ["git", "log", "git-svn..master"]
+        else:
+            cmd = ["git", "log", "origin/master..master"]
+            
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
-            for i in range(len(stdout) - 1):
-                if stdout[i][:7] == "commit " and stdout[i+1][:8] == "Author: ":
-                    num += 1
         except GittyupCommandError as e:
             self.callback_notify(e)
         
-        return num
+        if what == "count":
+            ret = 0
+            for i in range(len(stdout) - 1):
+                if stdout[i][:7] == "commit " and stdout[i+1][:8] == "Author: ":
+                    ret += 1
+        elif what == "rev":
+            ret = []
+            for i in range(len(stdout) - 1):
+                if stdout[i][:7] == "commit " and stdout[i+1][:8] == "Author: ":
+                    ret.append(stdout[i].split(" ")[1])
+        return ret
             
     def get_revision_remote_latest(self):
         cmd = ["git", "log", "--remotes"]

@@ -218,7 +218,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
     def on_toggle_commit_and_push(self, widget, *args):
         self.commit_and_push = False
         if self.get_widget("toggle_commit_and_push").get_active():
-            commit_num = self.git.get_num_not_pushed()
+            commit_num = self.git.get_not_pushed_inform("count")
             if commit_num > 0:
                 confirmation = rabbitvcs.ui.dialog.Confirmation(
                     _("Committed revision already exist.\nDo you want to push all?\n\nAlready committed count : {}".format(commit_num))
