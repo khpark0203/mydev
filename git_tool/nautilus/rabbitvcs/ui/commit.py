@@ -294,7 +294,6 @@ class SVNCommit(Commit):
         Commit.__init__(self, paths, base_dir, message)
 
         self.get_widget("commit_to_box").show()
-        self.get_widget("toggle_commit_and_push").hide()
 
         self.get_widget("to").set_text(
             S(self.vcs.svn().get_repo_url(self.base_dir)).display()
@@ -362,6 +361,8 @@ class GitCommit(Commit):
         self.git = self.vcs.git(paths[0])
 
         self.get_widget("commit_to_box").show()
+        self.get_widget("toggle_commit_and_push").show()
+        self.get_widget("options_box").set_property("height_request", 70)
 
         active_branch = self.git.get_active_branch()
         if active_branch:
