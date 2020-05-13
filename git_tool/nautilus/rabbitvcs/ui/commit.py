@@ -229,6 +229,8 @@ class Commit(InterfaceView, GtkContextMenuCaller):
                 self.commit_and_push = True
                 
         self.get_widget("toggle_commit_and_push").set_active(self.commit_and_push)
+    def on_show_log(self, widget, *args):
+        proc = helper.launch_ui_window("log", self.paths)
         
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(1)
