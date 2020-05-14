@@ -182,6 +182,9 @@ class Log(InterfaceView):
         elif (event.state & Gdk.ModifierType.CONTROL_MASK and
             Gdk.keyval_name(event.keyval).lower() == "f"):
                 self.get_widget("revisions_search").grab_focus()
+        elif (event.state & Gdk.ModifierType.MOD1_MASK and
+            Gdk.keyval_name(event.keyval).lower() == "l"):
+                self.get_widget("limit").grab_focus()
         elif self.get_widget("revisions_search").is_focus():
             if Gdk.keyval_name(event.keyval).lower() == "tab":
                 self.get_widget("hbox-search").grab_focus()
