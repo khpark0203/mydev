@@ -691,12 +691,16 @@ class GitLog(Log):
         Log.__init__(self, path)
 
         self.git = self.vcs.git(path)
-        self.limit = 100
 
         self.get_widget("stop_on_copy").hide()
+        self.get_widget("push").show()
 
-        self.git_svn = self.git.client.git_svn
+        self.limit = 100
+        if self.git_svn:
+            self.limit = 50
+        self.get_widget("limit").set_property("text", str(self.limit))
         self.revision_number_column = 1
+        self.git_svn = self.git.client.git_svn
 
         if self.git_svn:
             self.revisions_table = rabbitvcs.ui.widget.Table(
@@ -939,7 +943,7 @@ class GitLog(Log):
                 self.git.log,
                 path=self.path,
                 skip=self.start_point,
-                limit=self.limit+1
+                limit=self.limit
             )
 
         self.action.append(self.refresh)
@@ -1057,6 +1061,10 @@ class GitLog(Log):
                 else:
                     warning = "Select 'first(rev) ~ want(rev)' and 'continuos'"
                 rabbitvcs.ui.dialog.MessageBox(_(warning))
+    
+    def on_push_clicked(self, widget):
+        helper.launch_ui_window("push", [self.path])
+    
 class SVNLogDialog(SVNLog):
     def __init__(self, path, ok_callback=None, multiple=False, merge_candidate_revisions=None):
         """
