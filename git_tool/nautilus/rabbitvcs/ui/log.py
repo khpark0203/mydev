@@ -685,6 +685,9 @@ class SVNLog(Log):
             sensitive = False
 
         self.get_widget("next").set_sensitive(sensitive)
+    
+    def on_push_clicked(self, widget):
+        pass
 
 class GitLog(Log):
     def __init__(self, path):
