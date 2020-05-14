@@ -214,10 +214,17 @@ class Commit(InterfaceView, GtkContextMenuCaller):
                 self.SHOW_UNVERSIONED
             )
             self.SETTINGS.write()
+            
+    def on_toggle_select_cur_log_repo(self, widget, *args):
+        if widget.get_active():
+            self.get_widget("log").set_property("label", "Show current repository log")
+        else:
+            self.get_widget("log").set_property("label", "Show root repository log")
+            
 
     def on_toggle_commit_and_push(self, widget, *args):
         self.commit_and_push = False
-        if self.get_widget("toggle_commit_and_push").get_active():
+        if widget.get_active():
             commit_num = self.git.get_not_pushed_inform("count")
             if commit_num > 0:
                 confirmation = rabbitvcs.ui.dialog.Confirmation(
@@ -228,10 +235,8 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             elif commit_num == 0:
                 self.commit_and_push = True
                 
-        self.get_widget("toggle_commit_and_push").set_active(self.commit_and_push)
-    def on_show_log(self, widget, *args):
-        proc = helper.launch_ui_window("log", self.paths)
-        
+        widget.set_active(self.commit_and_push)
+
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(1)
         pathrev1 = helper.create_path_revision_string(paths[0], "base")
@@ -355,6 +360,19 @@ class SVNCommit(Commit):
     def on_files_table_toggle_event(self, row, col):
         # Adds path: True/False to the dict
         self.changes[row[1]] = row[col]
+        
+    def on_show_log(self, widget, *args):
+        path = []
+        if self.get_widget("toggle_select_cur_log_repo").get_active():
+            path.append(self.paths[0])
+        else:
+            path_to_check = S(self.paths[0])
+            while path_to_check != "/" and path_to_check != "":
+                if os.path.isdir(os.path.join(path_to_check, ".svn")):
+                    path.append(path_to_check)
+                    break
+                path_to_check = os.path.split(path_to_check)[0]
+        helper.launch_ui_window("log", path)
 
 class GitCommit(Commit):
     def __init__(self, paths, base_dir=None, message=None):
@@ -377,7 +395,7 @@ class GitCommit(Commit):
         if len(self.paths):
             self.initialize_items()
         self.git_svn = self.git.client.git_svn
-
+        
     def on_ok_clicked(self, widget, data=None):
         items = self.files_table.get_activated_rows(1)
         self.hide()
@@ -427,6 +445,14 @@ class GitCommit(Commit):
     def on_files_table_toggle_event(self, row, col):
         # Adds path: True/False to the dict
         self.changes[row[1]] = row[col]
+        
+    def on_show_log(self, widget, *args):
+        if self.get_widget("toggle_select_cur_log_repo").get_active():
+            path = self.paths
+        else:
+            path = []
+            path.append(self.git.get_repository())
+        helper.launch_ui_window("log", path)
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNCommit,

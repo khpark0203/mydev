@@ -792,12 +792,12 @@ class Git(object):
         return self.client.get_revision_remote_latest()
 
 
-    def log_not_pushed(self):
+    def git_not_pushed_log(self, path=None):
         import locale
         current_locale = locale.getlocale()
         if current_locale[0] is not None:
             locale.setlocale(locale.LC_ALL, "C")
-            items = self.client.git_not_pushed_log()
+            items = self.client.git_not_pushed_log(path)
         returner = []
         for item in items:
             revision = self.revision(item["commit"])

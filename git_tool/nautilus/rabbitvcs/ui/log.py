@@ -926,7 +926,8 @@ class GitLog(Log):
         
         if self.show_only_commit:
             self.action.append(
-                self.git.log_not_pushed
+                self.git.git_not_pushed_log,
+                self.path
             )
         else:
             self.action.append(

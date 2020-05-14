@@ -664,12 +664,14 @@ class GittyupClient(object):
             except GittyupCommandError as e:
                 self.callback_notify(e)
             
-    def git_not_pushed_log(self):
+    def git_not_pushed_log(self, path):
+        if not path:
+            path = self.repo.path
         
         if self.git_svn:
-            cmd = ["git", "log", "git-svn..master", "--date=local", "--pretty=fuller"]
+            cmd = ["git", "log", "git-svn..master", "--date=local", "--pretty=fuller", path]
         else:
-            cmd = ["git", "log", "origin/master..master", "--date=local", "--pretty=fuller"]
+            cmd = ["git", "log", "origin/master..master", "--date=local", "--pretty=fuller", path]
         
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
