@@ -1,3 +1,11 @@
+_file_set() {
+	if [ $1 -eq 0 ]; then
+		complete -F _rabbitvcs rabbitvcs
+	else
+		complete -A file -F _rabbitvcs rabbitvcs
+	fi
+}
+
 _rabbitvcs()
 {
     local cur
@@ -6,8 +14,15 @@ _rabbitvcs()
     _get_comp_words_by_ref cur
  
     if [ $COMP_CWORD = 1 ]; then
-        COMPREPLY=( $( compgen -W 'update commit push log revert reset' -- "$cur" ) )
+        _file_set 0
+        COMPREPLY=( $( compgen -W 'update commit push log revert reset checkout stage unstage' -- "$cur" ) )
+    elif [ $COMP_CWORD -ge 2 ]; then
+		if [ ${COMP_WORDS[1]} = "update" ] || [ ${COMP_WORDS[1]} = "push" ]; then
+			_file_set 0
+		else
+			_file_set 1
+		fi
     fi
 }
 
-complete -F _rabbitvcs rabbitvcs
+_file_set 0
