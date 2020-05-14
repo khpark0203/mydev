@@ -215,14 +215,6 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             )
             self.SETTINGS.write()
             
-    def on_toggle_select_cur_log_repo(self, widget, *args):
-        change_widget = self.get_widget("log")
-        if widget.get_active():
-            change_widget.set_property("label", change_widget.get_property("label").replace("root", "current"))
-        else:
-            change_widget.set_property("label", change_widget.get_property("label").replace("current", "root"))
-            
-
     def on_toggle_commit_and_push(self, widget, *args):
         self.commit_and_push = False
         if widget.get_active():
@@ -302,7 +294,6 @@ class SVNCommit(Commit):
         Commit.__init__(self, paths, base_dir, message)
 
         self.get_widget("commit_to_box").show()
-        self.get_widget("toggle_select_cur_log_repo").set_active(True)
 
         self.get_widget("to").set_text(
             S(self.vcs.svn().get_repo_url(self.base_dir)).display()
@@ -365,7 +356,7 @@ class SVNCommit(Commit):
         
     def on_show_log(self, widget, *args):
         path = []
-        if self.get_widget("toggle_select_cur_log_repo").get_active():
+        if widget.get_label() == self.get_widget("cur_log").get_label():
             path.append(self.paths[0])
         else:
             path_to_check = S(self.paths[0])
@@ -449,7 +440,7 @@ class GitCommit(Commit):
         self.changes[row[1]] = row[col]
         
     def on_show_log(self, widget, *args):
-        if self.get_widget("toggle_select_cur_log_repo").get_active():
+        if widget.get_label() == self.get_widget("cur_log").get_label():
             path = self.paths
         else:
             path = []

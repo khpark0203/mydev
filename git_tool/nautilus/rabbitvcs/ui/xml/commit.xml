@@ -248,29 +248,51 @@
                     <property name="orientation">vertical</property>
                     <property name="row_spacing">6</property>
                     <child>
-                      <object class="GtkGrid" id="options_box">
+                      <object class="GtkGrid">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="hexpand">True</property>
-                        <property name="orientation">vertical</property>
-                        <property name="height_request">46</property>
                         <child>
-                          <object class="GtkCheckButton" id="toggle_select_cur_log_repo">
-                            <property name="label" translatable="yes">Log : set current repository</property>
+                          <object class="GtkButton" id="root_log">
+                            <property name="label" translatable="yes">Show root repository log</property>
+                            <property name="hexpand">True</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="receives_default">False</property>
-                            <property name="halign">start</property>
+                            <property name="receives_default">True</property>
+                            <signal name="clicked" handler="on_show_log" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="cur_log">
+                            <property name="label" translatable="yes">Show current repository log</property>
                             <property name="hexpand">True</property>
-                            <property name="active">False</property>
-                            <property name="draw_indicator">True</property>
-                            <signal name="toggled" handler="on_toggle_select_cur_log_repo" swapped="no"/>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <signal name="clicked" handler="on_show_log" swapped="no"/>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
                             <property name="top_attach">0</property>
                           </packing>
                         </child>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkGrid" id="options_box">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="hexpand">True</property>
+                        <property name="orientation">vertical</property>
+                        <property name="height_request">46</property>
                         <child>
                           <object class="GtkCheckButton" id="toggle_commit_and_push">
                             <property name="label" translatable="yes">Commit &amp; Push</property>
@@ -285,7 +307,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
-                            <property name="top_attach">1</property>
+                            <property name="top_attach">0</property>
                           </packing>
                         </child>
                         <child>
@@ -325,19 +347,6 @@
                       <packing>
                         <property name="left_attach">0</property>
                         <property name="top_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="log">
-                        <property name="label" translatable="yes">Show root repository log</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <signal name="clicked" handler="on_show_log" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="left_attach">0</property>
-                        <property name="top_attach">1</property>
                       </packing>
                     </child>
                     <child>
