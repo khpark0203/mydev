@@ -843,6 +843,11 @@ class GitLog(Log):
                     revision_num_idx = revision_basic.rfind("@")
                     revision_num = revision_basic[revision_num_idx + 1:]
                     msg = msg[:msg.find("⏎⏎git-svn-id:")]
+                    if index == 0:
+                        self.set_start_revision(revision_num)
+                    elif index == len(grapher) - 1:
+                        self.set_end_revision(revision_num)
+                        
             author = item.author
             date = helper.format_datetime(item.date, self.datetime_format)
 

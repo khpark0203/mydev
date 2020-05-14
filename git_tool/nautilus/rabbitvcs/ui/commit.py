@@ -216,10 +216,11 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             self.SETTINGS.write()
             
     def on_toggle_select_cur_log_repo(self, widget, *args):
+        change_widget = self.get_widget("log")
         if widget.get_active():
-            self.get_widget("log").set_property("label", "Show current repository log")
+            change_widget.set_property("label", change_widget.get_property("label").replace("root", "current"))
         else:
-            self.get_widget("log").set_property("label", "Show root repository log")
+            change_widget.set_property("label", change_widget.get_property("label").replace("current", "root"))
             
 
     def on_toggle_commit_and_push(self, widget, *args):
@@ -301,6 +302,7 @@ class SVNCommit(Commit):
         Commit.__init__(self, paths, base_dir, message)
 
         self.get_widget("commit_to_box").show()
+        self.get_widget("toggle_select_cur_log_repo").set_active(True)
 
         self.get_widget("to").set_text(
             S(self.vcs.svn().get_repo_url(self.base_dir)).display()
