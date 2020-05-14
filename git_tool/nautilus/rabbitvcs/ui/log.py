@@ -694,13 +694,13 @@ class GitLog(Log):
 
         self.get_widget("stop_on_copy").hide()
         self.get_widget("push").show()
+        self.git_svn = self.git.client.git_svn
 
         self.limit = 100
         if self.git_svn:
             self.limit = 50
         self.get_widget("limit").set_property("text", str(self.limit))
         self.revision_number_column = 1
-        self.git_svn = self.git.client.git_svn
 
         if self.git_svn:
             self.revisions_table = rabbitvcs.ui.widget.Table(
