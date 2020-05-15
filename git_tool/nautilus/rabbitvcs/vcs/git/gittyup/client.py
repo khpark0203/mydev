@@ -2191,6 +2191,7 @@ class GittyupClient(object):
         
     def already_skiptree(self, path):
         cmd = ["git", "ls-files", "-v", path]
+        ret = False
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
             for s in stdout:
@@ -2237,12 +2238,12 @@ class GittyupClient(object):
         if make:
             for path in paths:
                 cmd = ["git", "checkout", path]
-                (status, stdout, stderr) = GittyupCommand(cmd, stdin=pipe_message, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
-                # self.notify({
-                #     "action": "Maked",
-                #     "path": path,
-                #     "mime_type": guess_type(path)[0]
-                # })
+                (status, stdout, stderr) = GittyupCommand(cmd, stdin=pipe_message, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
+                self.notify({
+                    "action": "Maked",
+                    "path": path,
+                    "mime_type": guess_type(path)[0]
+                })
                 
     def skiptree(self, paths, remove):
         for path in paths:

@@ -683,6 +683,10 @@ class MenuSkiptree(MenuItem):
     identifier = "RabbitVCS::Skiptree"
     label = _("Skiptree")
 
+class MenuNoskiptree(MenuItem):
+    identifier = "RabbitVCS::Noskiptree"
+    label = _("No Skiptree")
+
 class MenuFetchPull(MenuItem):
     identifier = "RabbitVCS::Fetch_Pull"
     label = _("Fetch/Pull")

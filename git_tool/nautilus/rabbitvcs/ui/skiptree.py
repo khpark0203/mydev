@@ -122,9 +122,6 @@ class Skiptree(InterfaceView, GtkContextMenuCaller):
         status = self.get_widget("status")
         helper.run_in_main_thread(status.set_text, _("Loading..."))
         self.items = self.vcs.get_items_skiptree(self.paths, self.statuses)
-        for item in self.items:
-            if item.path == self.base_dir:
-                self.items.remove(item)
         if self.is_git:
            self.show_skiptree_file(self.items)
         if self.show_ignored:

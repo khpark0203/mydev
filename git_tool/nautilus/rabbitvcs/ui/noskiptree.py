@@ -74,7 +74,7 @@ class Noskiptree(InterfaceView, GtkContextMenuCaller):
         self.show_ignored = False
         self.file_make = False
         self.is_git = True
-        self.show_skipped = True
+        self.show_no_skipped = False
         self.statuses = ["normal", "modified"]
         
         
@@ -122,9 +122,6 @@ class Noskiptree(InterfaceView, GtkContextMenuCaller):
         status = self.get_widget("status")
         helper.run_in_main_thread(status.set_text, _("Loading..."))
         self.items = self.vcs.get_items_skiptree(self.paths, self.statuses)
-        for item in self.items:
-            if item.path == self.base_dir:
-                self.items.remove(item)
         if self.is_git:
            self.show_skiptree_file(self.items)
         if self.show_ignored:
@@ -197,8 +194,8 @@ class Noskiptree(InterfaceView, GtkContextMenuCaller):
     def on_show_ignored_toggled(self, widget):
         self.toggle_ignored()
         
-    def on_show_skipped_toggled(self, widget):
-        self.show_skipped = ~~widget.get_active()
+    def on_show_no_skipped_toggled(self, widget):
+        self.show_no_skipped = widget.get_active()
         self.initialize_items()
 
     def on_files_table_row_activated(self, treeview, event, col):
@@ -223,7 +220,7 @@ class SVNNoskiptree(Noskiptree):
         Noskiptree.__init__(self, paths, base_dir)
 
         self.svn = self.vcs.svn()
-        self.get_widget("show_skipped").hide()
+        self.get_widget("show_no_skipped").hide()
         self.get_widget("file_make").hide()
 
     def on_ok_clicked(self, widget):
@@ -252,12 +249,19 @@ class GitNoskiptree(Noskiptree):
 
         self.git = self.vcs.git(paths[0])
         add_list = []
+        exist_list = []
+        
+        for path in self.paths:
+            exist_list += glob.glob(path + "/**", recursive=True)
+        
         for path in self.paths:
             for add in self.git.already_skiptree_file(path):
-                add_list.append(add)
+                add_list.append(base_dir + add)
         
         for add in add_list:
-            self.paths.append(add)
+            if add not in exist_list:
+                self.paths.append(add)
+            
                 
     def on_ok_clicked(self, widget):
         items = self.files_table.get_activated_rows(1)
@@ -277,15 +281,15 @@ class GitNoskiptree(Noskiptree):
         self.action.append(self.action.set_status, _("Completed No Skiptree"))
         self.action.append(self.action.finish)
         self.action.schedule()
-        
+
     def show_skiptree_file(self, items):
         remove_list = []
         for item in items:
-            if self.show_skipped:
-                if self.git.already_skiptree(item.path) == False:
+            if self.show_no_skipped:
+                if self.git.already_skiptree(item.path):
                     remove_list.append(item)
             else:
-                if self.git.already_skiptree(item.path):
+                if self.git.already_skiptree(item.path) == False:
                     remove_list.append(item)
         for remove_item in remove_list:
             items.remove(remove_item)
