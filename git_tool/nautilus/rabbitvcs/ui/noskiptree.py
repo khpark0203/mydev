@@ -75,7 +75,7 @@ class Noskiptree(InterfaceView, GtkContextMenuCaller):
         self.file_make = False
         self.is_git = True
         self.show_no_skipped = False
-        self.statuses = ["normal", "modified"]
+        self.statuses = ["normal", "modified", "missing"]
         
         
         # TODO Remove this when there is svn support
@@ -256,12 +256,11 @@ class GitNoskiptree(Noskiptree):
         
         for path in self.paths:
             for add in self.git.already_skiptree_file(path):
-                add_list.append(base_dir + add)
+                add_list.append(base_dir + "/" + add)
         
         for add in add_list:
             if add not in exist_list:
                 self.paths.append(add)
-            
                 
     def on_ok_clicked(self, widget):
         items = self.files_table.get_activated_rows(1)

@@ -76,7 +76,7 @@ class Skiptree(InterfaceView, GtkContextMenuCaller):
         self.file_remove = False
         self.is_git = True
         self.show_skipped = False
-        self.statuses = ["normal", "modified"]
+        self.statuses = ["normal", "modified", "missing"]
         
         # TODO Remove this when there is svn support
         if rabbitvcs.vcs.guess(self.paths[0])['vcs'] == rabbitvcs.vcs.VCS_SVN:
