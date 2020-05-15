@@ -679,6 +679,10 @@ class MenuClone(MenuItem):
     label = _("Clone")
     icon = "rabbitvcs-checkout"
 
+class MenuSkiptree(MenuItem):
+    identifier = "RabbitVCS::Skiptree"
+    label = _("Skiptree")
+
 class MenuFetchPull(MenuItem):
     identifier = "RabbitVCS::Fetch_Pull"
     label = _("Fetch/Pull")

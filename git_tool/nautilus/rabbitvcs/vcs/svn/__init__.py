@@ -1032,6 +1032,16 @@ class SVN(object):
 
         return self.client.add(pure_unicode(paths), recurse)
 
+    def exclude(self, base_dir, paths):
+        for path in paths:
+            cmd = ["svn", "update", "--set-depth", "exclude", path]
+            try:
+                proc = subprocess.Popen(cmd, cwd=base_dir, stdout=subprocess.PIPE)
+            except:
+                proc.kill()
+            else:
+                proc.kill()
+	
     def add_backwards(self, path):
         """
         This will add the given path to version control, and any parent

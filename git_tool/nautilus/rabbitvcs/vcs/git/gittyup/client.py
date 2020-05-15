@@ -2188,7 +2188,92 @@ class GittyupClient(object):
             self.callback_notify(e)
             
         return remote_rev
+        
+    def already_skiptree(self, path):
+        cmd = ["git", "ls-files", "-v", path]
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+            for s in stdout:
+                if s[0] == "S":
+                    ret = True
+                else:
+                    ret = False
+        except GittyupCommandError as e:
+            self.callback_notify(e)
             
+        return ret
+
+    def already_skiptree_file(self, path):
+        ret = []
+        cmd = ["git", "ls-files", "-v", path]
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+            for s in stdout:
+                if s[0] == "S":
+                    ret.append(s.split(" ")[1])
+        except GittyupCommandError as e:
+            self.callback_notify(e)
+            
+        return ret
+        
+    def noskiptree(self, paths, make):
+        for path in paths:
+            cmd = ["git", "ls-files", "-z", path]
+            pipe_message = ""
+            try:
+                proc = subprocess.Popen(cmd, cwd=self.repo.path, stdout=subprocess.PIPE)
+                pipe_message = proc.stdout
+            except GittyupCommandError as e:
+                self.callback_notify(e)
+            else:
+                cmd = ["xargs", "-0", "git", "update-index", "--no-skip-worktree"]
+                (status, stdout, stderr) = GittyupCommand(cmd, stdin=pipe_message, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+                proc.kill()
+                self.notify({
+                    "action": "No Skipped",
+                    "path": path,
+                    "mime_type": guess_type(path)[0]
+                })
+        if make:
+            for path in paths:
+                cmd = ["git", "checkout", path]
+                (status, stdout, stderr) = GittyupCommand(cmd, stdin=pipe_message, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+                # self.notify({
+                #     "action": "Maked",
+                #     "path": path,
+                #     "mime_type": guess_type(path)[0]
+                # })
+                
+    def skiptree(self, paths, remove):
+        for path in paths:
+            cmd = ["git", "ls-files", "-z", path]
+            pipe_message = ""
+            try:
+                proc = subprocess.Popen(cmd, cwd=self.repo.path, stdout=subprocess.PIPE)
+                pipe_message = proc.stdout
+            except GittyupCommandError as e:
+                self.callback_notify(e)
+            else:
+                cmd = ["xargs", "-0", "git", "update-index", "--skip-worktree"]
+                (status, stdout, stderr) = GittyupCommand(cmd, stdin=pipe_message, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+                proc.kill()
+                self.notify({
+                    "action": "Skipped",
+                    "path": path,
+                    "mime_type": guess_type(path)[0]
+                })
+        if remove:
+            for path in paths:
+                if os.path.isdir(path):
+                    shutil.rmtree(path)
+                elif os.path.isfile(path):
+                    os.remove(path)
+                self.notify({
+                    "action": "Removed",
+                    "path": path,
+                    "mime_type": guess_type(path)[0]
+                })
+        
     def cancel_commit(self, num, rev):
         load_ret = False
         remote_rev = self.get_revision_remote_latest()

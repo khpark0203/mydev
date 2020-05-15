@@ -582,6 +582,10 @@ class ContextMenuCallbacks(object):
     def reset(self, widget, data1=None, data2=None):
         proc = helper.launch_ui_window("reset", [self.paths[0]])
         self.caller.rescan_after_process_exit(proc, self.paths)
+        
+    def skiptree(self, widget, data1=None, data2=None):
+        proc = helper.launch_ui_window("skiptree", self.paths)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def stage(self, widget, data1=None, data2=None):
         proc = helper.launch_ui_window("stage", [self.paths[0]])
@@ -953,6 +957,9 @@ class ContextMenuConditions(object):
         return (self.path_dict["is_git"])
 
     def reset(self, data=None):
+        return (self.path_dict["is_git"])
+        
+    def skiptree(self, data=None):
         return (self.path_dict["is_git"])
 
     def stage(self, data=None):
@@ -1347,6 +1354,8 @@ class MainContextMenu(object):
                 (MenuStage, None),
                 (MenuUnstage, None),
                 (MenuAddToIgnoreList, ignore_items),
+                (MenuSeparator, None),
+                (MenuSkiptree, None),
                 (MenuSeparator, None),
                 (MenuRename, None),
                 (MenuDelete, None),

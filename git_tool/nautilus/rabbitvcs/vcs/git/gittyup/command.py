@@ -22,7 +22,7 @@ def cancel_func():
 
 
 class GittyupCommand(object):
-    def __init__(self, command, cwd=None, notify=None, cancel=None):
+    def __init__(self, command, cwd=None, notify=None, cancel=None, stdin=None):
         self.command = command
 
         self.notify = notify_func
@@ -36,6 +36,8 @@ class GittyupCommand(object):
         self.cwd = cwd
         if not self.cwd:
             self.cwd = os.getcwd()
+            
+        self.stdin = stdin
 
     def get_lines(self, val):
         returner = []
@@ -53,7 +55,7 @@ class GittyupCommand(object):
         env["GIT_SSL_CERT_PASSWORD_PROTECTED"] = ""
         proc = subprocess.Popen(self.command,
                                 cwd=self.cwd,
-                                stdin=None,
+                                stdin=self.stdin,
                                 stderr=subprocess.STDOUT,
                                 stdout=subprocess.PIPE,
                                 env=env,

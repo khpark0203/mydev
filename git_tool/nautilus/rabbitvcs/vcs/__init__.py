@@ -244,6 +244,10 @@ class VCS(object):
     def get_items(self, paths, statuses=[]):
         client = self.client(paths[0])
         return client.get_items(paths, statuses)
+        
+    def get_items_skiptree(self, paths, statuses=[]):
+        client = self.client(paths[0])
+        return client.get_items_skiptree(paths, statuses)
 
     def statuses_for_add(self,paths):
         client = self.client(paths[0])

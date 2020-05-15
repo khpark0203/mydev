@@ -255,7 +255,47 @@ class Git(object):
 
     def is_locked(self, path):
         return False
+        
+    def already_skiptree_file(self, path):
+        return self.client.already_skiptree_file(path)
+        
+    def already_skiptree(self, path):
+        return self.client.already_skiptree(path)
+        
+    def skiptree(self, paths, remove):
+        return self.client.skiptree(paths, remove)
+        
+    def noskiptree(self, paths, make):
+        return self.client.noskiptree(paths, make)
 
+    def get_items_skiptree(self, paths, statuses=[]):
+        """
+        Retrieves a list of files that have one of a set of statuses
+
+        @type   paths:      list
+        @param  paths:      A list of paths or files.
+
+        @type   statuses:   list
+        @param  statuses:   A list of statuses.
+
+        @rtype:             list
+        @return:            A list of GittyupStatus objects.
+
+        """
+
+        if paths is None:
+            return []
+
+        items = []
+        for path in paths:
+            st = self.statuses(path, recurse=True, invalidate=True)
+                
+            for st_item in st:
+                if st_item.content in statuses or len(statuses) == 0:
+                    items.append(st_item)
+
+        return items
+        
     def get_items(self, paths, statuses=[]):
         """
         Retrieves a list of files that have one of a set of statuses
