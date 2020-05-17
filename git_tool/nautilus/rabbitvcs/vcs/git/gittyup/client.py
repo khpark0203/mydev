@@ -1081,13 +1081,14 @@ class GittyupClient(object):
 
         return commit_id
 
-    def delete(self, name):
-        for i in range(len(name)):
-            cmd = ["git", "rm", "-rf", name[i]]
-            try:
-                (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
-            except GittyupCommandError as e:
-                self.callback_notify(e)
+    def delete(self, paths):
+        for path in paths:
+            if os.path.isfile(path) or os.path.isdir(path):
+                cmd = ["git", "rm", "-rf", path]
+                try:
+                    (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+                except GittyupCommandError as e:
+                    self.callback_notify(e)
 
     def remove(self, paths):
         """

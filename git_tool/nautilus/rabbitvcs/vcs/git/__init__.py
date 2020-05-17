@@ -325,6 +325,34 @@ class Git(object):
                     items.append(st_item)
 
         return items
+        
+    def get_items_delete(self, paths, statuses=[]):
+        """
+        Retrieves a list of files that have one of a set of statuses
+
+        @type   paths:      list
+        @param  paths:      A list of paths or files.
+
+        @type   statuses:   list
+        @param  statuses:   A list of statuses.
+
+        @rtype:             list
+        @return:            A list of GittyupStatus objects.
+
+        """
+
+        if paths is None:
+            return []
+
+        items = []
+        for path in paths:
+            st = self.statuses(path, recurse=False, invalidate=True)
+            for st_item in st:
+
+                if st_item.content in statuses or len(statuses) == 0:
+                    items.append(st_item)
+
+        return items
 
     def revision(self, value):
         """
@@ -587,7 +615,7 @@ class Git(object):
             commit_timezone, author, author_time, author_timezone, encoding,
             commit_all)
 
-    def remove(self, name):
+    def remove(self, paths):
         """
         Remove path from the repository.  Also deletes the local file.
 
@@ -596,7 +624,7 @@ class Git(object):
 
         """
 
-        return self.client.delete(name)
+        return self.client.delete(paths)
 
     def move(self, source, dest):
         """

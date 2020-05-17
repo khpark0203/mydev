@@ -424,6 +424,32 @@ class SVN(object):
             #log.exception("is_locked exception for %s" % path)
 
         return is_locked
+        
+    def get_items_delete(self, paths, statuses=[]):
+        """
+        Retrieves a list of files that have one of a set of statuses
+
+        @type   paths:      list
+        @param  paths:      A list of paths or files.
+
+        @type   statuses:   list
+        @param  statuses:   A list of pysvn.wc_status_kind statuses.
+
+        @rtype:             list
+        @return:            A list of statuses
+
+        """
+
+        items = []
+
+        for path in paths:
+
+            sts = self.statuses(path, recurse=False, invalidate=True)
+            for st in sts:
+                if (not statuses) or (st.content in statuses or st.metadata in statuses):
+                    items.append(st)
+
+        return items
 
     def get_items(self, paths, statuses=[]):
         """
