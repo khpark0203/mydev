@@ -29,7 +29,7 @@ from rabbitvcs.util import helper
 from gi import require_version
 require_version("Gtk", "3.0")
 sa = helper.SanitizeArgv()
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, Gdk
 sa.restore()
 
 from rabbitvcs.ui import InterfaceView
@@ -62,6 +62,7 @@ class Delete(InterfaceView, GtkContextMenuCaller):
         self.items = []
         self.show_ignored = False
         self.is_git = True
+        self.statuses = ["normal", "modified", "missing"]
 
         # TODO Remove this when there is svn support
         for path in paths:
@@ -82,8 +83,6 @@ class Delete(InterfaceView, GtkContextMenuCaller):
                    [rabbitvcs.ui.widget.TOGGLE_BUTTON, "", _("Path"),
                     _("Extension")]]
 
-        self.setup(self.get_widget("Delete"), columns)
-
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
             columns[0],
@@ -103,10 +102,6 @@ class Delete(InterfaceView, GtkContextMenuCaller):
         )
 
         self.initialize_items()
-
-    def setup(self, window, columns):
-        self.statuses = ["normal", "modified", "missing"]
-        # self.statuses = self.vcs.statuses_for_add(self.paths)
 
     #
     # Helpers
