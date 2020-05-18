@@ -554,6 +554,42 @@ class GittyupClient(object):
         relative_path = self.get_relative_path(path)
         return (relative_path in staged_files)
 
+    def svn_id_pw_ok(self, url):
+        cmds = [["svn", "info", url, "--show-item", "repos-root-url"], ["svn", "info", url, "--show-item", "repos-uuid"]]
+        svn_info = []
+        ret = False
+        for cmd in cmds:
+            try:
+                (status, stdout, stderr) = GittyupCommand(cmd, cwd=None, notify=None, cancel=self.get_cancel()).execute()
+                svn_info += stdout
+            except GittyupCommandError as e:
+                self.callback_notify(e)
+            
+        svn_info_folder = os.getenv("HOME") + "/.subversion/auth/svn.simple"
+        print(svn_info)
+        if len(svn_info):
+            cnt = 0
+            for i in range(len(svn_info[0])):
+                if svn_info[0][i] == "/":
+                    cnt += 1
+                if cnt == 3:
+                    svn_info[0] = svn_info[0][0:i]
+                    break
+        for file in os.listdir(svn_info_folder):
+            file = svn_info_folder + "/" + file
+            f = open(file, "r")
+            while True:
+                line = f.readline()
+                print(svn_info)
+                if not line:
+                    break
+                if (svn_info[0] in line) and (svn_info[1] in line):
+                    f.close()
+                    return True
+            f.close()
+        return ret
+        
+            
     def git_svn_stage(self, path):
         cmd = ["git", "add", path]
         try:

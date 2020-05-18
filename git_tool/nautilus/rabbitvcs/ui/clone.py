@@ -60,38 +60,44 @@ class GitClone(Checkout):
     def on_ok_clicked(self, widget):
         url = self.repositories.get_active_text().strip()
         path = self._get_path().strip()
+        check_id = True
         
         if url[:4] == "svn:":
             self.git_svn = True
+            check_id = False
 
         if not url or not path:
             rabbitvcs.ui.dialog.MessageBox(_("The repository URL and destination path are both required fields."))
             return
-
-        self.hide()
-        self.action = rabbitvcs.ui.action.GitAction(
-            self.git,
-            register_gtk_quit=self.gtk_quit_is_set()
-        )
-        self.action.append(self.action.set_header, _("Clone"))
-        self.action.append(self.action.set_status, _("Running Clone Command..."))
-        self.action.append(helper.save_repository_path, url)
-        
+            
         if self.git_svn:
-            self.action.append(
-                self.git.git_svn_clone,
-                url,
-                path
+            check_id = self.git.svn_id_pw_ok(url)
+        
+        if check_id:
+            self.hide()
+            self.action = rabbitvcs.ui.action.GitAction(
+                self.git,
+                register_gtk_quit=self.gtk_quit_is_set()
             )
-        else:
-            self.action.append(
-                self.git.clone,
-                url,
-                path
-            )
-        self.action.append(self.action.set_status, _("Completed Clone"))
-        self.action.append(self.action.finish)
-        self.action.schedule()
+            self.action.append(self.action.set_header, _("Clone"))
+            self.action.append(self.action.set_status, _("Running Clone Command..."))
+            self.action.append(helper.save_repository_path, url)
+            
+            if self.git_svn:
+                self.action.append(
+                    self.git.git_svn_clone,
+                    url,
+                    path
+                )
+            else:
+                self.action.append(
+                    self.git.clone,
+                    url,
+                    path
+                )
+            self.action.append(self.action.set_status, _("Completed Clone"))
+            self.action.append(self.action.finish)
+            self.action.schedule()
 
     def on_repositories_changed(self, widget, data=None):
         url = self.repositories.get_active_text()
