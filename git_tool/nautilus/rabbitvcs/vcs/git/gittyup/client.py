@@ -566,7 +566,6 @@ class GittyupClient(object):
                 self.callback_notify(e)
             
         svn_info_folder = os.getenv("HOME") + "/.subversion/auth/svn.simple"
-        print(svn_info)
         if len(svn_info):
             cnt = 0
             for i in range(len(svn_info[0])):
@@ -580,7 +579,6 @@ class GittyupClient(object):
             f = open(file, "r")
             while True:
                 line = f.readline()
-                print(svn_info)
                 if not line:
                     break
                 if (svn_info[0] in line) and (svn_info[1] in line):

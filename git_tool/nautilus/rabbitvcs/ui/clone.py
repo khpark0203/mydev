@@ -33,6 +33,7 @@ sa.restore()
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.checkout import Checkout
+from rabbitvcs.ui.dialog import MessageBox
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
@@ -73,8 +74,8 @@ class GitClone(Checkout):
         if self.git_svn:
             check_id = self.git.svn_id_pw_ok(url)
         
+        self.hide()
         if check_id:
-            self.hide()
             self.action = rabbitvcs.ui.action.GitAction(
                 self.git,
                 register_gtk_quit=self.gtk_quit_is_set()
@@ -98,6 +99,11 @@ class GitClone(Checkout):
             self.action.append(self.action.set_status, _("Completed Clone"))
             self.action.append(self.action.finish)
             self.action.schedule()
+        else:
+            s = "ID, PW for '{}' can't be found...\n"
+            s += "Please execute the following command at least once in the terminal.\n\n"
+            s += "git svn clone {} {}".format(url, path)
+            rabbitvcs.ui.dialog.MessageBox(_(s))
 
     def on_repositories_changed(self, widget, data=None):
         url = self.repositories.get_active_text()
