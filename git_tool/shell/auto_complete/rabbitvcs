@@ -15,7 +15,7 @@ _rabbitvcs()
  
     if [ $COMP_CWORD = 1 ]; then
         _file_set 0
-        COMPREPLY=( $( compgen -W 'update commit push log revert reset checkout stage unstage skiptree noskiptree delete' -- "$cur" ) )
+        COMPREPLY=( $( compgen -W 'update commit push log revert reset checkout stage unstage skiptree noskiptree delete clone' -- "$cur" ) )
     elif [ $COMP_CWORD -ge 2 ]; then
 		if [ ${COMP_WORDS[1]} = "update" ] || [ ${COMP_WORDS[1]} = "push" ]; then
 			_file_set 0
