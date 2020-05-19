@@ -68,7 +68,7 @@ class GitReset(InterfaceView):
             expand=True
         )
 
-        self.get_widget("mixed_opt").set_active(True)
+        self.get_widget("none_opt").set_active(True)
         self.check_path()
 
     def on_ok_clicked(self, widget):
@@ -78,9 +78,9 @@ class GitReset(InterfaceView):
         soft = self.get_widget("soft_opt").get_active()
         hard = self.get_widget("hard_opt").get_active()
         merge = self.get_widget("merge_opt").get_active()
-        # none = self.get_widget("mixed_opt").get_active()
+        none = self.get_widget("none_opt").get_active()
 
-        type = "mixed"
+        type = None
         if mixed:
             type = "mixed"
         if soft:
@@ -122,7 +122,7 @@ class GitReset(InterfaceView):
         path = self.get_widget("path").get_text()
         root = self.git.find_repository_path(path)
         if root != path:
-            self.get_widget("mixed_opt").set_active(True)
+            self.get_widget("none_opt").set_active(True)
 
 
 if __name__ == "__main__":
