@@ -38,6 +38,8 @@ class GittyupCommand(object):
             self.cwd = os.getcwd()
             
         self.stdin = stdin
+        if not self.stdin:
+            self.stdin = subprocess.PIPE
 
     def get_lines(self, val):
         returner = []
