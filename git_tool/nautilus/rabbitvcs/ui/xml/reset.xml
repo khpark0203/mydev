@@ -92,7 +92,7 @@
                 <property name="row_spacing">6</property>
                 <child>
                   <object class="GtkRadioButton" id="none_opt">
-                    <property name="visible">True</property>
+                    <property name="visible">False</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="halign">start</property>
@@ -202,7 +202,7 @@ but requires them to be in good working order</property>
                       <object class="GtkLabel" id="label4">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">&lt;i&gt;Mixed&lt;/i&gt; - Reset the index but not the working tree</property>
+                        <property name="label" translatable="yes">&lt;i&gt;Mixed&lt;/i&gt; - Reset the index but not the working tree (default)</property>
                         <property name="use_markup">True</property>
                         <property name="xalign">0</property>
                       </object>
