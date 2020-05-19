@@ -848,11 +848,17 @@ class GitLog(Log):
             msg = helper.html_escape(helper.format_long_text(item.message, cols = None, line1only = False))
             revision_num = "-"
             if self.git_svn:
-                if msg.find("⏎⏎git-svn-id: ") != -1:
-                    revision_basic = msg.split("⏎⏎git-svn-id: ")[-1].split(" ")[0]
+                git_svn_ment = "⏎⏎git-svn-id: "
+                git_svn_index = msg.find(git_svn_ment)
+                if git_svn_index == -1:
+                    git_svn_ment = "git-svn-id: "
+                    git_svn_index = msg.find("git-svn-id: ")
+                    
+                if git_svn_index != -1:
+                    revision_basic = msg.split(git_svn_ment)[-1].split(" ")[0]
                     revision_num_idx = revision_basic.rfind("@")
                     revision_num = revision_basic[revision_num_idx + 1:]
-                    msg = msg[:msg.find("⏎⏎git-svn-id:")]
+                    msg = msg[:git_svn_index]
                     if index == 0:
                         self.set_start_revision(revision_num)
                     elif index == len(grapher) - 1:
