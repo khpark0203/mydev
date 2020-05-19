@@ -8,7 +8,7 @@ _gitt()
     if [ $COMP_CWORD -eq 1 ]; then
 		complete -F _gitt gitt
 		complete -F _gitt mgit
-        COMPREPLY=( $( compgen -W 'remove callback list pop ignore noignore rebase update commit dcommit' -- "$cur" ) )
+        COMPREPLY=( $( compgen -W 'remove callback list pop skiptree noskiptree rebase update commit dcommit' -- "$cur" ) )
 	elif [ $COMP_CWORD -ge 2 ]; then
 		if [ ${COMP_WORDS[1]} = "list" ] || [ ${COMP_WORDS[1]} = "pop" ]; then
 			complete -F _gitt gitt
