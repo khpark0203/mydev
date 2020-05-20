@@ -157,6 +157,7 @@ class Log(InterfaceView):
         self.stop_on_copy = False
         self.show_only_commit = False
         self.revision_clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+        self.get_widget("revisions_search").grab_focus()
 
     #
     # UI Signal Callback Methods
