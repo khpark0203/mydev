@@ -3,7 +3,7 @@ if [ $# -eq 0 ]; then
     exit 0
 fi
 
-if [ $1 = "remove" ] || [ $1 = "ignore" ]; then
+if [ $1 = "remove" ] || [ $1 = "skiptree" ]; then
 	if [ -z $2 ]; then
 		echo "Enter argv2..."
 		exit 0
@@ -18,7 +18,7 @@ if [ $1 = "remove" ] || [ $1 = "ignore" ]; then
 	if [ $1 = "remove" ]; then
 		rm -rf "${@:2}"
 	fi
-elif [ $1 = "callback" ] || [ $1 = "noignore" ]; then
+elif [ $1 = "callback" ] || [ $1 = "noskiptree" ]; then
 	if [ -z $2 ]; then
 		echo "Enter argv2..."
 		exit 0

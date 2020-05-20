@@ -104,14 +104,15 @@
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">None</property>
+                        <property name="label" translatable="yes">&lt;b&gt;&lt;i&gt;None&lt;/i&gt;&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
                         <property name="xalign">0</property>
                       </object>
                     </child>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
-                    <property name="top_attach">4</property>
+                    <property name="top_attach">0</property>
                   </packing>
                 </child>
                 <child>
@@ -127,7 +128,7 @@
                       <object class="GtkLabel" id="label7">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">&lt;i&gt;Merge&lt;/i&gt; - Resets the index to match the tree recorded by the named commit,
+                        <property name="label" translatable="yes">&lt;b&gt;&lt;i&gt;Merge&lt;/i&gt;&lt;/b&gt; - Resets the index to match the tree recorded by the named commit,
 and updates the files that are different between the named commit
 and the current commit in the working tree</property>
                         <property name="use_markup">True</property>
@@ -137,7 +138,7 @@ and the current commit in the working tree</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
-                    <property name="top_attach">3</property>
+                    <property name="top_attach">4</property>
                   </packing>
                 </child>
                 <child>
@@ -153,7 +154,7 @@ and the current commit in the working tree</property>
                       <object class="GtkLabel" id="label6">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">&lt;i&gt;Hard&lt;/i&gt; - Matches the working tree and index to that of the 
+                        <property name="label" translatable="yes">&lt;b&gt;&lt;i&gt;Hard&lt;/i&gt;&lt;/b&gt; - Matches the working tree and index to that of the 
 tree being switched to</property>
                         <property name="use_markup">True</property>
                         <property name="xalign">0</property>
@@ -162,7 +163,7 @@ tree being switched to</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
-                    <property name="top_attach">2</property>
+                    <property name="top_attach">3</property>
                   </packing>
                 </child>
                 <child>
@@ -178,7 +179,7 @@ tree being switched to</property>
                       <object class="GtkLabel" id="label5">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">&lt;i&gt;Soft&lt;/i&gt; - Does not touch the index file or working tree at all, 
+                        <property name="label" translatable="yes">&lt;b&gt;&lt;i&gt;Soft&lt;/i&gt;&lt;/b&gt; - Does not touch the index file or working tree at all, 
 but requires them to be in good working order</property>
                         <property name="use_markup">True</property>
                         <property name="xalign">0</property>
@@ -187,7 +188,7 @@ but requires them to be in good working order</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
-                    <property name="top_attach">1</property>
+                    <property name="top_attach">2</property>
                   </packing>
                 </child>
                 <child>
@@ -202,7 +203,7 @@ but requires them to be in good working order</property>
                       <object class="GtkLabel" id="label4">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">&lt;i&gt;Mixed&lt;/i&gt; - Reset the index but not the working tree</property>
+                        <property name="label" translatable="yes">&lt;b&gt;&lt;i&gt;Mixed&lt;/i&gt;&lt;/b&gt; - Reset the index but not the working tree</property>
                         <property name="use_markup">True</property>
                         <property name="xalign">0</property>
                       </object>
@@ -210,7 +211,7 @@ but requires them to be in good working order</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
+                    <property name="top_attach">1</property>
                   </packing>
                 </child>
               </object>
