@@ -721,9 +721,9 @@ class TableBase(object):
         if data:
             real_item = self.data[real_path][data["column"]]
             kind = data["callback"](real_item)
-            icon_name = "text-x-generic"
-            if kind == "dir":
-                icon_name = "folder"
+            icon_name = "folder"
+            if kind == "file":
+                icon_name = "text-x-generic"
 
         if not icon_name is None:
             cell.set_property("icon-name", icon_name)

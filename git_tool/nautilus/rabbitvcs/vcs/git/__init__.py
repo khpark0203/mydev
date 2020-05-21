@@ -288,7 +288,7 @@ class Git(object):
 
         items = []
         for path in paths:
-            st = self.statuses(path, recurse=True, invalidate=True)
+            st = self.statuses(path, recurse=False, invalidate=True)
                 
             for st_item in st:
                 if st_item.content in statuses or len(statuses) == 0:
