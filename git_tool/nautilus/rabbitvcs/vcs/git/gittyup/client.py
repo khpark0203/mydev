@@ -2234,6 +2234,7 @@ class GittyupClient(object):
                     ret = True
                 else:
                     ret = False
+                    break
         except GittyupCommandError as e:
             self.callback_notify(e)
             
@@ -2246,7 +2247,13 @@ class GittyupClient(object):
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
             for s in stdout:
                 if s[0] == "S":
-                    ret.append(s.split(" ")[1])
+                    idx = s.split(" ")[1].find("/")
+                    if idx == -1:
+                        add_file = s.split(" ")[1]
+                    else:
+                        add_file = s.split(" ")[1][:idx]
+                    if add_file not in ret:
+                        ret.append(add_file)
         except GittyupCommandError as e:
             self.callback_notify(e)
             
