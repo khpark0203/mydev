@@ -704,9 +704,6 @@ class GitLog(Log):
         self.git_svn = self.git.client.git_svn
 
         self.limit = 100
-        if self.git_svn:
-            self.limit = 50
-        self.get_widget("limit").set_property("text", str(self.limit))
         self.revision_number_column = 1
 
         if self.git_svn:
