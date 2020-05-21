@@ -18,7 +18,7 @@
     <property name="title" translatable="yes">Commit</property>
     <property name="window_position">center</property>
     <property name="default_width">640</property>
-    <property name="default_height">640</property>
+    <property name="default_height">700</property>
     <property name="icon_name">rabbitvcs-small</property>
     <signal name="destroy" handler="on_destroy" swapped="no"/>
     <signal name="key-press-event" handler="on_key_pressed" swapped="no"/>
