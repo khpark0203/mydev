@@ -705,7 +705,7 @@ class GittyupClient(object):
         if self.git_svn:
             cmd = ["git", "log", "git-svn..master", "--date=local", "--pretty=fuller", path]
         else:
-            cmd = ["git", "log", "origin/master..master", "--date=local", "--pretty=fuller", path]
+            cmd = ["git", "log", "--branches", "--not", "--remotes", "--date=local", "--pretty=fuller", path]
         
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
@@ -2194,7 +2194,7 @@ class GittyupClient(object):
         if self.git_svn:
             cmd = ["git", "log", "git-svn..master"]
         else:
-            cmd = ["git", "log", "origin/master..master"]
+            cmd = ["git", "log", "--branches", "--not", "--remotes"]
             
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
