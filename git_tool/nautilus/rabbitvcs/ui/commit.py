@@ -424,7 +424,7 @@ class GitCommit(Commit):
             if self.git_svn:
                 push_function = self.git.git_svn_push
             else:
-                push_function = self.git.push
+                push_function = helper.launch_ui_window("push", self.paths)
             self.action.append(self.action.set_header, _("Commit &amp; Push"))
             self.action.append(self.action.set_status, _("Running Push Command..."))
             self.action.append(

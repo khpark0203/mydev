@@ -296,7 +296,7 @@
                         <property name="height_request">46</property>
                         <child>
                           <object class="GtkCheckButton" id="toggle_commit_and_push">
-                            <property name="label" translatable="yes">Commit &amp; _Push</property>
+                            <property name="label" translatable="yes">Commit &amp; _Push (origin to master)</property>
                             <property name="visible">False</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
