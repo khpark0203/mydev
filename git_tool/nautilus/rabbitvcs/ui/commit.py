@@ -120,6 +120,8 @@ class Commit(InterfaceView, GtkContextMenuCaller):
                 self.paths.append(S(path))
         
         self.commit_and_push = False
+        self.repository_selector = None
+        self.is_git = False
 
     #
     # Helper functions
@@ -219,6 +221,14 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         self.commit_and_push = False
         if widget.get_active():
             commit_num = self.git.get_not_pushed_inform("count")
+            if self.is_git:
+                if self.repository_selector == None:
+                    self.repository_selector = rabbitvcs.ui.widget.GitRepositorySelector(
+                        self.get_widget("repository_container"),
+                        self.git
+                    )
+                else:
+                    self.get_widget("repository_container").show()
             if commit_num > 0:
                 confirmation = rabbitvcs.ui.dialog.Confirmation(
                     _("Committed revision already exist.\nDo you want to push all?\n\nAlready committed count : {}".format(commit_num))
@@ -227,6 +237,9 @@ class Commit(InterfaceView, GtkContextMenuCaller):
                     self.commit_and_push = True
             elif commit_num == 0:
                 self.commit_and_push = True
+        else:
+            if self.is_git:
+                self.get_widget("repository_container").hide()
                 
         widget.set_active(self.commit_and_push)
 
@@ -388,6 +401,7 @@ class GitCommit(Commit):
         if len(self.paths):
             self.initialize_items()
         self.git_svn = self.git.client.git_svn
+        self.is_git = True
         
     def on_ok_clicked(self, widget, data=None):
         items = self.files_table.get_activated_rows(1)
@@ -421,15 +435,18 @@ class GitCommit(Commit):
         self.action.append(self.action.set_status, _("Completed Commit"))
         
         if self.commit_and_push:
-            if self.git_svn:
-                push_function = self.git.git_svn_push
-            else:
-                push_function = helper.launch_ui_window("push", self.paths)
             self.action.append(self.action.set_header, _("Commit &amp; Push"))
             self.action.append(self.action.set_status, _("Running Push Command..."))
-            self.action.append(
-                push_function,
-            )
+            if self.git_svn:
+                self.action.append(
+                    self.git.git_svn_push,
+                )
+            else:
+                self.action.append(
+                    self.git.push,
+                    repository=self.repository_selector.repository_opt.get_active_text(),
+                    refspec=self.repository_selector.branch_opt.get_active_text()
+                )
             self.action.append(self.action.set_status, _("Completed Push"))
         
         self.action.append(self.action.finish)
