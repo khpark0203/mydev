@@ -6,18 +6,18 @@ _mgit()
     _get_comp_words_by_ref cur
  
     if [ $COMP_CWORD -eq 1 ]; then
-		complete -F _mgit mgit
+		complete -F _mgit mgit gitm
         COMPREPLY=( $( compgen -W 'remove callback list pop skiptree noskiptree rebase update commit dcommit' -- "$cur" ) )
 	elif [ $COMP_CWORD -ge 2 ]; then
 		if [ ${COMP_WORDS[1]} = "list" ] || [ ${COMP_WORDS[1]} = "pop" ]; then
-			complete -F _mgit mgit
+			complete -F _mgit mgit gitm
 		elif [ ${COMP_WORDS[1]} = "callback" ]; then
-			complete -F _mgit mgit
+			complete -F _mgit mgit gitm
 			COMPREPLY=( $( compgen -W "`git ls-tree HEAD | awk '{print $NF}'`" -- "$cur" ) )
 		else
-			complete -A file -F _mgit mgit
+			complete -A file -F _mgit mgit gitm
 		fi
     fi
 }
 
-complete -F _mgit mgit
+complete -F _mgit mgit gitm
