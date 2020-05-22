@@ -217,31 +217,31 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             )
             self.SETTINGS.write()
             
-    def on_toggle_commit_and_push(self, widget, *args):
-        self.commit_and_push = False
-        if widget.get_active():
-            commit_num = self.git.get_not_pushed_inform("count")
-            if self.is_git:
-                if self.repository_selector == None:
-                    self.repository_selector = rabbitvcs.ui.widget.GitRepositorySelector(
-                        self.get_widget("repository_container"),
-                        self.git
-                    )
-                else:
-                    self.get_widget("repository_container").show()
-            if commit_num > 0:
-                confirmation = rabbitvcs.ui.dialog.Confirmation(
-                    _("Committed revision already exist.\nDo you want to push all?\n\nAlready committed count : {}".format(commit_num))
-                )
-                if confirmation.run() == Gtk.ResponseType.OK:
-                    self.commit_and_push = True
-            elif commit_num == 0:
-                self.commit_and_push = True
-        else:
-            if self.is_git:
-                self.get_widget("repository_container").hide()
+    # def on_toggle_commit_and_push(self, widget, *args):
+    #     self.commit_and_push = False
+    #     if widget.get_active():
+    #         commit_num = self.git.get_not_pushed_inform("count")
+    #         if self.is_git:
+    #             if self.repository_selector == None:
+    #                 self.repository_selector = rabbitvcs.ui.widget.GitRepositorySelector(
+    #                     self.get_widget("repository_container"),
+    #                     self.git
+    #                 )
+    #             else:
+    #                 self.get_widget("repository_container").show()
+    #         if commit_num > 0:
+    #             confirmation = rabbitvcs.ui.dialog.Confirmation(
+    #                 _("Committed revision already exist.\nDo you want to push all?\n\nAlready committed count : {}".format(commit_num))
+    #             )
+    #             if confirmation.run() == Gtk.ResponseType.OK:
+    #                 self.commit_and_push = True
+    #         elif commit_num == 0:
+    #             self.commit_and_push = True
+    #     else:
+    #         if self.is_git:
+    #             self.get_widget("repository_container").hide()
                 
-        widget.set_active(self.commit_and_push)
+    #     widget.set_active(self.commit_and_push)
 
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(1)
@@ -379,6 +379,9 @@ class SVNCommit(Commit):
                     break
                 path_to_check = os.path.split(path_to_check)[0]
         helper.launch_ui_window("log", path)
+        
+    def on_toggle_commit_and_push(self, widget, *args):
+        pass
 
 class GitCommit(Commit):
     def __init__(self, paths, base_dir=None, message=None):
@@ -463,6 +466,32 @@ class GitCommit(Commit):
             path = []
             path.append(self.git.get_repository())
         helper.launch_ui_window("log", path)
+        
+    def on_toggle_commit_and_push(self, widget, *args):
+        self.commit_and_push = False
+        if widget.get_active():
+            commit_num = self.git.get_not_pushed_inform("count")
+            if self.git_svn == False:
+                if self.repository_selector == None:
+                    self.repository_selector = rabbitvcs.ui.widget.GitRepositorySelector(
+                        self.get_widget("repository_container"),
+                        self.git
+                    )
+                else:
+                    self.get_widget("repository_container").show()
+            if commit_num > 0:
+                confirmation = rabbitvcs.ui.dialog.Confirmation(
+                    _("Committed revision already exist.\nDo you want to push all?\n\nAlready committed count : {}".format(commit_num))
+                )
+                if confirmation.run() == Gtk.ResponseType.OK:
+                    self.commit_and_push = True
+            elif commit_num == 0:
+                self.commit_and_push = True
+        else:
+            if self.git_svn == False:
+                self.get_widget("repository_container").hide()
+                
+        widget.set_active(self.commit_and_push)
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNCommit,
