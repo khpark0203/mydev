@@ -847,7 +847,7 @@ class GitLog(Log):
             revision_num = "-"
             if self.git_svn:
                 git_svn_ment = "⏎⏎git-svn-id: "
-                git_svn_index = msg.find(git_svn_ment)
+                git_svn_index = msg.rfind(git_svn_ment)
                 if git_svn_index == -1:
                     git_svn_ment = "git-svn-id: "
                     git_svn_index = msg.find("git-svn-id: ")
