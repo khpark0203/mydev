@@ -53,8 +53,7 @@ class SVNUpdate(InterfaceNonView):
     def start(self):
         self.action = SVNAction(
             self.svn,
-            register_gtk_quit=self.gtk_quit_is_set(),
-            run_in_thread=False
+            register_gtk_quit=self.gtk_quit_is_set()
         )
         self.action.append(self.action.set_header, _("Update"))
         self.action.append(self.action.set_status, _("Updating..."))
@@ -81,10 +80,10 @@ class GitUpdate(InterfaceView):
         
         if self.git_svn:
             self.hide()
+            self.do_gtk_quit = True
             self.action = GitAction(
                 self.git,
-                register_gtk_quit=self.gtk_quit_is_set(),
-                run_in_thread=False
+                register_gtk_quit=self.gtk_quit_is_set()
             )
             self.action.append(self.action.set_header, _("Rebase"))
             self.action.append(self.action.set_status, _("Rebasing..."))
@@ -117,8 +116,7 @@ class GitUpdate(InterfaceView):
 
         self.action = GitAction(
             self.git,
-            register_gtk_quit=self.gtk_quit_is_set(),
-            run_in_thread=False
+            register_gtk_quit=self.gtk_quit_is_set()
         )
         self.action.append(self.action.set_header, _("Update"))
         self.action.append(self.action.set_status, _("Updating..."))
