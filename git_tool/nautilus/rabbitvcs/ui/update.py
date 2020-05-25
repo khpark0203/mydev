@@ -77,21 +77,10 @@ class GitUpdate(InterfaceView):
         self.paths = paths
         self.vcs = rabbitvcs.vcs.VCS()
         self.git = self.vcs.git(paths[0])
-
-        self.repository_selector = rabbitvcs.ui.widget.GitRepositorySelector(
-            self.get_widget("repository_container"),
-            self.git
-        )
         self.git_svn = self.git.client.git_svn
-
-    def on_apply_changes_toggled(self, widget, data=None):
-        self.get_widget("merge").set_sensitive(self.get_widget("apply_changes").get_active())
-        self.get_widget("rebase").set_sensitive(self.get_widget("apply_changes").get_active())
-
-    def on_ok_clicked(self, widget, data=None):
-        self.hide()
         
         if self.git_svn:
+            self.hide()
             self.action = GitAction(
                 self.git,
                 register_gtk_quit=self.gtk_quit_is_set(),
@@ -103,44 +92,51 @@ class GitUpdate(InterfaceView):
             self.action.append(self.action.set_status, _("Completed Rebase"))
             self.action.append(self.action.finish)
             self.action.schedule()
+
+    def on_apply_changes_toggled(self, widget, data=None):
+        self.get_widget("merge").set_sensitive(self.get_widget("apply_changes").get_active())
+        self.get_widget("rebase").set_sensitive(self.get_widget("apply_changes").get_active())
+
+    def on_ok_clicked(self, widget, data=None):
+        self.hide()
+        
+        rebase = self.get_widget("rebase").get_active()
+
+        git_function_params = []
+
+        apply_changes = self.get_widget("apply_changes").get_active()
+
+        repository = self.repository_selector.repository_opt.get_active_text()
+        branch = self.repository_selector.branch_opt.get_active_text()
+        fetch_all = self.get_widget("all").get_active()
+
+        self.action = GitAction(
+            self.git,
+            register_gtk_quit=self.gtk_quit_is_set(),
+            run_in_thread=False
+        )
+        self.action.append(self.action.set_header, _("Update"))
+        self.action.append(self.action.set_status, _("Updating..."))
+
+        if apply_changes:
+            if rebase:
+                git_function_params.append("rebase")
+
+            if fetch_all:
+                git_function_params.append("all")
+                repository = ""
+                branch = ""
+
+            self.action.append(self.git.pull, repository, branch, git_function_params)
         else:
-            rebase = self.get_widget("rebase").get_active()
-
-            git_function_params = []
-
-            apply_changes = self.get_widget("apply_changes").get_active()
-
-            repository = self.repository_selector.repository_opt.get_active_text()
-            branch = self.repository_selector.branch_opt.get_active_text()
-            fetch_all = self.get_widget("all").get_active()
-
-            self.action = GitAction(
-                self.git,
-                register_gtk_quit=self.gtk_quit_is_set(),
-                run_in_thread=False
-            )
-            self.action.append(self.action.set_header, _("Update"))
-            self.action.append(self.action.set_status, _("Updating..."))
-
-            if apply_changes:
-                if rebase:
-                    git_function_params.append("rebase")
-
-                if fetch_all:
-                    git_function_params.append("all")
-                    repository = ""
-                    branch = ""
-
-                self.action.append(self.git.pull, repository, branch, git_function_params)
+            if fetch_all:
+                self.action.append(self.git.fetch_all)
             else:
-                if fetch_all:
-                    self.action.append(self.git.fetch_all)
-                else:
-                    self.action.append(self.git.fetch, repository, branch)
+                self.action.append(self.git.fetch, repository, branch)
 
-            self.action.append(self.action.set_status, _("Completed Update"))
-            self.action.append(self.action.finish)
-            self.action.schedule()
+        self.action.append(self.action.set_status, _("Completed Update"))
+        self.action.append(self.action.finish)
+        self.action.schedule()
 
 
 classes_map = {
