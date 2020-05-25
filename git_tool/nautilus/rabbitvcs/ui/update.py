@@ -92,6 +92,11 @@ class GitUpdate(InterfaceView):
             self.action.append(self.action.set_status, _("Completed Rebase"))
             self.action.append(self.action.finish)
             self.action.schedule()
+        else:
+            self.repository_selector = rabbitvcs.ui.widget.GitRepositorySelector(
+                self.get_widget("repository_container"),
+                self.git
+            )
 
     def on_apply_changes_toggled(self, widget, data=None):
         self.get_widget("merge").set_sensitive(self.get_widget("apply_changes").get_active())

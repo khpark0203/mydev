@@ -70,12 +70,7 @@ class GitPush(Push):
         Push.__init__(self, path)
 
         self.git = self.vcs.git(path)
-
-        self.repository_selector = rabbitvcs.ui.widget.GitRepositorySelector(
-            self.get_widget("repository_container"),
-            self.git,
-            self.on_branch_changed
-        )
+        self.git_svn = self.git.client.git_svn
 
         self.log_table = rabbitvcs.ui.widget.Table(
             self.get_widget("log"),
@@ -87,12 +82,22 @@ class GitPush(Push):
             }
         )
 
-        # Set default for checkboxes.
-        self.get_widget("tags").set_active(True)
-        self.get_widget("force_with_lease").set_active(False)
+        if not self.git_svn:
+            self.repository_selector = rabbitvcs.ui.widget.GitRepositorySelector(
+                self.get_widget("repository_container"),
+                self.git,
+                self.on_branch_changed
+            )
+            # Set default for checkboxes.
+            self.get_widget("tags").set_active(True)
+            self.get_widget("force_with_lease").set_active(False)
+        else:
+            self.get_widget("label1").hide()
+            self.get_widget("tags").hide()
+            self.get_widget("force_with_lease").hide()
+            
 
         self.initialize_logs()
-        self.git_svn = self.git.client.git_svn
 
     def on_ok_clicked(self, widget, data=None):
         self.hide()
@@ -162,9 +167,13 @@ class GitPush(Push):
 
     def update_widgets(self):
         self.log_table.clear()
-
-        repository = self.repository_selector.repository_opt.get_active_text()
-        branch = self.repository_selector.branch_opt.get_active_text()
+    
+        repository = ""
+        branch = ""
+        
+        if not self.git_svn:
+            repository = self.repository_selector.repository_opt.get_active_text()
+            branch = self.repository_selector.branch_opt.get_active_text()
 
         
         if not repository or not branch:
