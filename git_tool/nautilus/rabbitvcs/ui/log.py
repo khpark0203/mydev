@@ -206,6 +206,11 @@ class Log(InterfaceView):
             
     def on_show_only_commit_toggled(self, widget):
         self.show_only_commit = self.get_widget("show_only_commit").get_active()
+        if not self.git_svn:
+            if self.show_only_commit:
+                self.get_widget("repository_container").show()
+            else:
+                self.get_widget("repository_container").hide()
         self.cache.empty()
         self.load()
 
@@ -759,6 +764,12 @@ class GitLog(Log):
             }
         )
         
+        self.repository_selector = rabbitvcs.ui.widget.GitRepositorySelector(
+            self.get_widget("repository_container"),
+            self.git,
+            self.on_branch_changed
+        )
+        
         self.start_point = 0
         self.initialize_root_url()
         self.load_or_refresh()
@@ -944,10 +955,20 @@ class GitLog(Log):
         )
         
         if self.show_only_commit:
-            self.action.append(
-                self.git.git_not_pushed_log,
-                self.path
-            )
+            if self.git_svn:
+                self.action.append(
+                    self.git.git_not_pushed_log,
+                    self.path
+                )
+            else:
+                repository = self.repository_selector.repository_opt.get_active_text()
+                branch = self.repository_selector.branch_opt.get_active_text()
+                refspec = "refs/remotes/%s/%s" % (repository, branch)
+                self.action.append(
+                    self.git.log,
+                    revision=self.git.revision(refspec),
+                    showtype="push"
+                )
         else:
             self.action.append(
                 self.git.log,
@@ -1074,6 +1095,10 @@ class GitLog(Log):
     
     def on_push_clicked(self, widget):
         helper.launch_ui_window("push", [self.path])
+        
+    def on_branch_changed(self, repository, branch):
+        self.cache.empty()
+        self.load()
     
 class SVNLogDialog(SVNLog):
     def __init__(self, path, ok_callback=None, multiple=False, merge_candidate_revisions=None):
