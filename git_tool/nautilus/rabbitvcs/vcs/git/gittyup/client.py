@@ -2190,6 +2190,39 @@ class GittyupClient(object):
             
         return remote_rev
         
+    def get_stash_list(self):
+        cmd = ["git", "reflog", "show", "stash"]
+        ret = []
+        try:
+            (status, stdout, stderr) = GittyupCommand(["git", "stash", "list"], cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
+            if len(stdout):
+                (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
+                ret = stdout
+                if len(ret):
+                    ret[0].replace("(refs/stash) ", "")
+        except GittyupCommandError as e:
+            self.callback_notify(e)
+            
+        return ret
+    
+    def stash(self, command=None, num=None, msg=None):
+        cmd = ["git", "stash"]
+        valid_command = ["drop", "apply", "pop", "save"]
+        
+        if command in valid_command:
+            cmd.append(command)
+        
+        if num:
+            cmd.append("stash@{%d}" % num)
+            
+        if msg:
+            cmd.append(msg)
+            
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+        except GittyupCommandError as e:
+            self.callback_notify(e)
+        
     def already_skiptree(self, path):
         cmd = ["git", "ls-files", "-v", path]
         ret = False

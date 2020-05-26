@@ -859,6 +859,13 @@ class Git(object):
         return self.client.get_revision_remote_latest()
 
 
+    def get_stash_list(self):
+        return self.client.get_stash_list()
+        
+    def stash(self, cmd=None, num=None, msg=None):
+        return self.client.stash(cmd, num, msg)
+        
+        
     def git_not_pushed_log(self, path=None):
         import locale
         current_locale = locale.getlocale()

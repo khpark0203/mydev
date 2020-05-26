@@ -583,6 +583,10 @@ class ContextMenuCallbacks(object):
         proc = helper.launch_ui_window("reset", [self.paths[0]])
         self.caller.rescan_after_process_exit(proc, self.paths)
         
+    def stash(self, widget, data1=None, data2=None):
+        proc = helper.launch_ui_window("stash", self.paths)
+        self.caller.rescan_after_process_exit(proc, self.paths)
+        
     def skiptree(self, widget, data1=None, data2=None):
         proc = helper.launch_ui_window("skiptree", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
@@ -961,6 +965,9 @@ class ContextMenuConditions(object):
         return (self.path_dict["is_git"])
 
     def reset(self, data=None):
+        return (self.path_dict["is_git"])
+        
+    def stash(self, data=None):
         return (self.path_dict["is_git"])
         
     def skiptree(self, data=None):
@@ -1369,6 +1376,7 @@ class MainContextMenu(object):
                 (MenuReset, None),
                 (MenuCheckout, None),
                 (MenuSeparator, None),
+                (MenuStash, None),
                 (MenuSkiptree, None),
                 (MenuNoskiptree, None),
                 (MenuSeparator, None),

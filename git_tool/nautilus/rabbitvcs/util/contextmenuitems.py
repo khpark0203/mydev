@@ -682,6 +682,10 @@ class MenuClone(MenuItem):
 class MenuSkiptree(MenuItem):
     identifier = "RabbitVCS::Skiptree"
     label = _("Skiptree")
+    
+class MenuStash(MenuItem):
+    identifier = "RabbitVCS::Stash"
+    label = _("Stash")
 
 class MenuNoskiptree(MenuItem):
     identifier = "RabbitVCS::Noskiptree"
