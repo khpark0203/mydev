@@ -301,11 +301,14 @@ class GitStash(Stash):
         self.stash()
         
     def on_drop_clicked(self, widget, data=None):
-        self.drop()
-        if self.selected_row:
-            self.revisions_table.focus(self.selected_row, 0)
-            if len(self.revisions_table.get_selected_rows()) == 0:
-                self.revisions_table.focus(self.selected_row-1, 0)
+        if len(self.revisions_table.get_selected_rows()) == self.total_row:
+            self.clear()
+        else:
+            self.drop()
+            if self.selected_row:
+                self.revisions_table.focus(self.selected_row, 0)
+                if len(self.revisions_table.get_selected_rows()) == 0:
+                    self.revisions_table.focus(self.selected_row-1, 0)
     def on_apply_clicked(self, widget, data=None):
         self.apply()
         if self.selected_row:
@@ -313,9 +316,6 @@ class GitStash(Stash):
         
     def on_pop_clicked(self, widget, data=None):
         self.pop()
-        
-    def on_clear_clicked(self, widget, data=None):
-        self.clear()
         
     def on_toggle_notify(self, widget, data=None):
         self.show = widget.get_active()
@@ -332,16 +332,14 @@ class StashTopContextMenuConditions(object):
     def stash_drop(self, data=None):
         if len(self.caller.revisions_table.get_selected_rows()) == 1:
             return True
+        elif len(self.caller.revisions_table.get_selected_rows()) == self.caller.total_row:
+            return True
         return False
     def stash_apply(self, data=None):
         if len(self.caller.revisions_table.get_selected_rows()) == 1:
             return True
         return False
         
-    def stash_clear(self, data=None):
-        if len(self.caller.revisions_table.get_selected_rows()) == self.caller.total_row:
-            return True
-        return False
 class StashTopContextMenuCallbacks(object):
     def __init__(self, caller, vcs, path, revisions):
         self.caller = caller
@@ -352,14 +350,13 @@ class StashTopContextMenuCallbacks(object):
         self.vcs_name = self.caller.get_vcs_name()
 
     def stash_drop(self, widget, data=None):
-        self.caller.drop()
+        if len(self.caller.revisions_table.get_selected_rows()) == self.caller.total_row:
+            self.caller.clear()
+        else:
+            self.caller.drop()
         
     def stash_apply(self, widget, data=None):
         self.caller.apply()
-        
-    def stash_clear(self, widget, data=None):
-        self.caller.clear()
-
         
 class StashTopContextMenu(object):
     """
@@ -407,7 +404,6 @@ class StashTopContextMenu(object):
         self.structure = [
             (MenuDrop, None),
             (MenuApply, None),
-            (MenuClear, None),
         ]
 
     def show(self):
@@ -424,10 +420,6 @@ class MenuDrop(MenuItem):
 class MenuApply(MenuItem):
     identifier = "RabbitVCS::Stash_Apply"
     label = _("Apply")
-    
-class MenuClear(MenuItem):
-    identifier = "RabbitVCS::Stash_Clear"
-    label = _("Clear")
     
 classes_map = {
     rabbitvcs.vcs.VCS_GIT: GitStash
