@@ -195,6 +195,7 @@ class Skiptree(InterfaceView, GtkContextMenuCaller):
         self.toggle_ignored()
         
     def on_show_skipped_toggled(self, widget):
+        self.files_table.clear()
         self.show_skipped = widget.get_active()
         self.initialize_items()
 
