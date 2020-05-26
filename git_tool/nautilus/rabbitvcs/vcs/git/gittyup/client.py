@@ -373,7 +373,7 @@ class GittyupClient(object):
         path_to_check = S(path)
         while path_to_check != "/" and path_to_check != "":
             if os.path.isdir(os.path.join(path_to_check, ".git")):
-                if os.path.isdir(os.path.join(path_to_check, ".git/svn")):
+                if os.path.isdir(os.path.join(path_to_check, ".git/svn/refs/remotes/git-svn")):
                     self.git_svn = True
                 return path_to_check
 
