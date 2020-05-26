@@ -71,39 +71,29 @@ class GitClone(Checkout):
             rabbitvcs.ui.dialog.MessageBox(_("The repository URL and destination path are both required fields."))
             return
             
-        if self.git_svn:
-            check_id = self.git.svn_id_pw_ok(url)
+        self.action = rabbitvcs.ui.action.GitAction(
+            self.git,
+            register_gtk_quit=self.gtk_quit_is_set()
+        )
+        self.action.append(self.action.set_header, _("Clone"))
+        self.action.append(self.action.set_status, _("Running Clone Command..."))
+        self.action.append(helper.save_repository_path, url)
         
-        self.hide()
-        if check_id:
-            self.action = rabbitvcs.ui.action.GitAction(
-                self.git,
-                register_gtk_quit=self.gtk_quit_is_set()
+        if self.git_svn:
+            self.action.append(
+                self.git.git_svn_clone,
+                url,
+                path
             )
-            self.action.append(self.action.set_header, _("Clone"))
-            self.action.append(self.action.set_status, _("Running Clone Command..."))
-            self.action.append(helper.save_repository_path, url)
-            
-            if self.git_svn:
-                self.action.append(
-                    self.git.git_svn_clone,
-                    url,
-                    path
-                )
-            else:
-                self.action.append(
-                    self.git.clone,
-                    url,
-                    path
-                )
-            self.action.append(self.action.set_status, _("Completed Clone"))
-            self.action.append(self.action.finish)
-            self.action.schedule()
         else:
-            s = "ID, PW for '{}' can't be found...\n"
-            s += "Please execute the following command at least once in the terminal.\n\n"
-            s += "git svn clone {} {}".format(url, path)
-            rabbitvcs.ui.dialog.MessageBox(_(s))
+            self.action.append(
+                self.git.clone,
+                url,
+                path
+            )
+        self.action.append(self.action.set_status, _("Completed Clone"))
+        self.action.append(self.action.finish)
+        self.action.schedule()
 
     def on_repositories_changed(self, widget, data=None):
         url = self.repositories.get_active_text()
