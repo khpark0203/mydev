@@ -19,7 +19,7 @@
   </object>
   <object class="GtkWindow" id="Stash">
     <property name="width_request">450</property>
-    <property name="height_request">400</property>
+    <property name="height_request">550</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="window_position">center</property>
@@ -45,7 +45,7 @@
             <property name="can_focus">False</property>
             <child>
               <object class="GtkCheckButton" id="toggle_notify">
-                <property name="label" translatable="yes">Show notify</property>
+                <property name="label" translatable="yes">Show _notify</property>
                 <property name="margin_bottom">12</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -68,27 +68,6 @@
                 <property name="hexpand">True</property>
                 <property name="column_spacing">6</property>
                 <child>
-                  <object class="GtkButton" id="refresh">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Refresh</property>
-                    <signal name="clicked" handler="on_refresh_clicked" swapped="no"/>
-                    <child>
-                      <object class="GtkImage" id="image1">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="icon_name">view-refresh</property>
-                      </object>
-                    </child>
-                    <accelerator key="r" signal="clicked" modifiers="GDK_MOD1_MASK"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkButton" id="drop">
                     <property name="label" translatable="yes">_Drop</property>
                     <property name="visible">True</property>
@@ -98,7 +77,7 @@
                     <signal name="clicked" handler="on_drop_clicked" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left_attach">1</property>
+                    <property name="left_attach">0</property>
                     <property name="top_attach">0</property>
                   </packing>
                 </child>
@@ -110,6 +89,19 @@
                     <property name="receives_default">True</property>
                     <property name="use_underline">True</property>
                     <signal name="clicked" handler="on_apply_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="clear">
+                    <property name="label" translatable="yes">Clear</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="on_clear_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">2</property>
@@ -131,18 +123,25 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="stash">
-                    <property name="label" translatable="yes">_Stash</property>
+                  <object class="GtkButton" id="refresh">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="hexpand">True</property>
                     <property name="halign">end</property>
-                    <property name="use_underline">True</property>
-                    <signal name="clicked" handler="on_stash_clicked" swapped="no"/>
+                    <property name="tooltip_text" translatable="yes">Refresh</property>
+                    <signal name="clicked" handler="on_refresh_clicked" swapped="no"/>
+                    <child>
+                      <object class="GtkImage" id="image1">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="icon_name">view-refresh</property>
+                      </object>
+                    </child>
+                    <accelerator key="r" signal="clicked" modifiers="GDK_MOD1_MASK"/>
                   </object>
                   <packing>
-                    <property name="left_attach">9</property>
+                    <property name="left_attach">8</property>
                     <property name="top_attach">0</property>
                   </packing>
                 </child>
@@ -156,6 +155,21 @@
                     <property name="image">window-close</property>
                     <property name="use_underline">True</property>
                     <signal name="clicked" handler="on_close_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">9</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="stash">
+                    <property name="label" translatable="yes">_Stash</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="halign">end</property>
+                    <property name="use_underline">True</property>
+                    <signal name="clicked" handler="on_stash_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">10</property>
@@ -221,6 +235,20 @@
                       </packing>
                     </child>
                     <child>
+                      <object class="GtkLabel" id="label2">
+                        <property name="margin_top">12</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Stash list&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                        <property name="xalign">0</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
                       <object class="GtkScrolledWindow" id="scrolledwindow7">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -240,7 +268,7 @@
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
-                        <property name="top_attach">1</property>
+                        <property name="top_attach">2</property>
                       </packing>
                     </child>
                   </object>

@@ -2207,7 +2207,7 @@ class GittyupClient(object):
     
     def stash(self, command=None, num=None, msg=None):
         cmd = ["git", "stash"]
-        valid_command = ["drop", "apply", "pop", "save"]
+        valid_command = ["drop", "apply", "pop", "save", "clear"]
         
         if command in valid_command:
             cmd.append(command)

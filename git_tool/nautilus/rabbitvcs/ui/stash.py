@@ -53,60 +53,6 @@ _ = gettext.gettext
 from six.moves import range
 
 
-REVISION_LABEL = _("Revision")
-DATE_LABEL = _("Date")
-AUTHOR_LABEL = _("Author")
-
-
-def revision_grapher(history):
-    """
-    Expects a list of revision items like so:
-    [
-        item.commit = "..."
-        item.parents = ["...", "..."]
-    ]
-
-    Output can be put directly into the CellRendererGraph
-    """
-    items = []
-    revisions = []
-    last_lines = []
-    color = "#d3b9d3"
-    for item in history:
-        commit = S(item.revision)
-        parents = []
-        for parent in item.parents:
-            parents.append(S(parent))
-
-        if commit not in revisions:
-            revisions.append(commit)
-
-        index = revisions.index(commit)
-        next_revisions = revisions[:]
-
-        parents_to_add = []
-        for parent in parents:
-            if parent not in next_revisions:
-                parents_to_add.append(parent)
-
-        next_revisions[index:index+1] = parents_to_add
-
-        lines = []
-        for i, revision in enumerate(revisions):
-            if revision in next_revisions:
-                lines.append((i, next_revisions.index(revision), color))
-            elif revision == commit:
-                for parent in parents:
-                    lines.append((i, next_revisions.index(parent), color))
-
-        node = (index, "#a9f9d2")
-
-        items.append((item, node, last_lines, lines))
-        revisions = next_revisions
-        last_lines = lines
-
-    return items
-
 class Stash(InterfaceView):
     """
     Provides an interface to the Log UI
@@ -133,28 +79,13 @@ class Stash(InterfaceView):
         self.vcs = rabbitvcs.vcs.VCS()
 
         sm = rabbitvcs.util.settings.SettingsManager()
-        # self.datetime_format = sm.get("general", "datetime_format")
-        self.datetime_format = "%y.%m.%d (%a) %p %I:%M"
 
         self.filter_text = None
         self.path = path
-        self.cache = StashCache()
-
-        self.rev_first = None
-        self.rev_start = None
-        self.rev_end = None
-        self.rev_max = 1
-        self.previous_starts = []
-        self.revision_number_column = 0
-        self.head_row = 0
 
         self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("message")
         )
-
-        self.stop_on_copy = False
-        self.show_only_commit = False
-        self.revision_clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
 
     #
     # UI Signal Callback Methods
@@ -171,96 +102,18 @@ class Stash(InterfaceView):
 
         self.close()
 
-    def on_key_pressed(self, widget, event, *args):
-        InterfaceView.on_key_pressed(self, widget, event)
-        if (event.state & Gdk.ModifierType.MOD1_MASK and
-            Gdk.keyval_name(event.keyval).lower() == "l"):
-                self.get_widget("limit").grab_focus()
-        
-    def on_stop_on_copy_toggled(self, widget):
-        self.stop_on_copy = self.get_widget("stop_on_copy").get_active()
-        if not self.is_loading:
-            self.refresh()
-            
     def on_refresh_clicked(self, widget):
-        self.cache.empty()
         self.load()
-
-    #
-    # Revisions table callbacks
-    #
-
-    # In this UI, we have an ability to filter and display only certain items.
-    def get_displayed_row_items(self, col):
-        items = []
-        for row in self.selected_rows:
-            items.append(self.display_items[row][col])
-
-        return items
-
-    def on_revisions_table_row_activated(self, treeview, event, col):
-        paths = self.revisions_table.get_displayed_row_items(1)
-
-        helper.launch_diff_tool(*paths)
 
     def on_revisions_table_mouse_event(self, treeview, event, *args):
         if event.button == 3 and event.type == Gdk.EventType.BUTTON_RELEASE:
             self.show_revisions_table_popup_menu(treeview, event)
-
-    #
-    # Paths table callbacks
-    #
-
-    def on_paths_table_row_activated(self, treeview, data=None, col=None):
-        try:
-            revision1 = S(self.display_items[self.revisions_table.get_selected_rows()[0]].revision)
-            revision2 = S(self.display_items[self.revisions_table.get_selected_rows()[0]+1].revision)
-            path_item = self.paths_table.get_row(self.paths_table.get_selected_rows()[0])[1]
-            url = self.root_url + path_item
-            self.view_diff_for_path(url, S(revision1), S(revision2), sidebyside=True)
-        except IndexError:
-            pass
-
-    def on_paths_table_mouse_event(self, treeview, event, *args):
-        if event.button == 3 and event.type == Gdk.EventType.BUTTON_RELEASE:
-            self.show_paths_table_popup_menu(treeview, event)
-
-    #
-    # Helper methods
-    #
-
-    def load_or_refresh(self):
-        if self.cache.has(self.rev_start):
-            self.refresh()
-        else:
-            self.load()
-
-    def get_selected_revision_numbers(self):
-        if len(self.revisions_table.get_selected_rows()) == 0:
-            return ""
-
-        revisions = []
-        for row in self.revisions_table.get_selected_rows():
-            revisions.append(int(self.revisions_table.get_row(row)[self.revision_number_column]))
-
-        revisions.sort()
-        helper.encode_revisions(revisions)
-
-    def get_selected_revision_number(self):
-        if len(self.revisions_table.get_selected_rows()):
-            return self.revisions_table.get_row(self.revisions_table.get_selected_rows()[0])[self.revision_number_column]
-        else:
-            return ""
+            
+    def show_revisions_table_popup_menu(self, treeview, data):
+        StashTopContextMenu(self, data, self.path, [1]).show()
 
     def set_loading(self, loading):
         self.is_loading = loading
-
-    def show_revisions_table_popup_menu(self, treeview, data):
-        revisions = []
-        for row in self.revisions_table.get_selected_rows():
-            revisions.append(self.display_items[row])
-
-        StashTopContextMenu(self, data, self.path, revisions).show()
 
     def get_vcs_name(self):
         vcs = rabbitvcs.vcs.VCS_DUMMY
@@ -280,7 +133,6 @@ class GitStash(Stash):
         self.git_svn = self.git.client.git_svn
 
         self.limit = 100
-        self.revision_number_column = 1
 
         self.revisions_table = rabbitvcs.ui.widget.Table(
             self.get_widget("revisions_table"),
@@ -302,11 +154,10 @@ class GitStash(Stash):
             self.SETTINGS.get_multiline("general", "default_commit_message")
         )
 	
-        self.start_point = 0
-        self.initialize_root_url()
-        self.load_or_refresh()
+        self.load()
         self.show = False
         self.selected_row = None
+        self.total_row = 0
         
     #
     # Log-loading callback methods
@@ -316,8 +167,7 @@ class GitStash(Stash):
         self.revisions_table.clear()
         stash_list = self.git.get_stash_list()
         
-        self.display_items = []
-        
+        self.total_row = 0
         for org_msg in stash_list:
             start_idx = org_msg.find("stash@{")
             end_idx = org_msg.find("}: ")
@@ -325,13 +175,12 @@ class GitStash(Stash):
             num = org_msg[start_idx + len("stash@{"):end_idx]
             msg = org_msg[end_idx + len("}: "):]
             
-            self.display_items.append(num)
-            
             self.revisions_table.append([
                 num,
                 revision,
                 msg
             ])
+            self.total_row += 1
 
         self.set_loading(False)
 
@@ -348,9 +197,6 @@ class GitStash(Stash):
         self.action.append(self.refresh)
         self.action.schedule()
 
-    def initialize_root_url(self):
-        self.root_url = self.git.get_repository() + "/"
-        
     def stash(self):
         msg = self.message.get_text()
         if self.message.get_text() == "":
@@ -377,10 +223,9 @@ class GitStash(Stash):
     def drop(self):
         if len(self.revisions_table.get_selected_rows()):
             selected_row = self.revisions_table.get_selected_rows()[0]
-            selected_num = int(self.display_items[selected_row])
             self.selected_row = selected_row
         else:
-            selected_num = None
+            selected_row = 0
             self.selected_row = None
         self.action = GitAction(
             self.git,
@@ -390,7 +235,24 @@ class GitStash(Stash):
         self.action.append(
             self.git.stash,
             cmd="drop",
-            num=selected_num
+            num=selected_row
+        )
+        if self.show:
+            self.action.append(self.action.finish)
+        self.action.append(self.refresh)
+        self.action.schedule()
+        
+    def clear(self):
+        self.selected_row = None
+        self.action = GitAction(
+            self.git,
+            notification=self.show,
+            run_in_thread=False
+        )
+        self.action.append(
+            self.git.stash,
+            cmd="clear",
+            num=None
         )
         if self.show:
             self.action.append(self.action.finish)
@@ -400,9 +262,9 @@ class GitStash(Stash):
     def apply(self):
         if len(self.revisions_table.get_selected_rows()):
             selected_row = self.revisions_table.get_selected_rows()[0]
-            selected_num = int(self.display_items[selected_row])
+            self.selected_row = selected_row
         else:
-            selected_num = None
+            selected_row = None
             
         self.action = GitAction(
             self.git,
@@ -412,7 +274,7 @@ class GitStash(Stash):
         self.action.append(
             self.git.stash,
             cmd="apply",
-            num=selected_num
+            num=selected_row
         )
         if self.show:
             self.action.append(self.action.finish)
@@ -446,9 +308,14 @@ class GitStash(Stash):
                 self.revisions_table.focus(self.selected_row-1, 0)
     def on_apply_clicked(self, widget, data=None):
         self.apply()
+        if self.selected_row:
+            self.revisions_table.focus(self.selected_row, 0)
         
     def on_pop_clicked(self, widget, data=None):
         self.pop()
+        
+    def on_clear_clicked(self, widget, data=None):
+        self.clear()
         
     def on_toggle_notify(self, widget, data=None):
         self.show = widget.get_active()
@@ -463,10 +330,18 @@ class StashTopContextMenuConditions(object):
         self.vcs_name = caller.get_vcs_name()
 
     def stash_drop(self, data=None):
-        return True
+        if len(self.caller.revisions_table.get_selected_rows()) == 1:
+            return True
+        return False
     def stash_apply(self, data=None):
-        return True
-
+        if len(self.caller.revisions_table.get_selected_rows()) == 1:
+            return True
+        return False
+        
+    def stash_clear(self, data=None):
+        if len(self.caller.revisions_table.get_selected_rows()) == self.caller.total_row:
+            return True
+        return False
 class StashTopContextMenuCallbacks(object):
     def __init__(self, caller, vcs, path, revisions):
         self.caller = caller
@@ -481,6 +356,9 @@ class StashTopContextMenuCallbacks(object):
         
     def stash_apply(self, widget, data=None):
         self.caller.apply()
+        
+    def stash_clear(self, widget, data=None):
+        self.caller.clear()
 
         
 class StashTopContextMenu(object):
@@ -529,6 +407,7 @@ class StashTopContextMenu(object):
         self.structure = [
             (MenuDrop, None),
             (MenuApply, None),
+            (MenuClear, None),
         ]
 
     def show(self):
@@ -538,22 +417,6 @@ class StashTopContextMenu(object):
         context_menu = GtkContextMenu(self.structure, self.conditions, self.callbacks)
         context_menu.show(self.event)
         
-class StashCache(object):
-    def __init__(self, cache={}):
-        self.cache = cache
-
-    def set(self, key, val):
-        self.cache[key] = val
-
-    def get(self, key):
-        return self.cache[key]
-
-    def has(self, key):
-        return (key in self.cache)
-
-    def empty(self):
-        self.cache = {}
-        
 class MenuDrop(MenuItem):
     identifier = "RabbitVCS::Stash_Drop"
     label = _("Drop")
@@ -561,6 +424,10 @@ class MenuDrop(MenuItem):
 class MenuApply(MenuItem):
     identifier = "RabbitVCS::Stash_Apply"
     label = _("Apply")
+    
+class MenuClear(MenuItem):
+    identifier = "RabbitVCS::Stash_Clear"
+    label = _("Clear")
     
 classes_map = {
     rabbitvcs.vcs.VCS_GIT: GitStash
