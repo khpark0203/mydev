@@ -85,10 +85,10 @@ class GitUpdate(InterfaceView):
                 self.git,
                 register_gtk_quit=self.gtk_quit_is_set()
             )
-            self.action.append(self.action.set_header, _("Rebase"))
-            self.action.append(self.action.set_status, _("Rebasing..."))
+            self.action.append(self.action.set_header, _("Update"))
+            self.action.append(self.action.set_status, _("Updating..."))
             self.action.append(self.git.git_svn_update);
-            self.action.append(self.action.set_status, _("Completed Rebase"))
+            self.action.append(self.action.set_status, _("Completed Update"))
             self.action.append(self.action.finish)
             self.action.schedule()
         else:
