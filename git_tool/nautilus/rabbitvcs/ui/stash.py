@@ -159,7 +159,7 @@ class GitStash(Stash):
                 }
             }]
         )
-        self.get_widget("root").set_markup("<i>Root : {}</i>".format(self.path))
+        self.get_widget("root").set_markup("<i>- Base : {}</i>".format(self.path))
         
         self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("message"),
