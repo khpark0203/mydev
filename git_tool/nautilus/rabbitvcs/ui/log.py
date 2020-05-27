@@ -1238,8 +1238,7 @@ class MenuEditRevisionProperties(MenuItem):
     
 class MenuCancelCommit(MenuItem):
     identifier = "RabbitVCS::Cancel_Commit"
-    label = _("Cancel commit")
-    icon = "rabbitvcs-cancelcommit"
+    label = _("Cancel commit...")
 
 class MenuSeparatorLast(MenuSeparator):
     identifier = "RabbitVCS::Separator_Last"
@@ -1328,7 +1327,11 @@ class LogTopContextMenuConditions(object):
         return (self.vcs_name == rabbitvcs.vcs.VCS_GIT)
 
     def cancel_commit(self, data=None):
-        return (self.vcs_name == rabbitvcs.vcs.VCS_GIT)
+        if self.vcs_name == rabbitvcs.vcs.VCS_GIT:
+            rev_list = self.vcs.git(self.path).get_not_pushed_inform("rev")
+            if str(self.revisions[0]["revision"]) in rev_list:
+                return True
+        return False
 
 class LogTopContextMenuCallbacks(object):
     def __init__(self, caller, vcs, path, revisions):
