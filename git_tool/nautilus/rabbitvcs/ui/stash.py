@@ -129,10 +129,8 @@ class GitStash(Stash):
         Stash.__init__(self, path)
 
         self.git = self.vcs.git(path)
-
         self.git_svn = self.git.client.git_svn
-
-        self.limit = 100
+        self.path = self.git.find_repository_path(path)
 
         self.revisions_table = rabbitvcs.ui.widget.Table(
             self.get_widget("revisions_table"),
@@ -149,20 +147,51 @@ class GitStash(Stash):
             }
         )
         
+        self.path_table = rabbitvcs.ui.widget.Table(
+            self.get_widget("path_table"),
+            [GObject.TYPE_STRING, GObject.TYPE_STRING],
+            [_("Number"), _("File")],
+            filters=[{
+                "callback": rabbitvcs.ui.widget.git_revision_filter,
+                "user_data": {
+                    "column": 0
+                }
+            }]
+        )
+        self.get_widget("root").set_markup("<i>Root : {}</i>".format(self.path))
+        
         self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("message"),
             self.SETTINGS.get_multiline("general", "default_commit_message")
         )
-	
+        
+        self.items = []
         self.load()
         self.show = False
         self.selected_row = None
         self.total_row = 0
         
-    #
-    # Log-loading callback methods
-    #
-
+    def set_item(self):
+        self.path_table.clear()
+        self.items = []
+        for item in self.vcs.get_items([self.path], self.vcs.statuses_for_commit([self.path])):
+            self.items.append(item.path)
+        
+        i = 1
+        for item in self.items:
+            idx = item.find(self.path) + len(self.path)
+            self.path_table.append([
+                i,
+                item[idx+1:]
+            ])
+            i += 1
+        
+        if i > 2:
+            self.get_widget("scrolledwindow2").set_property("vexpand", True)
+        else:
+            self.get_widget("scrolledwindow2").set_property("vexpand", False)
+            
+    
     def refresh(self):
         self.revisions_table.clear()
         stash_list = self.git.get_stash_list()
@@ -181,7 +210,8 @@ class GitStash(Stash):
                 msg
             ])
             self.total_row += 1
-
+            
+        self.set_item()
         self.set_loading(False)
 
     def load(self):
