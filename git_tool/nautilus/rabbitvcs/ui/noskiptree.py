@@ -285,6 +285,8 @@ class GitNoskiptree(Noskiptree):
     def show_skiptree_file(self, items):
         remove_list = []
         for item in items:
+            if item.path == self.git.find_repository_path(self.paths[0]):
+                remove_list.append(item)
             if self.show_no_skipped:
                 if self.git.already_skiptree(item.path):
                     remove_list.append(item)
@@ -292,7 +294,8 @@ class GitNoskiptree(Noskiptree):
                 if self.git.already_skiptree(item.path) == False:
                     remove_list.append(item)
         for remove_item in remove_list:
-            items.remove(remove_item)
+            if remove_item in items:
+                items.remove(remove_item)
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNNoskiptree,
