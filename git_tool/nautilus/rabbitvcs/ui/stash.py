@@ -60,6 +60,7 @@ class Stash(InterfaceView):
     """
     
     SETTINGS = rabbitvcs.util.settings.SettingsManager()
+    SHOW_UNVERSIONED = SETTINGS.get("general", "show_unversioned_files")
 
     selected_rows = []
     selected_row = []
@@ -171,10 +172,21 @@ class GitStash(Stash):
         self.selected_row = None
         self.total_row = 0
         
+    def should_item_be_visible(self, item):
+        show_unversioned = self.SHOW_UNVERSIONED
+
+        if not show_unversioned:
+            if not item.is_versioned():
+               return False
+
+        return True
+        
     def set_item(self):
         self.path_table.clear()
         self.items = []
         for item in self.vcs.get_items([self.path], self.vcs.statuses_for_commit([self.path])):
+            if not self.should_item_be_visible(item):
+                continue
             self.items.append(item.path)
         
         i = 1
