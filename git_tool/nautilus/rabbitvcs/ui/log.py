@@ -749,6 +749,11 @@ class GitLog(Log):
                     "key-event":   self.on_revisions_table_key_event
                 }
             )
+            self.repository_selector = rabbitvcs.ui.widget.GitRepositorySelector(
+                self.get_widget("repository_container"),
+                self.git,
+                self.on_branch_changed
+            )
 	
         self.paths_table = rabbitvcs.ui.widget.Table(
             self.get_widget("paths_table"),
@@ -762,12 +767,6 @@ class GitLog(Log):
             flags={
                 "sortable": False
             }
-        )
-        
-        self.repository_selector = rabbitvcs.ui.widget.GitRepositorySelector(
-            self.get_widget("repository_container"),
-            self.git,
-            self.on_branch_changed
         )
         
         self.start_point = 0
