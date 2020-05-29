@@ -158,6 +158,7 @@ class Log(InterfaceView):
         self.show_only_commit = False
         self.revision_clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
         self.get_widget("revisions_search").grab_focus()
+        self.press_key_down = False
 
     #
     # UI Signal Callback Methods
@@ -193,11 +194,20 @@ class Log(InterfaceView):
                 Gdk.keyval_name(event.keyval).lower() == "iso_left_tab"):
                 self.get_widget("hpaned1").grab_focus()
             elif Gdk.keyval_name(event.keyval).lower() == "down":
-                if len(self.revisions_table.get_selected_rows()) > 0:
-                    self.revisions_table.focus(self.revisions_table.get_selected_rows()[0], 0)
+                if not self.press_key_down:
+                    self.press_key_down = True
+                    self.get_widget("hbox-search").grab_focus()
+                    if len(self.revisions_table.get_selected_rows()) > 0:
+                        self.revisions_table.focus(self.revisions_table.get_selected_rows()[0], 0)
+                    else:
+                        self.revisions_table.focus(0, 0)
                 else:
-                    self.revisions_table.focus(0, 0)
-                self.get_widget("hbox-search").grab_focus()
+                    if len(self.revisions_table.get_selected_rows()) > 0:
+                        self.revisions_table.focus(self.revisions_table.get_selected_rows()[0], 0)
+                    else:
+                        self.revisions_table.focus(0, 0)
+                    self.get_widget("hbox-search").grab_focus()
+                
         
     def on_stop_on_copy_toggled(self, widget):
         self.stop_on_copy = self.get_widget("stop_on_copy").get_active()
