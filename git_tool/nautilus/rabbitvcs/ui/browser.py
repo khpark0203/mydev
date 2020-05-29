@@ -21,6 +21,8 @@ from __future__ import absolute_import
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import subprocess
+import codecs
 import os.path
 import six
 import locale
@@ -60,11 +62,24 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
 
         self.vcs = rabbitvcs.vcs.VCS()
         self.svn = self.vcs.svn()
+        self.git_svn = False
 
         sm = rabbitvcs.util.settings.SettingsManager()
         self.datetime_format = sm.get("general", "datetime_format")
-
-        self.url = ""
+        
+        
+        if self.check_is_git(url):
+            if self.git_svn:
+                proc = subprocess.Popen(["git", "svn", "info", "--url"], stdout=subprocess.PIPE)
+                self.url = proc.stdout.readline().rstrip().decode("utf-8")
+                proc.kill()
+            else:
+                proc = subprocess.Popen(["git", "remote", "-v"], stdout=subprocess.PIPE)
+                self.url = proc.stdout.readline().rstrip().decode("utf-8").split(" ")[0].split("\t")[1]
+                proc.kill()
+        else:
+            self.url = ""
+        
         if self.svn.is_in_a_or_a_working_copy(url):
             action = rabbitvcs.ui.action.SVNAction(self.svn, notification=False, run_in_thread=False)
             self.url = S(action.run_single(self.svn.get_repo_url, url))
@@ -221,7 +236,20 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
         if Gdk.keyval_name(event.keyval) == "Return":
             helper.save_repository_path(self.urls.get_active_text())
             self.load()
+            
+    def check_is_git(self, path):
+        path_to_check = S(path)
+        while path_to_check != "/" and path_to_check != "":
+            if os.path.isdir(os.path.join(path_to_check, ".git")):
+                if os.path.isdir(os.path.join(path_to_check, ".git/svn/refs/remotes/git-svn")):
+                    self.git_svn = True
+                return True
+                
 
+            path_to_check = os.path.split(path_to_check)[0]
+
+        return None
+        
     def file_column_callback(self, filename):
         """
         Determine the node kind (dir or file) from our retrieved items list
