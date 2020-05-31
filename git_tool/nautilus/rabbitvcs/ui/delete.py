@@ -111,6 +111,7 @@ class Delete(InterfaceView, GtkContextMenuCaller):
         status = self.get_widget("status")
         helper.run_in_main_thread(status.set_text, _("Loading..."))
         self.items = self.vcs.get_items_delete(self.paths, self.statuses)
+        self.no_show_root_dir()
         if self.show_ignored:
             for path in self.paths:
                 # TODO Refactor
@@ -202,6 +203,11 @@ class SVNDelete(Delete):
     # def vcs_remove(self, paths, **kwargs):
     #     if rabbitvcs.vcs.guess(paths[0])["vcs"] == rabbitvcs.vcs.VCS_SVN:
     #         self.svn.remove(paths, **kwargs)
+    def no_show_root_dir(self):
+        for item in self.items:
+            if item.path == self.svn.find_repository_path(self.paths[0]):
+                self.items.remove(item)
+                break
             
     def on_ok_clicked(self, widget):
         items = self.files_table.get_activated_rows(1)
@@ -226,6 +232,12 @@ class GitDelete(Delete):
     def __init__(self, paths, base_dir=None):
         Delete.__init__(self, paths, base_dir)
         self.git = self.vcs.git(paths[0])
+        
+    def no_show_root_dir(self):
+        for item in self.items:
+            if item.path == self.git.find_repository_path(self.paths[0]):
+                self.items.remove(item)
+                break
 
     def on_ok_clicked(self, widget):
         items = self.files_table.get_activated_rows(1)
