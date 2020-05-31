@@ -235,7 +235,7 @@ class GitDelete(Delete):
         self.git = self.vcs.git(paths[0])
         
     def no_show_root_dir(self):
-        repo_path = self.svn.find_repository_path(self.paths[0])
+        repo_path = self.git.find_repository_path(self.paths[0])
         for item in self.items:
             if item.path == repo_path:
                 self.items.remove(item)
