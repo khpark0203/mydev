@@ -271,8 +271,9 @@ class GitSkiptree(Skiptree):
         
     def show_skiptree_file(self, items):
         remove_list = []
+        repo_path = self.git.find_repository_path(self.paths[0])
         for item in items:
-            if item.path == self.git.find_repository_path(self.paths[0]):
+            if item.path == repo_path:
                 remove_list.append(item)
             if self.show_skipped:
                 if self.git.already_skiptree(item.path) == False:

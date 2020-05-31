@@ -204,8 +204,9 @@ class SVNDelete(Delete):
     #     if rabbitvcs.vcs.guess(paths[0])["vcs"] == rabbitvcs.vcs.VCS_SVN:
     #         self.svn.remove(paths, **kwargs)
     def no_show_root_dir(self):
+        repo_path = self.svn.find_repository_path(self.paths[0])
         for item in self.items:
-            if item.path == self.svn.find_repository_path(self.paths[0]):
+            if item.path == repo_path:
                 self.items.remove(item)
                 break
             
@@ -234,8 +235,9 @@ class GitDelete(Delete):
         self.git = self.vcs.git(paths[0])
         
     def no_show_root_dir(self):
+        repo_path = self.svn.find_repository_path(self.paths[0])
         for item in self.items:
-            if item.path == self.git.find_repository_path(self.paths[0]):
+            if item.path == repo_path:
                 self.items.remove(item)
                 break
 
