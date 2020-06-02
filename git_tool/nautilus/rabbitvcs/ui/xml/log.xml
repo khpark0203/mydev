@@ -93,6 +93,21 @@
                       </packing>
                     </child>
                     <child>
+                      <object class="GtkCheckButton" id="show_diff">
+                        <property name="label" translatable="yes">Show _diff</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="receives_default">False</property>
+                        <property name="draw_indicator">True</property>
+                        <property name="use_underline">True</property>
+                        <signal name="toggled" handler="on_show_diff_toggled" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="left_attach">3</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
                       <object class="GtkEntry" id="limit">
                         <property name="width_request">75</property>
                         <property name="visible">True</property>
