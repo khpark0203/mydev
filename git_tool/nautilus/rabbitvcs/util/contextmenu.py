@@ -596,11 +596,11 @@ class ContextMenuCallbacks(object):
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def stage(self, widget, data1=None, data2=None):
-        proc = helper.launch_ui_window("stage", [self.paths[0]])
+        proc = helper.launch_ui_window("stage", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def unstage(self, widget, data1=None, data2=None):
-        proc = helper.launch_ui_window("unstage", [self.paths[0]])
+        proc = helper.launch_ui_window("unstage", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def edit_conflicts(self, widget, data1=None, data2=None):
