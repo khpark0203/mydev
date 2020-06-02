@@ -110,7 +110,7 @@ class Delete(InterfaceView, GtkContextMenuCaller):
     def load(self):
         status = self.get_widget("status")
         helper.run_in_main_thread(status.set_text, _("Loading..."))
-        self.items = self.vcs.get_items_delete(self.paths, self.statuses)
+        self.items = self.vcs.get_items_no_recursive(self.paths, self.statuses)
         self.no_show_root_dir()
         if self.show_ignored:
             for path in self.paths:

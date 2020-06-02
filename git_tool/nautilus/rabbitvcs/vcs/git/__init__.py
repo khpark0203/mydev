@@ -326,7 +326,7 @@ class Git(object):
 
         return items
         
-    def get_items_delete(self, paths, statuses=[]):
+    def get_items_no_recursive(self, paths, statuses=[]):
         """
         Retrieves a list of files that have one of a set of statuses
 
@@ -681,12 +681,12 @@ class Git(object):
         
         return self.client.git_svn_clone(url, path)
         
-    def git_svn_stage(self, paths):
+    def git_stage(self, paths):
         """
         For git-svn update
         """
         
-        return self.client.git_svn_stage(paths)
+        return self.client.git_stage(paths)
         
     def git_svn_unstage(self, paths):
         """

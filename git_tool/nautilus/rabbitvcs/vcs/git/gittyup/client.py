@@ -554,7 +554,7 @@ class GittyupClient(object):
         relative_path = self.get_relative_path(path)
         return (relative_path in staged_files)
 
-    def git_svn_stage(self, path):
+    def git_stage(self, path):
         cmd = ["git", "add", path]
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()

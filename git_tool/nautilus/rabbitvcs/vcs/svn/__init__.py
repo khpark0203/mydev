@@ -425,7 +425,7 @@ class SVN(object):
 
         return is_locked
         
-    def get_items_delete(self, paths, statuses=[]):
+    def get_items_no_recursive(self, paths, statuses=[]):
         """
         Retrieves a list of files that have one of a set of statuses
 

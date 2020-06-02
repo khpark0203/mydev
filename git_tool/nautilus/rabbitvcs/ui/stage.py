@@ -79,10 +79,7 @@ class GitStage(Add):
         self.action.append(self.action.set_header, _("Stage"))
         self.action.append(self.action.set_status, _("Running Stage Command..."))
         for item in items:
-            if self.git_svn:
-                self.action.append(self.git.git_svn_stage, item)
-            else:
-                self.action.append(self.git.stage, item)
+            self.action.append(self.git.git_stage, item)
         self.action.append(self.action.set_status, _("Completed Stage"))
         self.action.append(self.action.finish)
         self.action.schedule()
