@@ -1075,7 +1075,7 @@ class GitLog(Log):
                 indented_message = msg.replace("\n","\n\t")
                 self.message.append_text(
                                         "%s %s:\n\t%s\n" % (REVISION_LABEL,
-                                        S(item.revision).display(),
+                                        item.revision.short(),
                                         indented_message))
 
     def update_revision_message(self):
