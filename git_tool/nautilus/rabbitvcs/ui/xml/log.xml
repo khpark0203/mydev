@@ -94,7 +94,7 @@
                     </child>
                     <child>
                       <object class="GtkCheckButton" id="show_diff">
-                        <property name="label" translatable="yes">Show _diff</property>
+                        <property name="label" translatable="yes">Show _diff (Message &lt;-&gt; Diff)</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="receives_default">False</property>
