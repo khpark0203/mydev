@@ -627,7 +627,7 @@ class GittyupClient(object):
                 self.callback_notify(e)
                 
     def git_svn_push(self):
-        cmds = [["git", "stash", "list"], ["git", "stash"], ["git", "stash", "list"], ["git", "svn", "dcommit"], ["git", "stash", "pop"]]
+        cmds = [["git", "stash", "list"], ["git", "stash"], ["git", "stash", "list"], ["git", "svn", "rebase"], ["git", "svn", "dcommit"], ["git", "stash", "pop"]]
         i = 0
         ex_stash_num = 0
         stash_num = 0
