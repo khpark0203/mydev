@@ -639,7 +639,7 @@ class GittyupClient(object):
                 elif i == 2:
                     (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
                     stash_num = len(stdout)
-                elif i == 4:
+                elif i == 5:
                     if stash_num > ex_stash_num:
                         (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
                         if len(stdout):
