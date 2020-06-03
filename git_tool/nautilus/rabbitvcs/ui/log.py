@@ -1763,7 +1763,8 @@ class LogBottomContextMenuConditions(object):
 
     def view_diff_previous_revision(self, data=None):
         item = self.revisions[0]["revision"]
-        return ("previous_revision" in self.revisions[0] and len(self.revisions) == 1)
+        return ("previous_revision" in self.revisions[0] and len(self.revisions) == 1 
+                and len(self.caller.paths_table.get_selected_rows()) == 1)
 
     def view_diff_revisions(self, data=None):
         return (len(self.paths) == 1 and len(self.revisions) > 1)
@@ -1773,14 +1774,16 @@ class LogBottomContextMenuConditions(object):
 
     def compare_previous_revision(self, data=None):
         item = self.revisions[0]["revision"]
-        return ("previous_revision" in self.revisions[0] and len(self.revisions) == 1)
+        return ("previous_revision" in self.revisions[0] and len(self.revisions) == 1
+                and len(self.caller.paths_table.get_selected_rows()) == 1)
 
     def compare_revisions(self, data=None):
         return (len(self.paths) == 1 and len(self.revisions) > 1)
 
     def show_changes_previous_revision(self, data=None):
         item = self.revisions[0]["revision"]
-        return ("previous_revision" in self.revisions[0] and len(self.revisions) == 1)
+        return ("previous_revision" in self.revisions[0] and len(self.revisions) == 1
+                and len(self.caller.paths_table.get_selected_rows()) == 1)
 
     def show_changes_revisions(self, data=None):
         return (len(self.paths) == 1 and len(self.revisions) > 1)
