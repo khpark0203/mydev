@@ -926,6 +926,8 @@ class TextView(object):
         self.buffer = Gtk.TextBuffer()
         self.view.set_buffer(self.buffer)
         self.buffer.set_text(S(value).display())
+        # self.buffer.insert_markup(self.buffer.get_end_iter(), "<b>and some bold text</b>", -1)
+
 
         if HAS_GTKSPELL and spellcheck:
             try:

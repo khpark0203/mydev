@@ -1215,8 +1215,16 @@ class GitLog(Log):
                                             self.root_url + self.paths_table.get_row(row)[1],
                                             self.display_items[revision].revision)
                         if tmp_txt != "":
+                            split_txt = tmp_txt.split("\n")
+                            split_txt[0] = "<b>{}</b>".format(split_txt[0])
+                            # for txt in split_txt:
+                            #     if txt[:3] == "---" or txt[:3] == "+++":
+                            #         txt = "<b>{}</b>".format(txt)
+                            tmp_txt = "\n".join(split_txt)
                             diff_text += tmp_txt + "\n"
-                self.message.set_text(diff_text)
+                            
+                self.message.set_text("")
+                self.message.buffer.insert_markup(self.message.buffer.get_end_iter(), diff_text, -1)
     
 class SVNLogDialog(SVNLog):
     def __init__(self, path, ok_callback=None, multiple=False, merge_candidate_revisions=None):
