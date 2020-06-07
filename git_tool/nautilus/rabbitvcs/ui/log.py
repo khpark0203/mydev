@@ -159,6 +159,7 @@ class Log(InterfaceView):
         self.revision_clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
         self.get_widget("revisions_search").grab_focus()
         self.press_key_down = False
+        self.press_key_alt_a = False
         self.show_diff = False
         self.temp_dir = tempfile.mkdtemp(prefix=TEMP_DIR_PREFIX)
 
@@ -176,6 +177,36 @@ class Log(InterfaceView):
             self.set_loading(False)
 
         self.close()
+    
+    def on_key_pressed_support(self, table):
+        if table == self.paths_table:
+            if not self.press_key_alt_a:
+                self.press_key_alt_a = True
+                self.get_widget("paths_table").grab_focus()
+                if len(table.get_selected_rows()) > 0:
+                    table.focus(table.get_selected_rows()[0], 0)
+                else:
+                    table.focus(0, 0)
+            else:
+                if len(table.get_selected_rows()) > 0:
+                    table.focus(table.get_selected_rows()[0], 0)
+                else:
+                    table.focus(0, 0)
+                self.get_widget("paths_table").grab_focus()
+        elif table == self.revisions_table:
+            if not self.press_key_down:
+                self.press_key_down = True
+                self.get_widget("hbox-search").grab_focus()
+                if len(table.get_selected_rows()) > 0:
+                    table.focus(table.get_selected_rows()[0], 0)
+                else:
+                    table.focus(0, 0)
+            else:
+                if len(table.get_selected_rows()) > 0:
+                    table.focus(table.get_selected_rows()[0], 0)
+                else:
+                    table.focus(0, 0)
+                self.get_widget("hbox-search").grab_focus()
 
     def on_key_pressed(self, widget, event, *args):
         InterfaceView.on_key_pressed(self, widget, event)
@@ -191,6 +222,12 @@ class Log(InterfaceView):
                 self.get_widget("limit").grab_focus()
         elif Gdk.keyval_name(event.keyval).lower() == "escape":
             self.get_widget("revisions_search").grab_focus()
+        elif (event.state & Gdk.ModifierType.MOD1_MASK and
+            Gdk.keyval_name(event.keyval).lower() == "a"):
+                self.on_key_pressed_support(self.paths_table)
+        elif (event.state & Gdk.ModifierType.MOD1_MASK and
+            Gdk.keyval_name(event.keyval).lower() == "t"):
+                self.on_key_pressed_support(self.revisions_table)
         elif self.get_widget("revisions_search").is_focus():
             if Gdk.keyval_name(event.keyval).lower() == "tab":
                 self.get_widget("hbox-search").grab_focus()
@@ -198,19 +235,7 @@ class Log(InterfaceView):
                 Gdk.keyval_name(event.keyval).lower() == "iso_left_tab"):
                 self.get_widget("hpaned1").grab_focus()
             elif Gdk.keyval_name(event.keyval).lower() == "down":
-                if not self.press_key_down:
-                    self.press_key_down = True
-                    self.get_widget("hbox-search").grab_focus()
-                    if len(self.revisions_table.get_selected_rows()) > 0:
-                        self.revisions_table.focus(self.revisions_table.get_selected_rows()[0], 0)
-                    else:
-                        self.revisions_table.focus(0, 0)
-                else:
-                    if len(self.revisions_table.get_selected_rows()) > 0:
-                        self.revisions_table.focus(self.revisions_table.get_selected_rows()[0], 0)
-                    else:
-                        self.revisions_table.focus(0, 0)
-                    self.get_widget("hbox-search").grab_focus()
+                self.on_key_pressed_support(self.revisions_table)
                 
         
     def on_stop_on_copy_toggled(self, widget):
