@@ -227,7 +227,11 @@ class Log(InterfaceView):
                 self.on_key_pressed_support(self.paths_table)
         elif (event.state & Gdk.ModifierType.MOD1_MASK and
             Gdk.keyval_name(event.keyval).lower() == "t"):
-                self.on_key_pressed_support(self.revisions_table)
+                self.get_widget("hbox-search").grab_focus()
+                if len(self.revisions_table.get_selected_rows()) > 0:
+                    self.revisions_table.focus(self.revisions_table.get_selected_rows()[0], 0)
+                else:
+                    self.revisions_table.focus(0, 0)
         elif self.get_widget("revisions_search").is_focus():
             if Gdk.keyval_name(event.keyval).lower() == "tab":
                 self.get_widget("hbox-search").grab_focus()
