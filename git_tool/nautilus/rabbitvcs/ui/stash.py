@@ -225,6 +225,15 @@ class GitStash(Stash):
             
         self.set_item()
         self.set_loading(False)
+        
+    def action_refresh(self):
+        self.action = GitAction(
+            self.git,
+            notification=False,
+            run_in_thread=False
+        )
+        self.action.append(self.refresh)
+        self.action.schedule()
 
     def load(self):
         self.set_loading(True)
@@ -257,9 +266,8 @@ class GitStash(Stash):
         
         if self.show:
             self.action.append(self.action.finish)
-        self.action.append(self.refresh)
         self.action.schedule()
-        
+        self.action_refresh()
         self.message.set_text("")
 
     def drop(self):
@@ -281,8 +289,8 @@ class GitStash(Stash):
         )
         if self.show:
             self.action.append(self.action.finish)
-        self.action.append(self.refresh)
         self.action.schedule()
+        self.action_refresh()
         
     def clear(self):
         self.selected_row = None
@@ -298,8 +306,8 @@ class GitStash(Stash):
         )
         if self.show:
             self.action.append(self.action.finish)
-        self.action.append(self.refresh)
         self.action.schedule()
+        self.action_refresh()
         
     def apply(self):
         if len(self.revisions_table.get_selected_rows()):
@@ -320,8 +328,8 @@ class GitStash(Stash):
         )
         if self.show:
             self.action.append(self.action.finish)
-        self.action.append(self.refresh)
         self.action.schedule()
+        self.action_refresh()
         
     def pop(self):
         self.action = GitAction(
@@ -336,8 +344,8 @@ class GitStash(Stash):
         )
         if self.show:
             self.action.append(self.action.finish)
-        self.action.append(self.refresh)
         self.action.schedule()
+        self.action_refresh()
         
     def on_stash_clicked(self, widget, data=None):
         self.stash()
