@@ -4,59 +4,59 @@ if [ $# -eq 0 ]; then
 fi
 
 if [ $1 = "remove" ] || [ $1 = "skiptree" ]; then
-	if [ -z $2 ]; then
-		echo "Enter argv2..."
-		exit 0
-	fi
-	
-	if [ $2 = "*" ]; then
-		git ls-files -z | xargs -0 git update-index --skip-worktree
-	else
-		git ls-files -z "${@:2}" | xargs -0 git update-index --skip-worktree
-	fi
-	
-	if [ $1 = "remove" ]; then
-		rm -rf "${@:2}"
-	fi
+    if [ -z $2 ]; then
+        echo "Enter argv2..."
+        exit 0
+    fi
+    
+    if [ $2 = "*" ]; then
+        git ls-files -z | xargs -0 git update-index --skip-worktree
+    else
+        git ls-files -z "${@:2}" | xargs -0 git update-index --skip-worktree
+    fi
+    
+    if [ $1 = "remove" ]; then
+        rm -rf "${@:2}"
+    fi
 elif [ $1 = "callback" ] || [ $1 = "noskiptree" ]; then
-	if [ -z $2 ]; then
-		echo "Enter argv2..."
-		exit 0
-	fi
+    if [ -z $2 ]; then
+        echo "Enter argv2..."
+        exit 0
+    fi
 
-	if [ $2 = "*" ]; then
-		git ls-files -z | xargs -0 git update-index --no-skip-worktree
-	else
-		git ls-files -z "${@:2}" | xargs -0 git update-index --no-skip-worktree
-	fi
-	
-	if [ $1 = "callback" ]; then
-		git checkout "${@:2}"
-	fi
+    if [ $2 = "*" ]; then
+        git ls-files -z | xargs -0 git update-index --no-skip-worktree
+    else
+        git ls-files -z "${@:2}" | xargs -0 git update-index --no-skip-worktree
+    fi
+    
+    if [ $1 = "callback" ]; then
+        git checkout "${@:2}"
+    fi
 elif [ $1 = "list" ]; then
-	git ls-tree HEAD | awk '{print $NF}'
+    git ls-tree HEAD | awk '{print $NF}'
 elif [ $1 = "update" ] || [ $1 = "up" ] || [ $1 = "rebase" ]; then
-	EX_STASH_NUM=`git stash list | wc -l`
-	git stash
-	STASH_NUM=`git stash list | wc -l`
-	git svn rebase
-	if [ $STASH_NUM -gt $EX_STASH_NUM ]; then
-		echo ====================Stash pop list====================
-		git stash pop | grep "수정함:"
-		echo ======================================================
-	fi
+    EX_STASH_NUM=`git stash list | wc -l`
+    git stash
+    STASH_NUM=`git stash list | wc -l`
+    git svn rebase
+    if [ $STASH_NUM -gt $EX_STASH_NUM ]; then
+        echo ====================Stash pop list====================
+        git stash pop | grep "수정함:"
+        echo ======================================================
+    fi
 elif [ $1 = "pop" ]; then
-	git stash pop
+    git stash pop
 elif [ $1 = "dcommit" ] || [ $1 = "commit" ]; then
-	EX_STASH_NUM=`git stash list | wc -l`
-	git stash
-	STASH_NUM=`git stash list | wc -l`
-	git svn dcommit
-	if [ $STASH_NUM -gt $EX_STASH_NUM ]; then
-		echo ====================Stash pop list====================
-		git stash pop | grep "수정함:"
-		echo ======================================================
-	fi
+    EX_STASH_NUM=`git stash list | wc -l`
+    git stash
+    STASH_NUM=`git stash list | wc -l`
+    git svn dcommit
+    if [ $STASH_NUM -gt $EX_STASH_NUM ]; then
+        echo ====================Stash pop list====================
+        git stash pop | grep "수정함:"
+        echo ======================================================
+    fi
 else
-	echo "argv : remove, callback, ignore, noignore, list, pop, rebase, commit, dcommit"
+    echo "argv : remove, callback, ignore, noignore, list, pop, rebase, commit, dcommit"
 fi
