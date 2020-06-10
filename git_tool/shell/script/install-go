@@ -1,0 +1,19 @@
+if [ -z $1 ]; then
+    echo "argv1 : folder"
+    exit
+elif [ -z $2 ]; then
+    echo "argv2 : version"
+    exit
+fi
+
+FOLDER="$1"
+VERSION="$2"
+
+sudo rm /usr/lib/go
+sudo rm -r /usr/lib/go-$VERSION
+
+sudo cp -r $FOLDER /usr/lib/go-$VERSION
+cd /usr/lib
+sudo ln -s go-$VERSION go
+sudo rm /usr/bin/go
+sudo ln -s ../lib/go-$VERSION/bin/go /usr/bin/go
