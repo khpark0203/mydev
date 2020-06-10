@@ -115,7 +115,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
     def load(self):
         status = self.get_widget("status")
         helper.run_in_main_thread(status.set_text, _("Loading..."))
-        self.items = self.vcs.get_items_no_recursive(self.paths, self.statuses)
+        self.items = self.vcs.get_items(self.paths, self.statuses)
 
         if self.show_ignored:
             for path in self.paths:
