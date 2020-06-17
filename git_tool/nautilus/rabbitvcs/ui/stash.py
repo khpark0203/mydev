@@ -230,7 +230,7 @@ class GitStash(Stash):
         self.action = GitAction(
             self.git,
             notification=False,
-            run_in_thread=False
+            run_in_thread=True
         )
         self.action.append(self.refresh)
         self.action.schedule()
