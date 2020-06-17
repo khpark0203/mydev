@@ -7,7 +7,7 @@ _rabbitvcs()
  
     if [ $COMP_CWORD = 1 ]; then
         complete -F _rabbitvcs rabbitvcs
-        COMPREPLY=( $( compgen -W 'update commit push log revert reset checkout stage unstage skiptree noskiptree delete clone browser stash' -- "$cur" ) )
+        COMPREPLY=( $( compgen -W 'update commit push log revert reset checkout stage unstage skiptree noskiptree delete clone browser stash branches' -- "$cur" ) )
     elif [ $COMP_CWORD -ge 2 ]; then
         if [ ${COMP_WORDS[1]} = "update" ] || [ ${COMP_WORDS[1]} = "push" ] || [ ${COMP_WORDS[1]} = "stash" ]; then
             complete -F _rabbitvcs rabbitvcs
