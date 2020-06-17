@@ -946,8 +946,7 @@ class ContextMenuConditions(object):
             not self.path_dict["is_in_a_or_a_working_copy"])
 
     def clone(self, data=None):
-        return (self.path_dict["is_dir"] and
-            not self.path_dict["is_in_a_or_a_working_copy"])
+        return self.path_dict["is_dir"]
 
     def push(self, data=None):
         return (self.path_dict["is_git"] or self.path_dict["is_mercurial"])

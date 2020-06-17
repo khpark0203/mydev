@@ -61,9 +61,16 @@ class GitClone(Checkout):
     def on_ok_clicked(self, widget):
         url = self.repositories.get_active_text().strip()
         path = self._get_path().strip()
+        already_path = self.git.find_repository_path(path)
         
-        if url[:4] == "svn:":
-            self.git_svn = True
+        if already_path is None:
+            if url[:4] == "svn:":
+                self.git_svn = True
+        else:
+            if self.git.client.git_svn:
+                if url[:4] != "svn:":
+                    rabbitvcs.ui.dialog.MessageBox(_("You must clone only git svn."))
+                    return
 
         if not url or not path:
             rabbitvcs.ui.dialog.MessageBox(_("The repository URL and destination path are both required fields."))
