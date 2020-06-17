@@ -350,6 +350,7 @@
                             <property name="label" translatable="yes">Select / Deselect all</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="active">True</property>
                             <property name="receives_default">False</property>
                             <property name="halign">start</property>
                             <property name="hexpand">True</property>

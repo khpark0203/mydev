@@ -59,7 +59,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
     """
     SETTINGS = rabbitvcs.util.settings.SettingsManager()
 
-    TOGGLE_ALL = False
+    TOGGLE_ALL = True
     SHOW_UNVERSIONED = SETTINGS.get("general", "show_unversioned_files")
 
     # This keeps track of any changes that the user has made to the row
