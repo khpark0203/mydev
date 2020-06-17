@@ -67,7 +67,8 @@ class GitClone(Checkout):
             if url[:4] == "svn:":
                 self.git_svn = True
         else:
-            if self.git.client.git_svn:
+            self.git_svn = self.git.client.git_svn
+            if self.git_svn:
                 if url[:4] != "svn:":
                     rabbitvcs.ui.dialog.MessageBox(_("You must clone only git svn."))
                     return
