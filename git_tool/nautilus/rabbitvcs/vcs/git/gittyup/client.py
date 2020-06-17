@@ -833,6 +833,7 @@ class GittyupClient(object):
         """
 
         ref_name = "refs/heads/%s" % name
+        ref_name = ref_name.encode()
         refs = self.repo.get_refs()
         if ref_name in refs:
             if self.is_tracking(ref_name):
@@ -854,6 +855,8 @@ class GittyupClient(object):
 
         old_ref_name = "refs/heads/%s" % old_name
         new_ref_name = "refs/heads/%s" % new_name
+        old_ref_name = old_ref_name.encode()
+        new_ref_name = new_ref_name.encode()
         refs = self.repo.get_refs()
         if old_ref_name in refs:
             self.repo.refs[new_ref_name] = self.repo.refs[old_ref_name]
