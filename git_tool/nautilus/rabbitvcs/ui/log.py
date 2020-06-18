@@ -896,6 +896,8 @@ class GitLog(Log):
         self.revision_items = self.action.get_result(0)
 
         if not self.revision_items or len(self.revision_items) == 0:
+            self.set_start_revision("N/A")
+            self.set_end_revision("N/A")
             return
 
         # Load tags.
