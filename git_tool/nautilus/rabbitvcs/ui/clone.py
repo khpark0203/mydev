@@ -69,6 +69,7 @@ class GitClone(Checkout):
             rabbitvcs.ui.dialog.MessageBox(_("The repository URL and destination path are both required fields."))
             return
             
+        self.hide()
         self.action = rabbitvcs.ui.action.GitAction(
             self.git,
             register_gtk_quit=self.gtk_quit_is_set()
