@@ -1166,8 +1166,6 @@ class GtkFilesContextMenu(object):
             (MenuMarkResolved, None),
             (MenuCreatePatch, None),
             (MenuAdd, None),
-            (MenuStage, None),
-            (MenuUnstage, None),
             (MenuAddToIgnoreList, ignore_items)
         ]
 
