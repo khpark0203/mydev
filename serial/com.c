@@ -279,6 +279,7 @@ int set_default_config(int flag)
 	if(flag == ALL || flag == PORT) {
 		fprintf(stderr, "Port = ? (current = %s)\n\r", devicename);
 		fprintf(stderr, "Chagne => /dev/tty");
+		strcpy(devicename, "/dev/tty");
 		scanf("%s", &devicename[8]);
 	}
 	
