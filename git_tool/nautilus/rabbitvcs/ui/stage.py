@@ -25,6 +25,7 @@ import six.moves._thread
 
 from rabbitvcs.util import helper
 
+import os
 import gi
 gi.require_version("Gtk", "3.0")
 sa = helper.SanitizeArgv()
@@ -57,6 +58,8 @@ class GitStage(Add):
     def populate_files_table(self):
         self.files_table.clear()
         for item in self.items:
+            if os.path.isdir(item.path):
+                continue
             self.files_table.append([
                 True,
                 S(item.path),
