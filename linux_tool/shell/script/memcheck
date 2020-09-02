@@ -1,0 +1,41 @@
+if [ $# -eq 0 ]; then
+    echo "-c : color"
+    echo "-l logfile"
+    exit
+fi
+
+PROCESS=valgrind
+LOG_OPTION=""
+TARGET_FILE=""
+
+save_log=0
+for argv in $@
+do
+    if [ $argv = "-c" ]; then
+        PROCESS=colour-valgrind
+    elif [ $argv = "-l" ]; then
+        save_log=1
+    fi
+done
+
+TARGET_FILE=$argv
+
+if [ $save_log -eq 1 ]; then
+    LOG_FILE="${TARGET_FILE}.valgrind.log"
+    if [ -f $LOG_FILE ]; then
+        for num in $(seq 1 1000)
+        do
+            LOG_FILE="${TARGET_FILE}.valgrind${num}.log"
+            if [ -f $LOG_FILE ]; then
+                continue
+            else
+                break
+            fi
+        done
+    fi
+    LOG_OPTION="--log-file=$LOG_FILE"
+    echo "Log file : $LOG_FILE"
+fi
+
+
+$PROCESS --leak-check=full $LOG_OPTION $TARGET_FILE
