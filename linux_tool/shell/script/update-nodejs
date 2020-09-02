@@ -1,0 +1,42 @@
+start_echo() {
+    echo "###############################"
+    echo "Start install nodejs version => $1"
+    echo "###############################"
+    echo
+}
+
+end_echo() {
+    echo
+    echo "###########################"
+    echo "Installed nodejs version => $VERSION"
+    echo "###########################"
+}
+
+if [ -z $1 ]; then
+    VERSION=10
+    while :
+    do
+        STATUS=`curl -s -o /dev/null -I -w "%{http_code}" https://deb.nodesource.com/setup_$VERSION.x`
+        if [ $STATUS -eq 200 ]; then
+            VERSION=$((VERSION+1))
+        else
+            VERSION=$((VERSION-1))
+            start_echo $VERSION
+            curl -sL https://deb.nodesource.com/setup_$VERSION.x | sudo -E bash -
+            sudo apt install nodejs
+            end_echo $VERSION
+            break
+        fi
+    done
+else
+    VERSION=$1
+    STATUS=`curl -s -o /dev/null -I -w "%{http_code}" https://deb.nodesource.com/setup_$VERSION.x`
+    if [ $STATUS -eq 200 ]; then
+        start_echo $VERSION
+        curl -sL https://deb.nodesource.com/setup_$VERSION.x | sudo -E bash -
+        sudo apt install nodejs
+        end_echo $VERSION
+    else
+        echo "Nodejs version $VERSION => not exist."
+    fi
+fi
