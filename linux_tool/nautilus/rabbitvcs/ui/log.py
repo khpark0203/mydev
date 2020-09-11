@@ -177,7 +177,7 @@ class Log(InterfaceView):
             self.set_loading(False)
 
         self.close()
-    
+
     def on_key_pressed_support(self, table):
         if table == self.paths_table:
             if not self.press_key_alt_a:
@@ -240,13 +240,13 @@ class Log(InterfaceView):
                 self.get_widget("hpaned1").grab_focus()
             elif Gdk.keyval_name(event.keyval).lower() == "down":
                 self.on_key_pressed_support(self.revisions_table)
-                
-        
+
+
     def on_stop_on_copy_toggled(self, widget):
         self.stop_on_copy = self.get_widget("stop_on_copy").get_active()
         if not self.is_loading:
             self.refresh()
-            
+
     def on_show_only_commit_toggled(self, widget):
         self.show_only_commit = self.get_widget("show_only_commit").get_active()
         if not self.git_svn:
@@ -261,7 +261,7 @@ class Log(InterfaceView):
         self.limit = int(self.get_widget("limit").get_text())
         self.cache.empty()
         self.load()
-        
+
     def on_show_diff_toggled(self, widget):
         self.show_diff = widget.get_active()
         if self.show_diff:
@@ -270,7 +270,7 @@ class Log(InterfaceView):
         else:
             self.get_widget("label1").set_markup("<b>Message</b>")
             self.update_only_message()
-            
+
 
     def on_search(self, widget):
         tb = self.get_widget("search_buffer")
@@ -299,7 +299,7 @@ class Log(InterfaceView):
         self.paths_table.clear()
         self.message.set_text("")
         self.update_revision_message()
-        
+
     def on_revisions_table_mouse_event(self, treeview, event, *args):
         if len(self.revisions_table.get_selected_rows()) == 0:
             self.message.set_text("")
@@ -328,7 +328,7 @@ class Log(InterfaceView):
             self.view_diff_for_path(url, S(revision1), S(revision2), sidebyside=True)
         except IndexError:
             pass
-        
+
     def on_paths_table_key_event(self, treeview, event, *args):
         self.set_diff_message()
 
@@ -467,7 +467,7 @@ class SVNLog(Log):
 
         self.svn = self.vcs.svn()
         self.merge_candidate_revisions = merge_candidate_revisions
-        
+
         self.get_widget("show_only_commit").hide()
 
         self.revisions_table = rabbitvcs.ui.widget.Table(
@@ -687,7 +687,7 @@ class SVNLog(Log):
             text += "\n\n\n"
 
         self.revision_clipboard.set_text(text, -1)
-        
+
     def update_only_message(self):
         self.message.set_text("")
         for selected_row in self.revisions_table.get_selected_rows():
@@ -765,24 +765,26 @@ class SVNLog(Log):
             sensitive = False
 
         self.get_widget("next").set_sensitive(sensitive)
-    
+
     def on_push_clicked(self, widget):
         pass
-    
+
     def get_diff_revision(self):
         selected_row = self.paths_table.get_selected_rows()
         selected_revision = self.revisions_table.get_selected_rows()
         if len(selected_row):
             for revision in selected_revision:
                 diff_text = ""
-                diff_text = self.svn.diff(tmp_path=self.temp_dir,
-                                        url_or_path=self.root_url + self.paths_table.get_row(selected_row[0])[1],
-                                        revision1=self.display_items[revision].revision,
-                                        url_or_path2=self.root_url + self.paths_table.get_row(selected_row[0])[1],
-                                        revision2=self.display_items[revision+1].revision)
+                diff_text = self.svn.diff(
+                    tmp_path=self.temp_dir,
+                    url_or_path=self.root_url + self.paths_table.get_row(selected_row[0])[1],
+                    revision1=self.display_items[revision].revision,
+                    url_or_path2=self.root_url + self.paths_table.get_row(selected_row[0])[1],
+                    revision2=self.display_items[revision+1].revision
+                )
                 if diff_text != "":
                     return self.display_items[revision].revision, self.display_items[revision+1].revision
-                    
+
     def set_diff_message(self):
         if self.show_diff:
             selected_row = self.paths_table.get_selected_rows()
@@ -792,11 +794,13 @@ class SVNLog(Log):
                 for row in selected_row:
                     for revision in selected_revision:
                         tmp_txt = ""
-                        tmp_txt = self.svn.diff(tmp_path=self.temp_dir,
-                                                url_or_path=self.root_url + self.paths_table.get_row(row)[1],
-                                                revision1=self.display_items[revision+1].revision,
-                                                url_or_path2=self.root_url + self.paths_table.get_row(row)[1],
-                                                revision2=self.display_items[revision].revision)
+                        tmp_txt = self.svn.diff(
+                            tmp_path=self.temp_dir,
+                            url_or_path=self.root_url + self.paths_table.get_row(row)[1],
+                            revision1=self.display_items[revision+1].revision,
+                            url_or_path2=self.root_url + self.paths_table.get_row(row)[1],
+                            revision2=self.display_items[revision].revision
+                        )
                         if tmp_txt != "":
                             diff_text += tmp_txt + "\n"
                 self.message.set_text(diff_text)
@@ -857,7 +861,7 @@ class GitLog(Log):
                 self.git,
                 self.on_branch_changed
             )
-	
+
         self.paths_table = rabbitvcs.ui.widget.Table(
             self.get_widget("paths_table"),
             [GObject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_HIDDEN_OBJECT,
@@ -872,11 +876,11 @@ class GitLog(Log):
                 "sortable": False
             }
         )
-        
+
         self.start_point = 0
         self.initialize_root_url()
         self.load_or_refresh()
-        
+
 
     #
     # Log-loading callback methods
@@ -967,7 +971,7 @@ class GitLog(Log):
                 if git_svn_index == -1:
                     git_svn_ment = "git-svn-id: "
                     git_svn_index = msg.find("git-svn-id: ")
-                    
+
                 if git_svn_index != -1:
                     revision_basic = msg.split(git_svn_ment)[-1].split(" ")[0]
                     revision_num_idx = revision_basic.rfind("@")
@@ -977,7 +981,7 @@ class GitLog(Log):
                         self.set_start_revision(revision_num)
                     elif index == len(grapher) - 1:
                         self.set_end_revision(revision_num)
-                        
+
             author = item.author
             date = helper.format_datetime(item.date, self.datetime_format)
 
@@ -1004,7 +1008,7 @@ class GitLog(Log):
             for tag in self.tagItems:
                 if tag['id'] == revision:
                     msg = "<i>[" + tag['name'] + "]</i> " + msg
-                    
+
             if self.git_svn:
                 self.revisions_table.append([
                     graph_render,
@@ -1058,7 +1062,7 @@ class GitLog(Log):
             notification=False,
             run_in_thread=True
         )
-        
+
         if self.show_only_commit:
             if self.git_svn:
                 self.action.append(
@@ -1211,14 +1215,14 @@ class GitLog(Log):
                 else:
                     warning = "Select 'first(rev) ~ want(rev)' and 'continuos'"
                 rabbitvcs.ui.dialog.MessageBox(_(warning))
-    
+
     def on_push_clicked(self, widget):
         helper.launch_ui_window("push", [self.path])
-        
+
     def on_branch_changed(self, repository, branch):
         self.cache.empty()
         self.load()
-        
+
     def get_diff_revision(self):
         selected_row = self.paths_table.get_selected_rows()
         selected_revision = self.revisions_table.get_selected_rows()
@@ -1231,7 +1235,7 @@ class GitLog(Log):
                                     self.display_items[revision+1].revision)
                 if diff_text != "":
                     return self.display_items[revision].revision, self.display_items[revision+1].revision
-                    
+
     def set_diff_message(self):
         if self.show_diff:
             selected_row = self.paths_table.get_selected_rows()
@@ -1247,9 +1251,9 @@ class GitLog(Log):
                                             self.display_items[revision].revision)
                         if tmp_txt != "":
                             diff_text += tmp_txt + "\n"
-                            
+
                 self.message.set_text(diff_text)
-    
+
 class SVNLogDialog(SVNLog):
     def __init__(self, path, ok_callback=None, multiple=False, merge_candidate_revisions=None):
         """
@@ -1386,7 +1390,7 @@ class MenuEditRevisionProperties(MenuItem):
     identifier = "RabbitVCS::Edit_Revision_Properties"
     label = _("Edit revision properties...")
     icon = "rabbitvcs-editprops"
-    
+
 class MenuCancelCommit(MenuItem):
     identifier = "RabbitVCS::Cancel_Commit"
     label = _("Cancel commit...")
@@ -1797,7 +1801,7 @@ class LogBottomContextMenuConditions(object):
 
     def view_diff_previous_revision(self, data=None):
         item = self.revisions[0]["revision"]
-        return ("previous_revision" in self.revisions[0] and len(self.revisions) == 1 
+        return ("previous_revision" in self.revisions[0] and len(self.revisions) == 1
                 and len(self.caller.paths_table.get_selected_rows()) == 1)
 
     def view_diff_revisions(self, data=None):
