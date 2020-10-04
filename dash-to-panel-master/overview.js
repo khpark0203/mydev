@@ -16,7 +16,7 @@
  *
  * Credits:
  * This file is based on code from the Dash to Dock extension by micheleg
- * 
+ *
  * Some code was also adapted from the upstream Gnome Shell source code.
  */
 
@@ -65,7 +65,7 @@ var dtpOverview = Utils.defineClass({
 
         this._signalsHandler.add([
             Me.settings,
-            'changed::stockgs-keep-dash', 
+            'changed::stockgs-keep-dash',
             () => this._toggleDash()
         ]);
     },
@@ -73,7 +73,7 @@ var dtpOverview = Utils.defineClass({
     disable: function () {
         this._signalsHandler.destroy();
         this._injectionsHandler.destroy();
-        
+
         this._toggleDash(true);
 
         // Remove key bindings
@@ -110,7 +110,7 @@ var dtpOverview = Utils.defineClass({
      */
     _optionalWorkspaceIsolation: function() {
         let label = 'optionalWorkspaceIsolation';
-        
+
         this._signalsHandler.add([
             Me.settings,
             'changed::isolate-workspaces',
@@ -155,11 +155,11 @@ var dtpOverview = Utils.defineClass({
             let activeWorkspace = Utils.DisplayWrapper.getWorkspaceManager().get_active_workspace();
             let windows = this.get_windows().filter(w => w.get_workspace().index() == activeWorkspace.index());
 
-            if (windows.length > 0 && 
-                (!(windows.length == 1 && windows[0].skip_taskbar) || 
+            if (windows.length > 0 &&
+                (!(windows.length == 1 && windows[0].skip_taskbar) ||
                  this.is_on_workspace(activeWorkspace)))
                 return Main.activateWindow(windows[0]);
-            
+
             return this.open_new_window(-1);
         }
     },
@@ -168,7 +168,7 @@ var dtpOverview = Utils.defineClass({
     _activateApp: function(appIndex) {
         let seenApps = {};
         let apps = [];
-        
+
         this.taskbar._getAppIcons().forEach(function(appIcon) {
             if (!seenApps[appIcon.app]) {
                 apps.push(appIcon);
@@ -184,22 +184,37 @@ var dtpOverview = Utils.defineClass({
             let seenAppCount = seenApps[appIcon.app];
             let windowCount = appIcon.window || appIcon._hotkeysCycle ? seenAppCount : appIcon._nWindows;
 
-            if (Me.settings.get_boolean('shortcut-previews') && windowCount > 1 && 
+            if (Me.settings.get_boolean('shortcut-previews') && windowCount > 1 &&
                 !(Clutter.get_current_event().get_state() & ~(Clutter.ModifierType.MOD1_MASK | Clutter.ModifierType.MOD4_MASK))) { //ignore the alt (MOD1_MASK) and super key (MOD4_MASK)
                 if (this._hotkeyPreviewCycleInfo && this._hotkeyPreviewCycleInfo.appIcon != appIcon) {
                     this._endHotkeyPreviewCycle();
                 }
-                
+
                 if (!this._hotkeyPreviewCycleInfo) {
                     this._hotkeyPreviewCycleInfo = {
                         appIcon: appIcon,
                         currentWindow: appIcon.window,
                         keyFocusOutId: appIcon.actor.connect('key-focus-out', () => appIcon.actor.grab_key_focus()),
                         capturedEventId: global.stage.connect('captured-event', (actor, e) => {
-                            if (e.type() == Clutter.EventType.KEY_RELEASE && e.get_key_symbol() == (Clutter.KEY_Super_L || Clutter.Super_L)) {
-                                this._endHotkeyPreviewCycle(true);
-                            }
-        
+                            if(e.type() == Clutter.EventType.KEY_PRESS) {
+								switch(e.get_key_symbol()) {
+								case Clutter.KEY_grave:
+									global.stage.disconnect(this._hotkeyPreviewCycleInfo.capturedEventId);
+									this._hotkeyPreviewCycleInfo.appIcon.actor.disconnect(this._hotkeyPreviewCycleInfo.keyFocusOutId);
+
+									appIcon._previewMenu.requestClose();
+									delete this._hotkeyPreviewCycleInfo.appIcon._hotkeysCycle;
+									this._hotkeyPreviewCycleInfo = 0;
+									break;
+								case Clutter.KEY_Tab:
+									appIcon._previewMenu.focusNext();
+									break;
+								}
+							}
+							else if (e.type() == Clutter.EventType.KEY_RELEASE && e.get_key_symbol() == Clutter.KEY_Super_L) {
+								this._endHotkeyPreviewCycle(true);
+							}
+
                             return Clutter.EVENT_PROPAGATE;
                         })
                     };
@@ -209,7 +224,7 @@ var dtpOverview = Utils.defineClass({
                     appIcon._previewMenu.open(appIcon);
                     appIcon.actor.grab_key_focus();
                 }
-                
+
                 appIcon._previewMenu.focusNext();
             } else {
                 // Activate with button = 1, i.e. same as left click
@@ -272,11 +287,11 @@ var dtpOverview = Utils.defineClass({
         let shortcutNumKeys = Me.settings.get_string('shortcut-num-keys');
         let bothNumKeys = shortcutNumKeys == 'BOTH';
         let keys = [];
-        
+
         if (bothNumKeys || shortcutNumKeys == 'NUM_ROW') {
             keys.push('app-hotkey-', 'app-shift-hotkey-', 'app-ctrl-hotkey-'); // Regular numbers
         }
-        
+
         if (bothNumKeys || shortcutNumKeys == 'NUM_KEYPAD') {
             keys.push('app-hotkey-kp-', 'app-shift-hotkey-kp-', 'app-ctrl-hotkey-kp-'); // Key-pad numbers
         }
@@ -306,7 +321,7 @@ var dtpOverview = Utils.defineClass({
                 Utils.removeKeybinding(key + (i + 1));
             }
         }, this);
-        
+
         if (Main.wm._switchToApplication) {
             let gsSettings = new Gio.Settings({ schema_id: imports.ui.windowManager.SHELL_KEYBINDINGS_SCHEMA });
 
@@ -383,7 +398,7 @@ var dtpOverview = Utils.defineClass({
         this._panel.intellihide.revealAndHold(Intellihide.Hold.TEMPORARY);
 
         let timeout = Me.settings.get_int('overlay-timeout');
-        
+
         if (overlayFromShortcut) {
             timeout = Me.settings.get_int('shortcut-timeout');
         }
@@ -391,11 +406,11 @@ var dtpOverview = Utils.defineClass({
         // Hide the overlay/dock after the timeout
         this._numberOverlayTimeoutId = Mainloop.timeout_add(timeout, Lang.bind(this, function() {
             this._numberOverlayTimeoutId = 0;
-            
+
             if (hotkey_option != 'ALWAYS') {
                 this.taskbar.toggleNumberOverlay(false);
             }
-            
+
             this._panel.intellihide.release(Intellihide.Hold.TEMPORARY);
         }));
     },
@@ -428,17 +443,17 @@ var dtpOverview = Utils.defineClass({
 
         this._clickAction = new Clutter.ClickAction();
         this._clickAction.connect('clicked', () => {
-            
+
             if (this._swiping)
                 return Clutter.EVENT_PROPAGATE;
-  
+
             let [x, y] = global.get_pointer();
             let pickedActor = global.stage.get_actor_at_pos(Clutter.PickMode.ALL, x, y);
 
             let activePage = Main.overview.viewSelector.getActivePage();
             if (activePage == ViewSelector.ViewPage.APPS) {
 
-                if(pickedActor != Main.overview._overview 
+                if(pickedActor != Main.overview._overview
                     && (views.length > 1 && pickedActor != Main.overview.viewSelector.appDisplay._controls.get_parent())
                     && pickedActor != (views[0].view.actor || views[0].view)
                     && (views.length > 1 && pickedActor != views[1].view._scrollView)
@@ -513,12 +528,12 @@ var dtpOverview = Utils.defineClass({
     _disableClickToExit: function () {
         if (!this._clickToExitEnabled)
             return;
-        
+
         Main.overview._overview.remove_action(this._clickAction);
         Main.overview._overview.reactive = this._oldOverviewReactive;
 
         this._signalsHandler.removeWithLabel('clickToExit');
-    
+
         this._clickToExitEnabled = false;
     },
 
@@ -530,7 +545,7 @@ var dtpOverview = Utils.defineClass({
     _onSwipeEnd: function() {
         this._timeoutsHandler.add([
             T1,
-            0, 
+            0,
             () => this._swiping = false
         ]);
         return true;
