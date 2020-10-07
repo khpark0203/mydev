@@ -641,6 +641,22 @@ class Git(object):
 
         return self.client.move(source, dest)
 
+    def git_svn_move(self, source, dest):
+        """
+        Move a file within the repository
+
+        @type   source: string
+        @param  source: The source file
+
+        @type   dest: string
+        @param  dest: The destination.  If dest exists as a directory, source
+            will be added as a child.  Otherwise, source will be renamed to
+            dest.
+
+        """
+
+        return self.client.git_svn_move(source, dest)
+
     def pull(self, repository="origin", refspec="master", options=None):
         """
         Fetch objects from a remote repository and merge with the local

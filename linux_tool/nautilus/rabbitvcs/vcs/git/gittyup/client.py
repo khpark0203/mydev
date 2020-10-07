@@ -1157,6 +1157,25 @@ class GittyupClient(object):
         # Actually move the file/folder
         shutil.move(source, dest)
 
+    def git_svn_move(self, source, dest):
+        """
+        Move a file within the repository
+
+        @type   source: string
+        @param  source: The source file
+
+        @type   dest: string
+        @param  dest: The destination.  If dest exists as a directory, source
+            will be added as a child.  Otherwise, source will be renamed to
+            dest.
+        """
+        cmd = ["git", "mv", source, dest]
+        
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+        except GittyupCommandError as e:
+            self.callback_notify(e)
+
     def pull(self, repository="origin", refspec="master", options=None):
         """
         Fetch objects from a remote repository and merge with the local
