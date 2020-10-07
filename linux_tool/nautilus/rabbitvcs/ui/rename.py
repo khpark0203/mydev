@@ -108,7 +108,6 @@ class SVNRename(Rename):
         )
         self.action.append(self.action.set_status, _("Completed Rename"))
         self.action.append(self.action.finish)
-        self.action.append(self.close)
         self.action.schedule()
 
 class GitRename(Rename):
@@ -132,21 +131,13 @@ class GitRename(Rename):
 
         self.action.append(self.action.set_header, _("Rename"))
         self.action.append(self.action.set_status, _("Running Rename Command..."))
-        if self.git_svn:
-            self.action.append(
-                self.git.git_svn_move,
-                self.path,
-                self.new_path
-            )
-        else:
-            self.action.append(
-                self.git.move,
-                self.path,
-                self.new_path
-            )
+        self.action.append(
+            self.git.move,
+            self.path,
+            self.new_path
+        )
         self.action.append(self.action.set_status, _("Completed Rename"))
         self.action.append(self.action.finish)
-        self.action.append(self.close)
         self.action.schedule()
 
 classes_map = {

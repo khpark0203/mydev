@@ -255,16 +255,16 @@ class Git(object):
 
     def is_locked(self, path):
         return False
-        
+
     def already_skiptree_file(self, path):
         return self.client.already_skiptree_file(path)
-        
+
     def already_skiptree(self, path):
         return self.client.already_skiptree(path)
-        
+
     def skiptree(self, paths, remove):
         return self.client.skiptree(paths, remove)
-        
+
     def noskiptree(self, paths, make):
         return self.client.noskiptree(paths, make)
 
@@ -289,13 +289,13 @@ class Git(object):
         items = []
         for path in paths:
             st = self.statuses(path, recurse=False, invalidate=True)
-                
+
             for st_item in st:
                 if st_item.content in statuses or len(statuses) == 0:
                     items.append(st_item)
 
         return items
-        
+
     def get_items(self, paths, statuses=[]):
         """
         Retrieves a list of files that have one of a set of statuses
@@ -325,7 +325,7 @@ class Git(object):
                     items.append(st_item)
 
         return items
-        
+
     def get_items_no_recursive(self, paths, statuses=[]):
         """
         Retrieves a list of files that have one of a set of statuses
@@ -641,22 +641,6 @@ class Git(object):
 
         return self.client.move(source, dest)
 
-    def git_svn_move(self, source, dest):
-        """
-        Move a file within the repository
-
-        @type   source: string
-        @param  source: The source file
-
-        @type   dest: string
-        @param  dest: The destination.  If dest exists as a directory, source
-            will be added as a child.  Otherwise, source will be renamed to
-            dest.
-
-        """
-
-        return self.client.git_svn_move(source, dest)
-
     def pull(self, repository="origin", refspec="master", options=None):
         """
         Fetch objects from a remote repository and merge with the local
@@ -694,53 +678,53 @@ class Git(object):
         """
         For git-svn update
         """
-        
+
         return self.client.git_svn_clone(url, path)
-        
+
     def git_stage(self, paths):
         """
         For git-svn update
         """
-        
+
         return self.client.git_stage(paths)
-        
+
     def git_svn_unstage(self, paths):
         """
         For git-svn update
         """
-        
+
         return self.client.git_svn_unstage(paths)
-        
+
     def git_svn_update(self):
         """
         For git-svn update
         """
-        
+
         return self.client.git_svn_update()
-        
+
     def git_svn_push(self):
         """
         For git-svn push
         """
-        
+
         return self.client.git_svn_push()
 
     def add_commit(self, paths, log):
         """
         Add and Commit from all remote repositories.
         """
-        
+
         return self.client.add_commit(paths, log)
 
     def commit_and_push(self):
-        
+
         return self.client.commit_and_push()
-        
+
     def get_not_pushed_inform(self, what):
         """
         waht : count, rev
         """
-        
+
         return self.client.get_not_pushed_inform(what)
 
     def fetch_all(self):
@@ -870,18 +854,18 @@ class Git(object):
         """
 
         return self.client.tag_list()
-        
+
     def get_revision_remote_latest(self):
         return self.client.get_revision_remote_latest()
 
 
     def get_stash_list(self):
         return self.client.get_stash_list()
-        
+
     def stash(self, cmd=None, num=None, msg=None):
         return self.client.stash(cmd, num, msg)
-        
-        
+
+
     def git_not_pushed_log(self, path=None):
         import locale
         current_locale = locale.getlocale()
@@ -1171,7 +1155,7 @@ class Git(object):
 
     def cancel_commit(self, num, rev):
         return self.client.cancel_commit(num, rev)
-    
+
     def reset(self, path, revision, type=None):
         """
         Reset repository to a specified state

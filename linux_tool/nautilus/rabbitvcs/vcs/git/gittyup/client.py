@@ -88,7 +88,7 @@ class GittyupClient(object):
         self.numberOfCommandStages = 0
         self.numberOfCommandStagesExecuted = 0
         self.git_svn = False
-        
+
         if path:
             try:
                 self.repo = dulwich.repo.Repo(path)
@@ -566,7 +566,7 @@ class GittyupClient(object):
                 "path": path,
                 "mime_type": guess_type(path)[0]
             })
-            
+
     def git_svn_unstage(self, path):
         cmd = ["git", "reset", "HEAD", path]
         try:
@@ -587,7 +587,7 @@ class GittyupClient(object):
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
-    
+
     def git_svn_update(self):
         cmds = [["git", "stash", "list"], ["git", "stash"], ["git", "stash", "list"], ["git", "svn", "rebase"], ["git", "stash", "pop"]]
         i = 0
@@ -625,7 +625,7 @@ class GittyupClient(object):
                 i += 1
             except GittyupCommandError as e:
                 self.callback_notify(e)
-                
+
     def git_svn_push(self):
         cmds = [["git", "stash", "list"], ["git", "stash"], ["git", "stash", "list"], ["git", "svn", "rebase"], ["git", "svn", "dcommit"], ["git", "stash", "pop"]]
         i = 0
@@ -663,16 +663,16 @@ class GittyupClient(object):
                 i += 1
             except GittyupCommandError as e:
                 self.callback_notify(e)
-            
+
     def git_not_pushed_log(self, path):
         if not path:
             path = self.repo.path
-        
+
         if self.git_svn:
             cmd = ["git", "log", "git-svn..master", "--date=local", "--pretty=fuller", path]
         else:
             cmd = ["git", "log", "--branches", "--not", "--remotes", "--date=local", "--pretty=fuller", path]
-        
+
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
         except GittyupCommandError as e:
@@ -687,7 +687,7 @@ class GittyupClient(object):
         for line in stdout:
             if line == "":
                 continue
-            
+
             if line[0:6] == "commit":
                 match = pattern_from.search(line)
                 commit_line = re.sub(" \(from.*\)","", line).split(" ")
@@ -755,7 +755,7 @@ class GittyupClient(object):
             revisions.append(revision)
 
         return revisions
-        
+
 
     def add_commit(self, paths, log):
         cmd = ["git", "commit"]
@@ -766,15 +766,15 @@ class GittyupClient(object):
                 "path": path,
                 "mime_type": guess_type(path)[0]
             })
-            
+
         cmd.append("-m")
         cmd.append(log)
-        
+
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
-            
+
         try:
             end_index = stdout[0].find("]")
             start_index = stdout[0][:end_index].rfind(" ") + 1
@@ -787,12 +787,12 @@ class GittyupClient(object):
 
         if branch_full is not None:
             branch_components = re.search(b"refs/heads/(.+)", branch_full)
-            
+
             if (branch_components != None):
                 branch = branch_components.group(1)
                 self.notify("[%s] -> %s" % (S(commit_id), S(branch)))
                 self.notify("To branch: " + S(branch))
-                
+
     def branch(self, name, commit_sha=None, track=False):
         """
         Create a new branch
@@ -1128,53 +1128,24 @@ class GittyupClient(object):
             dest.
         """
 
-        index = self._get_index()
-        relative_source = self.get_relative_path(source)
-        relative_dest = self.get_relative_path(dest)
-
-        # Get a list of affected files so we can update the index
-        source_files = []
-        if os.path.isdir(source):
-            for name in index:
-                name = name.decode(self.UTF8)
-                if name.startswith(relative_source):
-                    source_files.append(name)
-        else:
-            source_files.append(relative_source)
-
-        # Rename the affected index entries
-        for source_file in source_files:
-            new_path = source_file.replace(relative_source, relative_dest)
-            if os.path.isdir(dest):
-                new_path = os.path.join(new_path, os.path.basename(source_file))
-
-            source_file = source_file.encode(self.UTF8)
-            index[new_path.encode(self.UTF8)] = index[source_file]
-            del index[source_file]
-
-        index.write()
-
-        # Actually move the file/folder
-        shutil.move(source, dest)
-
-    def git_svn_move(self, source, dest):
-        """
-        Move a file within the repository
-
-        @type   source: string
-        @param  source: The source file
-
-        @type   dest: string
-        @param  dest: The destination.  If dest exists as a directory, source
-            will be added as a child.  Otherwise, source will be renamed to
-            dest.
-        """
         cmd = ["git", "mv", source, dest]
-        
+
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
+        else:
+            self.notify({
+                "action": "Original",
+                "path": source,
+                "mime_type": guess_type(source)[0]
+            })
+            self.notify("Change to")
+            self.notify({
+                "action": "New",
+                "path": dest,
+                "mime_type": guess_type(dest)[0]
+            })
 
     def pull(self, repository="origin", refspec="master", options=None):
         """
@@ -2177,18 +2148,18 @@ class GittyupClient(object):
         except GittyupCommandError as e:
             self.callback_notify(e)
             return
-            
+
     def get_not_pushed_inform(self, what):
         if self.git_svn:
             cmd = ["git", "log", "git-svn..master"]
         else:
             cmd = ["git", "log", "--branches", "--not", "--remotes"]
-            
+
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
-        
+
         if what == "count":
             ret = 0
             for i in range(len(stdout) - 1):
@@ -2200,7 +2171,7 @@ class GittyupClient(object):
                 if stdout[i][:7] == "commit " and stdout[i+1][:8] == "Author: ":
                     ret.append(stdout[i].split(" ")[1])
         return ret
-            
+
     def get_revision_remote_latest(self):
         cmd = ["git", "log", "--remotes"]
         remote_rev = ""
@@ -2209,9 +2180,9 @@ class GittyupClient(object):
             remote_rev = stdout[0].split(" ")[1]
         except GittyupCommandError as e:
             self.callback_notify(e)
-            
+
         return remote_rev
-        
+
     def get_stash_list(self):
         cmd = ["git", "reflog", "show", "stash"]
         ret = []
@@ -2224,27 +2195,27 @@ class GittyupClient(object):
                     ret[0].replace("(refs/stash) ", "")
         except GittyupCommandError as e:
             self.callback_notify(e)
-            
+
         return ret
-    
+
     def stash(self, command=None, num=None, msg=None):
         cmd = ["git", "stash"]
         valid_command = ["drop", "apply", "pop", "save", "clear"]
-        
+
         if command in valid_command:
             cmd.append(command)
-        
+
         if num:
             cmd.append("stash@{%d}" % num)
-            
+
         if msg:
             cmd.append(msg)
-            
+
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
-        
+
     def already_skiptree(self, path):
         cmd = ["git", "ls-files", "-v", path]
         ret = False
@@ -2258,7 +2229,7 @@ class GittyupClient(object):
                     break
         except GittyupCommandError as e:
             self.callback_notify(e)
-            
+
         return ret
 
     def already_skiptree_file(self, path):
@@ -2277,9 +2248,9 @@ class GittyupClient(object):
                         ret.append(add_file)
         except GittyupCommandError as e:
             self.callback_notify(e)
-            
+
         return ret
-        
+
     def noskiptree(self, paths, make):
         for path in paths:
             cmd = ["git", "ls-files", "-z", path]
@@ -2307,7 +2278,7 @@ class GittyupClient(object):
                     "path": path,
                     "mime_type": guess_type(path)[0]
                 })
-                
+
     def skiptree(self, paths, remove):
         for path in paths:
             cmd = ["git", "ls-files", "-z", path]
@@ -2337,17 +2308,17 @@ class GittyupClient(object):
                     "path": path,
                     "mime_type": guess_type(path)[0]
                 })
-        
+
     def cancel_commit(self, num, rev):
         load_ret = False
         remote_rev = self.get_revision_remote_latest()
-        
+
         for i in range(num):
             if remote_rev == rev[i]:
                 return load_ret
             else:
                 cmd = ["git", "reset", "HEAD^"]
-                
+
                 try:
                     (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
                 except GittyupCommandError as e:
