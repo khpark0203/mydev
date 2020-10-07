@@ -22,6 +22,7 @@ from __future__ import absolute_import
 #
 
 import os.path
+import sys
 
 from rabbitvcs.util import helper
 
@@ -52,14 +53,24 @@ class Rename(InterfaceNonView):
 
         if not os.path.exists(self.path):
             MessageBox(_("The requested file or folder does not exist."))
-            self.close()
+            sys.exit(-1)
             return
 
         dialog = OneLineTextChange(_("Rename"), _("New Name:"), self.path)
+
+        label2 = dialog.get_widget("label2")
+        orgtext = dialog.get_widget("org_text")
+
+        orgtext.set_text(self.path)
+
+        label2.set_property("visible", True)
+        orgtext.set_property("visible", True)
+
+
         (result, new_path) = dialog.run()
 
         if result != Gtk.ResponseType.OK:
-            self.close()
+            sys.exit(-1)
             return
 
         if not new_path:
@@ -73,6 +84,7 @@ class SVNRename(Rename):
         Rename.__init__(self, path)
 
         if not self.DO_RENAME:
+            sys.exit(-1)
             return
 
         self.svn = self.vcs.svn()
@@ -104,6 +116,7 @@ class GitRename(Rename):
         Rename.__init__(self, path)
 
         if not self.DO_RENAME:
+            sys.exit(-1)
             return
 
         self.git = self.vcs.git(path)

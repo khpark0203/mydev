@@ -198,7 +198,7 @@ class InterfaceView(GtkBuilderWidgetWrapper):
             return True
 
         if ((event.state & Gdk.ModifierType.CONTROL_MASK and
-                Gdk.keyval_name(event.keyval).lower() == "r") or 
+                Gdk.keyval_name(event.keyval).lower() == "r") or
                 Gdk.keyval_name(event.keyval).lower() == "f5"):
             self.on_refresh_clicked(widget)
             return True
