@@ -136,7 +136,7 @@ class GitStash(Stash):
         self.revisions_table = rabbitvcs.ui.widget.Table(
             self.get_widget("revisions_table"),
             [GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING],
-            [_("Number"), _("Revision"), _("Message")],
+            [_("Num"), _("Revision"), _("Message")],
             filters=[{
                 "callback": rabbitvcs.ui.widget.git_revision_filter,
                 "user_data": {
@@ -151,7 +151,7 @@ class GitStash(Stash):
         self.path_table = rabbitvcs.ui.widget.Table(
             self.get_widget("path_table"),
             [GObject.TYPE_STRING, GObject.TYPE_STRING],
-            [_("Number"), _("File")],
+            [_("Num"), _("File")],
             filters=[{
                 "callback": rabbitvcs.ui.widget.git_revision_filter,
                 "user_data": {
