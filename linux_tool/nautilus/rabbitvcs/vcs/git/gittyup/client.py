@@ -2160,16 +2160,24 @@ class GittyupClient(object):
         except GittyupCommandError as e:
             self.callback_notify(e)
 
+        list_std = []
+        len_stdout = len(stdout)
+        if len_stdout > 0:
+            for i in range(0, len_stdout, 6):
+                list_std.append(stdout[i:i+5])
+
+        len_liststd = len(list_std)
+
         if what == "count":
-            ret = 0
-            for i in range(len(stdout) - 1):
-                if stdout[i][:7] == "commit " and stdout[i+1][:8] == "Author: ":
-                    ret += 1
+            ret = len_liststd
         elif what == "rev":
             ret = []
-            for i in range(len(stdout) - 1):
-                if stdout[i][:7] == "commit " and stdout[i+1][:8] == "Author: ":
-                    ret.append(stdout[i].split(" ")[1])
+            for std in list_std:
+                ret.append(std[0].split(" ")[1])
+        elif what == "message":
+            ret  = []
+            for std in list_std:
+                ret.append(std[-1])
         return ret
 
     def get_revision_remote_latest(self):

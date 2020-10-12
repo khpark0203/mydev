@@ -118,7 +118,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         for path in paths:
             if self.vcs.is_in_a_or_a_working_copy(path):
                 self.paths.append(S(path))
-        
+
         self.commit_and_push = False
         self.repository_selector = None
         self.is_git = False
@@ -216,7 +216,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
                 self.SHOW_UNVERSIONED
             )
             self.SETTINGS.write()
-            
+
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(1)
         pathrev1 = helper.create_path_revision_string(paths[0], "base")
@@ -340,7 +340,7 @@ class SVNCommit(Commit):
     def on_files_table_toggle_event(self, row, col):
         # Adds path: True/False to the dict
         self.changes[row[1]] = row[col]
-        
+
     def on_show_log(self, widget, *args):
         path = []
         if widget.get_label() == self.get_widget("cur_log").get_label():
@@ -353,7 +353,7 @@ class SVNCommit(Commit):
                     break
                 path_to_check = os.path.split(path_to_check)[0]
         helper.launch_ui_window("log", path)
-        
+
     def on_toggle_commit_and_push(self, widget, *args):
         pass
 
@@ -379,7 +379,7 @@ class GitCommit(Commit):
             self.initialize_items()
         self.git_svn = self.git.client.git_svn
         self.is_git = True
-        
+
     def on_ok_clicked(self, widget, data=None):
         items = self.files_table.get_activated_rows(1)
         self.hide()
@@ -392,7 +392,7 @@ class GitCommit(Commit):
         for item in items:
             staged += 1
         ticks = staged + len(items)*2
-        
+
         self.action = rabbitvcs.ui.action.GitAction(
             self.git,
             register_gtk_quit=self.gtk_quit_is_set()
@@ -410,7 +410,7 @@ class GitCommit(Commit):
             self.message.get_text()
         )
         self.action.append(self.action.set_status, _("Completed Commit"))
-        
+
         if self.commit_and_push:
             self.action.append(self.action.set_header, _("Commit &amp; Push"))
             self.action.append(self.action.set_status, _("Running Push Command..."))
@@ -425,14 +425,14 @@ class GitCommit(Commit):
                     refspec=self.repository_selector.branch_opt.get_active_text()
                 )
             self.action.append(self.action.set_status, _("Completed Push"))
-        
+
         self.action.append(self.action.finish)
         self.action.schedule()
 
     def on_files_table_toggle_event(self, row, col):
         # Adds path: True/False to the dict
         self.changes[row[1]] = row[col]
-        
+
     def on_show_log(self, widget, *args):
         if widget.get_label() == self.get_widget("cur_log").get_label():
             path = self.paths
@@ -440,11 +440,13 @@ class GitCommit(Commit):
             path = []
             path.append(self.git.get_repository())
         helper.launch_ui_window("log", path)
-        
+
     def on_toggle_commit_and_push(self, widget, *args):
         self.commit_and_push = False
         if widget.get_active():
-            commit_num = self.git.get_not_pushed_inform("count")
+            message = self.git.get_not_pushed_inform("message")
+            rev = self.git.get_not_pushed_inform("rev")
+            commit_num = len(message)
             if self.git_svn == False:
                 if self.repository_selector == None:
                     self.repository_selector = rabbitvcs.ui.widget.GitRepositorySelector(
@@ -454,8 +456,11 @@ class GitCommit(Commit):
                 else:
                     self.get_widget("repository_container").show()
             if commit_num > 0:
+                txt = "Committed revision already exist.\nDo you want to push all?\n\n"
+                for i in range(commit_num):
+                    txt += "{}.{} ({})\n".format(i + 1, message[i], rev[i][:8])
                 confirmation = rabbitvcs.ui.dialog.Confirmation(
-                    _("Committed revision already exist.\nDo you want to push all?\n\nAlready committed count : {}".format(commit_num))
+                    _(txt)
                 )
                 if confirmation.run() == Gtk.ResponseType.OK:
                     self.commit_and_push = True
@@ -464,7 +469,7 @@ class GitCommit(Commit):
         else:
             if self.git_svn == False:
                 self.get_widget("repository_container").hide()
-                
+
         widget.set_active(self.commit_and_push)
 
 classes_map = {
