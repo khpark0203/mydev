@@ -54,7 +54,7 @@
             </child>
             <child>
               <object class="GtkButton" id="confirm_ok">
-                <property name="label" translatable="yes">_Yes</property>
+                <property name="label" translatable="yes">_OK</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
