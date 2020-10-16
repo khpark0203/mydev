@@ -407,10 +407,6 @@ class GitCommit(Commit):
                 )
                 if confirmation.run() != Gtk.ResponseType.OK:
                     return
-        else:
-            if self.git_svn == False:
-                self.get_widget("repository_container").hide()
-
         self.hide()
 
         staged = 0
@@ -469,6 +465,18 @@ class GitCommit(Commit):
     def on_toggle_commit_and_push(self, widget, *args):
         self.commit_and_push = widget.get_active()
         widget.set_active(self.commit_and_push)
+        if widget.get_active():
+            if self.git_svn == False:
+                if self.repository_selector == None:
+                    self.repository_selector = rabbitvcs.ui.widget.GitRepositorySelector(
+                        self.get_widget("repository_container"),
+                        self.git
+                    )
+                else:
+                    self.get_widget("repository_container").show()
+        else:
+            if self.git_svn == False:
+                self.get_widget("repository_container").hide()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNCommit,
