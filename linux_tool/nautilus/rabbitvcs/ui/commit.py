@@ -405,6 +405,10 @@ class GitCommit(Commit):
                 confirmation = rabbitvcs.ui.dialog.Confirmation(
                     _(txt)
                 )
+
+                confirmation.get_widget("confirm_cancel").set_label(_("_Cancel"))
+                confirmation.get_widget("confirm_ok").set_label(_("_OK"))
+
                 if confirmation.run() != Gtk.ResponseType.OK:
                     return
         self.hide()
