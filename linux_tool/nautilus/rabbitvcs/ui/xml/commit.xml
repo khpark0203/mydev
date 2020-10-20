@@ -271,11 +271,12 @@
                         <property name="hexpand">True</property>
                         <child>
                           <object class="GtkButton" id="root_log">
-                            <property name="label" translatable="yes">Show Log - Root Repository</property>
+                            <property name="label" translatable="yes">Show Log - _Root Repository</property>
                             <property name="hexpand">True</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
+                            <property name="use_underline">True</property>
                             <signal name="clicked" handler="on_show_log" swapped="no"/>
                           </object>
                           <packing>
@@ -285,11 +286,12 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="cur_log">
-                            <property name="label" translatable="yes">Show Log - Current Repository</property>
+                            <property name="label" translatable="yes">Show Log - Curr_ent Repository</property>
                             <property name="hexpand">True</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
+                            <property name="use_underline">True</property>
                             <signal name="clicked" handler="on_show_log" swapped="no"/>
                           </object>
                           <packing>
@@ -330,14 +332,15 @@
                         </child>
                         <child>
                           <object class="GtkCheckButton" id="toggle_show_unversioned">
-                            <property name="label" translatable="yes">Show unversioned files</property>
+                            <property name="label" translatable="yes">Show unversioned _files</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
                             <property name="halign">start</property>
                             <property name="hexpand">True</property>
-                            <property name="active">True</property>
+                            <property name="active">False</property>
                             <property name="draw_indicator">True</property>
+                            <property name="use_underline">True</property>
                             <signal name="toggled" handler="on_toggle_show_unversioned_toggled" swapped="no"/>
                           </object>
                           <packing>
@@ -347,7 +350,7 @@
                         </child>
                         <child>
                           <object class="GtkCheckButton" id="toggle_show_all">
-                            <property name="label" translatable="yes">Select / Deselect all</property>
+                            <property name="label" translatable="yes">_Select / Deselect all</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="active">True</property>
@@ -355,6 +358,7 @@
                             <property name="halign">start</property>
                             <property name="hexpand">True</property>
                             <property name="draw_indicator">True</property>
+                            <property name="use_underline">True</property>
                             <signal name="toggled" handler="on_toggle_show_all_toggled" swapped="no"/>
                           </object>
                           <packing>
