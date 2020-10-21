@@ -2151,9 +2151,9 @@ class GittyupClient(object):
 
     def get_not_pushed_inform(self, what):
         if self.git_svn:
-            cmd = ["git", "log", "git-svn..master"]
+            cmd = ["git", "log", "git-svn..master", "--date=iso"]
         else:
-            cmd = ["git", "log", "--branches", "--not", "--remotes"]
+            cmd = ["git", "log", "--branches", "--not", "--remotes", "--date=iso"]
 
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
@@ -2177,7 +2177,11 @@ class GittyupClient(object):
         elif what == "message":
             ret  = []
             for std in list_std:
-                ret.append(std[-1])
+                ret.append(std[-1][4:])
+        elif what == "date":
+            ret = []
+            for std in list_std:
+                ret.append(std[2][8:27])
         return ret
 
     def get_revision_remote_latest(self):

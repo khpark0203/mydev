@@ -21,6 +21,7 @@ from __future__ import absolute_import
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import datetime
 import os
 import six.moves._thread
 from time import sleep
@@ -122,6 +123,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         self.commit_and_push = False
         self.repository_selector = None
         self.is_git = False
+        self.datetime_format = "%y.%m.%d (%a) %p %I:%M"
 
     #
     # Helper functions
@@ -395,6 +397,7 @@ class GitCommit(Commit):
         if self.get_widget("toggle_commit_and_push").get_active():
             message = self.git.get_not_pushed_inform("message")
             rev = self.git.get_not_pushed_inform("rev")
+            date = self.git.get_not_pushed_inform("date")
             commit_num = len(message)
             if self.git_svn == False:
                 if self.repository_selector == None:
@@ -407,7 +410,9 @@ class GitCommit(Commit):
             if commit_num > 0:
                 txt = "Committed revision already exist.\nDo you want to push all?\n\n"
                 for i in range(commit_num):
-                    txt += "{}.{} ({})\n".format(i + 1, message[i], rev[i][:8])
+                    d = datetime.datetime.strptime(date[i], "%Y-%m-%d %H:%M:%S")
+                    dt = helper.format_datetime(d, self.datetime_format)
+                    txt += "{} | {} ({})\n".format(dt, message[i], rev[i][:8])
                 confirmation = rabbitvcs.ui.dialog.Confirmation(
                     _(txt)
                 )
