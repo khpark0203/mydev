@@ -193,10 +193,16 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         if InterfaceView.on_key_pressed(self, widget, event, *args):
             return True
 
+
         if (event.state & Gdk.ModifierType.CONTROL_MASK and
-                Gdk.keyval_name(event.keyval) == "Return"):
+            Gdk.keyval_name(event.keyval) == "Return"):
             self.on_ok_clicked(widget)
             return True
+        elif event.state & Gdk.ModifierType.MOD1_MASK:
+            if Gdk.keyval_name(event.keyval) == "T":
+                self.get_widget("message").grab_focus()
+            elif Gdk.keyval_name(event.keyval) == "t":
+                self.get_widget("message").grab_focus()
 
     def on_toggle_show_all_toggled(self, widget, data=None):
         self.TOGGLE_ALL = not self.TOGGLE_ALL
