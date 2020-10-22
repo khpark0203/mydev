@@ -271,7 +271,7 @@
                         <property name="hexpand">True</property>
                         <child>
                           <object class="GtkButton" id="root_log">
-                            <property name="label" translatable="yes">Show Log - _Root Repository</property>
+                            <property name="label" translatable="yes">Show _Log - Root Repository</property>
                             <property name="hexpand">True</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -286,7 +286,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="cur_log">
-                            <property name="label" translatable="yes">Show Log - Curr_ent Repository</property>
+                            <property name="label" translatable="yes">Show Log - C_urrent Repository</property>
                             <property name="hexpand">True</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
