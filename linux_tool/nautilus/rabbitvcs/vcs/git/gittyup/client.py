@@ -2163,8 +2163,11 @@ class GittyupClient(object):
         list_std = []
         len_stdout = len(stdout)
         if len_stdout > 0:
-            for i in range(0, len_stdout, 6):
-                list_std.append(stdout[i:i+5])
+            for i in range(len_stdout):
+                if stdout[i][0:6] == "commit" and \
+                   stdout[i+1][0:7] == "Author:" and \
+                   stdout[i+2][0:5] == "Date:":
+                    list_std.append(stdout[i:i+5])
 
         len_liststd = len(list_std)
 
