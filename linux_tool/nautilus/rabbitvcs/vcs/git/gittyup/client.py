@@ -627,7 +627,7 @@ class GittyupClient(object):
                 self.callback_notify(e)
 
     def git_svn_push(self):
-        cmds = [["git", "stash", "list"], ["git", "stash"], ["git", "stash", "list"], ["git", "svn", "rebase"], ["git", "svn", "dcommit"], ["git", "stash", "pop"]]
+        cmds = [["git", "stash", "list"], ["git", "stash"], ["git", "stash", "list"], ["git", "svn", "dcommit"], ["git", "stash", "pop"]]
         i = 0
         ex_stash_num = 0
         stash_num = 0
@@ -639,7 +639,7 @@ class GittyupClient(object):
                 elif i == 2:
                     (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
                     stash_num = len(stdout)
-                elif i == 5:
+                elif i == 4:
                     if stash_num > ex_stash_num:
                         (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=None, cancel=self.get_cancel()).execute()
                         if len(stdout):
