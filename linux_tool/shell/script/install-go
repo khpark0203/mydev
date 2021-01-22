@@ -24,6 +24,7 @@ if [ ${VERSION_IN_FOLDER:0:6} = "go$VERSION" ]; then
     cd /usr/lib
     sudo ln -s go-$VERSION go
     sudo rm /usr/bin/go
+    sudo rm /usr/bin/gofmt
     sudo ln -s ../lib/go-$VERSION/bin/go /usr/bin/go
     sudo ln -s ../lib/go-$VERSION/bin/gofmt /usr/bin/gofmt
 	go version
