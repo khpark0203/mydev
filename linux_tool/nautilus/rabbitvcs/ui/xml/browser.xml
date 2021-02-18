@@ -114,7 +114,7 @@
             </child>
             <child>
               <object class="GtkButton" id="create_folder_here">
-                <property name="label" translatable="yes">_Create folder here</property>
+                <property name="label" translatable="yes">Create _folder here</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
