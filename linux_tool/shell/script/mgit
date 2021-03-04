@@ -1,3 +1,4 @@
+#!/bin/sh
 if [ $# -eq 0 ]; then
     echo "Enter argv..."
     exit 0

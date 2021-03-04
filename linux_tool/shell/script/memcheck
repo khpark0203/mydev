@@ -1,3 +1,4 @@
+#!/bin/sh
 if [ $# -eq 0 ]; then
     echo "-c : color"
     echo "-l logfile"
