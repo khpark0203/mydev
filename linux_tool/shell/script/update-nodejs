@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 start_echo() {
     echo "###############################"
     echo "Start install nodejs version => $1"
