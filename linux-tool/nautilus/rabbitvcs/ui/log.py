@@ -580,7 +580,7 @@ class SVNLog(Log):
         self.check_next_sensitive()
 
         for item in self.display_items:
-            msg = helper.format_long_text(item.message, cols = None, line1only = False)
+            msg = helper.format_long_text(item.message, cols = None, line1only = True)
             rev = item.revision
             color = "#000000"
             if (self.merge_candidate_revisions != None and
@@ -963,7 +963,7 @@ class GitLog(Log):
         enter = "⏎"
         for (item, node, in_lines, out_lines) in grapher:
             revision = S(item.revision)
-            msg = helper.html_escape(helper.format_long_text(item.message, cols = None, line1only = False))
+            msg = helper.html_escape(helper.format_long_text(item.message, cols = None, line1only = True))
             revision_num = "-"
             if self.git_svn:
                 git_svn_ment = "⏎⏎git-svn-id: "
