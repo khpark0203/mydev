@@ -10,6 +10,8 @@ void main(int args, char* argv[])
         if (access(file, F_OK) != 0) {
             FILE* fp = fopen(file, "w");
             fclose(fp);
+        } else {
+            utime(file, NULL);
         }
     }
 }
