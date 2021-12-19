@@ -17,4 +17,4 @@ _rabbitvcs()
     fi
 }
 
-complete -F _rabbitvcs rabbitvcs
+complete -F _rabbitvcs rabbitvcs gk
