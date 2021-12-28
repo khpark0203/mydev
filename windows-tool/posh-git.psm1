@@ -86,7 +86,7 @@ $GitPromptScriptBlock = {
             }
         }
 
-        if ($pwd.Length -eq 3) {
+        if ($pwd.Length -le 3) {
             break
         }
 
