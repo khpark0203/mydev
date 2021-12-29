@@ -66,13 +66,14 @@ $GitPromptScriptBlock = {
     # Get the current path - formatted correctly
     $promptPath = $settings.DefaultPromptPath.Expand()
 
-    $isBranch = Test-Path .git/HEAD
     $path = "."
     $i = 0
     $branch = ""
+    $curPath = (Get-Item -Path $path).FullName
+    $isBranch = Test-Path .git/HEAD
     while ($true) {
         if ($isBranch -eq $true) {
-            $str = Get-Content $pwd/.git/HEAD
+            $str = Get-Content $curPath/.git/HEAD
             $last = $str.LastIndexOf('/')
             $green = "$([char]27)[38;5;2m"
             $branch = " $green" + $str.Substring($last + 1) + "$([char]27)[0m"
@@ -86,12 +87,12 @@ $GitPromptScriptBlock = {
             }
         }
 
-        if ($pwd.Length -le 3) {
+        if ($curPath.Length -le 3) {
             break
         }
 
-        $pwd = (Get-Item -Path $path).FullName
-        $isBranch = Test-Path $pwd/.git/HEAD
+        $curPath = (Get-Item -Path $path).FullName
+        $isBranch = Test-Path $curPath/.git/HEAD
     }
 
     # Write the delimited path and Git status summary information
