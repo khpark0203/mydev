@@ -1091,5 +1091,10 @@
 		"key": "ctrl+e ctrl+b",
 		"command": "-sqltools.formatSql",
 		"when": "editorTextFocus && !editorReadonly"
+	},
+	{
+		"key": "shift+alt+n",
+		"command": "editor.action.insertCursorAtEndOfEachLineSelected",
+		"when": "editorTextFocus"
 	}
 ]
