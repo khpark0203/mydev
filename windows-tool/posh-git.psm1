@@ -71,10 +71,26 @@ $GitPromptScriptBlock = {
     $branch = ""
     $curPath = (Get-Item -Path $path).FullName
     $isBranch = Test-Path .git/HEAD
-    while ($true) {
+    $skip = $false
+    if ($isBranch -eq $false) {
+        $real = Test-Path ./HEAD
+        if ($real -eq $true) {
+            $str = Get-Content ./HEAD
+            $findstr = 'refs/heads'
+            if ($str.IndexOf($findstr) -ne -1) {
+                $last = $str.IndexOf($findstr) + $findstr.Length
+                $green = "$([char]27)[38;5;2m"
+                $branch = " $green" + $str.Substring($last + 1) + "$([char]27)[0m"
+                $skip = $true
+            }
+        }
+    }
+
+    while ($skip -eq $false) {
         if ($isBranch -eq $true) {
             $str = Get-Content $curPath/.git/HEAD
-            $last = $str.LastIndexOf('/')
+            $findstr = 'refs/heads'
+            $last = $str.IndexOf($findstr) + $findstr.Length
             $green = "$([char]27)[38;5;2m"
             $branch = " $green" + $str.Substring($last + 1) + "$([char]27)[0m"
             break
