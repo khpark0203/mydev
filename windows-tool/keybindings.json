@@ -1061,5 +1061,9 @@
 		"key": "ctrl+enter",
 		"command": "sqltools.executeCurrentQuery",
 		"when": "editorLangId == 'sql'"
+	},
+	{
+		"key": "ctrl+shift+q",
+		"command": "workbench.view.extension.sqltoolsActivityBarContainer"
 	}
 ]
