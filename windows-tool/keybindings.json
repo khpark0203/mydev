@@ -727,20 +727,8 @@
 		"command": "editor.action.indentationToSpaces"
 	},
 	{
-		"key": "ctrl+f1",
+		"key": "ctrl+alt+1",
 		"command": "editor.emmet.action.incrementNumberByOne"
-	},
-	{
-		"key": "shift+f1",
-		"command": "editor.emmet.action.decrementNumberByOne"
-	},
-	{
-		"key": "ctrl+f10",
-		"command": "editor.emmet.action.incrementNumberByTen"
-	},
-	{
-		"key": "shift+f10",
-		"command": "editor.emmet.action.decrementNumberByTen"
 	},
 	{
 		"key": "shift+alt+f10",
@@ -1065,5 +1053,14 @@
 	{
 		"key": "ctrl+shift+q",
 		"command": "workbench.view.extension.sqltoolsActivityBarContainer"
-	}
+	},
+	{
+		"key": "ctrl+k ctrl+g",
+		"command": "go.languageserver.restart"
+	},
+	{
+		"key": "ctrl+f1",
+		"command": "editor.action.peekDefinition",
+		"when": "editorHasDefinitionProvider && editorTextFocus && !inReferenceSearchEditor && !isInEmbeddedEditor"
+	}	
 ]
