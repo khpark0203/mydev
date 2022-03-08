@@ -1057,5 +1057,9 @@
 	{
 		"key": "ctrl+k ctrl+g",
 		"command": "go.languageserver.restart"
+	},
+	{
+		"key": "ctrl+j ctrl+d",
+		"command": "editor.action.removeDuplicateLines"
 	}
 ]
