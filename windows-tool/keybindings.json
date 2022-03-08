@@ -65,7 +65,7 @@
 		"when": "editorHasDefinitionProvider && editorTextFocus && !inReferenceSearchEditor && !isInEmbeddedEditor"
 	},
 	{
-		"key": "alt+shift+v",
+		"key": "ctrl+alt+v",
 		"command": "editor.action.goToDeclaration",
 		"when": "editorHasDefinitionProvider && editorTextFocus && !isInEmbeddedEditor"
 	},
