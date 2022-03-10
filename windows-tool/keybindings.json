@@ -1061,5 +1061,9 @@
 	{
 		"key": "ctrl+j ctrl+d",
 		"command": "editor.action.removeDuplicateLines"
+	},
+	{
+		"key": "ctrl+oem_102",
+		"command": "workbench.action.splitEditor"
 	}
 ]
