@@ -1065,5 +1065,15 @@
 	{
 		"key": "ctrl+oem_102",
 		"command": "workbench.action.splitEditor"
+	},
+	{
+		"key": "ctrl+shift+oem_102",
+		"command": "editor.action.jumpToBracket",
+		"when": "editorTextFocus"
+	},
+	{
+		"key": "ctrl+shift+alt+oem_102",
+		"command": "editor.action.selectToBracket",
+		"when": "editorTextFocus"
 	}
 ]
