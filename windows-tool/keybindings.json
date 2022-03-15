@@ -65,7 +65,7 @@
 		"when": "editorHasDefinitionProvider && editorTextFocus && !inReferenceSearchEditor && !isInEmbeddedEditor"
 	},
 	{
-		"key": "ctrl+alt+v",
+		"key": "shift+alt+v",
 		"command": "editor.action.goToDeclaration",
 		"when": "editorHasDefinitionProvider && editorTextFocus && !isInEmbeddedEditor"
 	},
@@ -1061,5 +1061,9 @@
 	{
 		"key": "ctrl+j ctrl+d",
 		"command": "editor.action.removeDuplicateLines"
+	},
+	{
+		"key": "ctrl+oem_102",
+		"command": "workbench.action.splitEditor"
 	}
 ]
