@@ -65,6 +65,11 @@
 		"when": "editorHasDefinitionProvider && editorTextFocus && !inReferenceSearchEditor && !isInEmbeddedEditor"
 	},
 	{
+		"key": "ctrl+f1",
+		"command": "editor.action.peekDefinition",
+		"when": "editorHasDefinitionProvider && editorTextFocus && !inReferenceSearchEditor && !isInEmbeddedEditor"
+	},
+	{
 		"key": "shift+alt+v",
 		"command": "editor.action.goToDeclaration",
 		"when": "editorHasDefinitionProvider && editorTextFocus && !isInEmbeddedEditor"
