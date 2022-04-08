@@ -1,0 +1,8 @@
+#!/bin/sh
+
+MLIST=`xrandr -q | grep -w connected | awk '{print $1}'`
+
+for M in $MLIST
+do
+    xrandr --output $M --set "Broadcast RGB" "Full"
+done

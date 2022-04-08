@@ -1,0 +1,6 @@
+# im-config(8) generated on Fri, 13 Aug 2021 15:40:33 +0900
+run_im ibus
+# im-config signature: 242e97001257798eb2b3b3240b41c54e  -
+
+synclient PalmDetect=1 PalmMinWidth=7 PalmMinZ=30 VertScrollDelta=-100 HorizScrollDelta=-100 TapButton2=3 TapButton3=2
+xrset

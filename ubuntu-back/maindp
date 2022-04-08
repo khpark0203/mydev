@@ -1,0 +1,10 @@
+#!/bin/sh
+
+PRIMARY=`xrandr --listmonitors | grep "\*" | awk '{print $NF}'`
+MIDDLE=`xrandr --listmonitors | grep "1920+0" | awk '{print $NF}'`
+
+if [ $PRIMARY = "eDP-1" ]; then
+    xrandr --output $MIDDLE --primary
+else
+    xrandr --output "eDP-1" --primary
+fi
