@@ -200,15 +200,29 @@ BOOL xf_floatbar_hide_and_show(xfFloatbar* floatbar)
 
 	if (!floatbar->locked)
 	{
-		if ((floatbar->mode == XF_FLOATBAR_MODE_NONE) && (floatbar->last_motion_y_root > 10) &&
+		if ((floatbar->mode == XF_FLOATBAR_MODE_NONE) && (floatbar->last_motion_y_root > 1) &&
 		    (floatbar->y > (FLOATBAR_HEIGHT * -1)))
 		{
-			floatbar->y = floatbar->y - 1;
+			int target = 20;
+			for (int i = 0; i < target; i++) {
+				USleep(100 * 1000);
+				if (!(floatbar->last_motion_y_root > 1)) {
+					return TRUE;
+				}
+			}
+			floatbar->y = -FLOATBAR_HEIGHT;
 			XMoveWindow(xfc->display, floatbar->handle, floatbar->x, floatbar->y);
 		}
-		else if (floatbar->y < 0 && (floatbar->last_motion_y_root < 10))
+		else if (floatbar->y < 0 && (floatbar->last_motion_y_root < 2))
 		{
-			floatbar->y = floatbar->y + 1;
+			int target = 5;
+			for (int i = 0; i < target; i++) {
+				USleep(100 * 1000);
+				if (!(floatbar->last_motion_y_root < 2)) {
+					return TRUE;
+				}
+			}
+			floatbar->y = 0;
 			XMoveWindow(xfc->display, floatbar->handle, floatbar->x, floatbar->y);
 		}
 	}
