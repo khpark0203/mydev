@@ -624,7 +624,7 @@ static void xf_floatbar_event_buttonrelease(xfFloatbar* floatbar, const XButtonE
 static void xf_floatbar_resize(xfFloatbar* floatbar, const XMotionEvent* event)
 {
 	int x, width, movement;
-	xfContext* xfc = floatbar->xfc;
+	// xfContext* xfc = floatbar->xfc;
 	/* calculate movement which happened on the root window */
 	movement = event->x_root - floatbar->last_motion_x_root;
 
