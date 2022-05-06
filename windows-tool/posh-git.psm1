@@ -66,48 +66,30 @@ $GitPromptScriptBlock = {
     # Get the current path - formatted correctly
     $promptPath = $settings.DefaultPromptPath.Expand()
 
-    $path = "."
-    $i = 0
     $branch = ""
-    $curPath = (Get-Item -Path $path).FullName
+    $curPath = [string](Get-Location)
     $isBranch = Test-Path .git/HEAD
-    $skip = $false
-    if ($isBranch -eq $false) {
-        $real = Test-Path ./HEAD
-        if ($real -eq $true) {
-            $str = Get-Content ./HEAD
-            $findstr = 'refs/heads'
-            if ($str.IndexOf($findstr) -ne -1) {
-                $last = $str.IndexOf($findstr) + $findstr.Length
-                $green = "$([char]27)[38;5;2m"
-                $branch = " $green" + $str.Substring($last + 1) + "$([char]27)[0m"
-                $skip = $true
-            }
-        }
-    }
 
-    while ($skip -eq $false) {
+    while ($true) {
         if ($isBranch -eq $true) {
             $str = Get-Content $curPath/.git/HEAD
             $findstr = 'refs/heads'
-            $last = $str.IndexOf($findstr) + $findstr.Length
+            $idx = $str.IndexOf($findstr)
+            $last = $idx
+            if ($idx -ne -1) {
+                $last = $idx + $findstr.Length
+            }
             $green = "$([char]27)[38;5;2m"
             $branch = " $green" + $str.Substring($last + 1) + "$([char]27)[0m"
             break
-        } else {
-            if ($i -eq 0) {
-                $path = "../"
-                $i++
-            } else {
-                $path += "../"
-            }
         }
 
         if ($curPath.Length -le 3) {
             break
         }
 
-        $curPath = (Get-Item -Path $path).FullName
+        $newidx = $curPath.LastIndexOf("\")
+        $curPath = $curPath.Substring(0, $newidx)
         $isBranch = Test-Path $curPath/.git/HEAD
     }
 
