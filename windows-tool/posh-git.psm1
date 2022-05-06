@@ -76,7 +76,19 @@ $GitPromptScriptBlock = {
             $findstr = 'refs/heads'
             $idx = $str.IndexOf($findstr)
             $last = $idx
-            if ($idx -ne -1) {
+            if ($idx -eq -1) {
+                $fetch = Get-Content $curPath/.git/FETCH_HEAD
+                $tagidx = $fetch.IndexOf("tag")
+                $ofidx  = $fetch.IndexOf("of")
+                $str = $fetch.Substring(0, $ofidx - 2)
+                $str = $str.Substring($tagidx)
+
+                $name = [string]($str)
+                $commaidx = $name.IndexOf("'")
+                $version = $name.Substring($commaidx + 1)
+
+                $str = "tag/$version"
+            } else {
                 $last = $idx + $findstr.Length
             }
             $green = "$([char]27)[38;5;2m"
