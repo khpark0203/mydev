@@ -881,14 +881,6 @@
 		"command": "workbench.debug.viewlet.action.toggleBreakpointsActivatedAction"
 	},
 	{
-		"key": "shift+alt+f9",
-		"command": "workbench.debug.viewlet.action.disableAllBreakpoints"
-	},
-	{
-		"key": "ctrl+shift+f9",
-		"command": "workbench.debug.viewlet.action.enableAllBreakpoints"
-	},
-	{
 		"key": "ctrl+shift+up",
 		"command": "editor.action.insertCursorAbove",
 		"when": "editorTextFocus"
@@ -1080,5 +1072,19 @@
 		"key": "ctrl+shift+alt+oem_102",
 		"command": "editor.action.selectToBracket",
 		"when": "editorTextFocus"
+	},
+	{
+		"key": "alt+f9",
+		"command": "editor.debug.action.toggleInlineBreakpoint",
+		"when": "editorTextFocus"
+	},
+	{
+		"key": "shift+f9",
+		"command": "-editor.debug.action.toggleInlineBreakpoint",
+		"when": "editorTextFocus"
+	},
+	{
+		"key": "shift+f9",
+		"command": "editor.debug.action.conditionalBreakpoint"
 	}
 ]
