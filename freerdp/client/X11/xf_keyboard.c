@@ -499,7 +499,7 @@ BOOL xf_keyboard_handle_special_keys(xfContext* xfc, KeySym keysym)
 	{
 		if (keysym == XK_Return)
 		{
-			if (mod.Ctrl && mod.Alt)
+			if (mod.Shift && mod.Alt)
 			{
 				/* Ctrl-Alt-Enter: toggle full screen */
 				xf_toggle_fullscreen(xfc);
