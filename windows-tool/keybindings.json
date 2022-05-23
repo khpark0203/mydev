@@ -802,7 +802,7 @@
 	{
 		"key": "ctrl+shift+v",
 		"command": "workbench.view.extension.leetcode",
-		"when": "!terminalFocus",
+		"when": "!terminalFocus"
 	},
 	{
 		"key": "ctrl+t",
@@ -1086,5 +1086,9 @@
 	{
 		"key": "shift+f9",
 		"command": "editor.debug.action.conditionalBreakpoint"
+	},
+	{
+		"key": "alt+e",
+		"command": "workbench.action.toggleEditorWidths"
 	}
 ]
