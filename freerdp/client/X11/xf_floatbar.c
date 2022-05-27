@@ -130,7 +130,8 @@ static BOOL xf_floatbar_button_onclick_locked(xfFloatbar* floatbar)
 		return FALSE;
 
 	floatbar->locked = (floatbar->locked) ? FALSE : TRUE;
-	return xf_floatbar_hide_and_show(floatbar);
+	return TRUE;
+	// return xf_floatbar_hide_and_show(floatbar);
 }
 
 BOOL xf_floatbar_set_root_y(xfFloatbar* floatbar, int y)
@@ -225,6 +226,11 @@ BOOL xf_floatbar_hide_and_show(xfFloatbar* floatbar)
 			floatbar->y = 0;
 			XMoveWindow(xfc->display, floatbar->handle, floatbar->x, floatbar->y);
 		}
+	} else {
+		if (floatbar->y != 0) {
+			floatbar->y = 0;
+			XMoveWindow(xfc->display, floatbar->handle, floatbar->x, floatbar->y);
+		}
 	}
 
 	return TRUE;
@@ -302,7 +308,7 @@ BOOL xf_floatbar_toggle_fullscreen(xfFloatbar* floatbar, bool fullscreen)
 		if (((floatbar->flags & 0x0004) == 0) && !floatbar->locked)
 			floatbar->y = -FLOATBAR_HEIGHT + 1;
 
-		xf_floatbar_hide_and_show(floatbar);
+		// xf_floatbar_hide_and_show(floatbar);
 	}
 	else if (floatbar->created)
 	{
