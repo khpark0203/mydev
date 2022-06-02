@@ -935,10 +935,6 @@
 		"command": "workbench.panel.repl.view.focus"
 	},
 	{
-		"key": "shift+alt+c",
-		"command": "textPowerTools.changeCaseToCamelCase"
-	},
-	{
 		"key": "ctrl+alt+r",
 		"command": "editor.action.rename",
 		"when": "editorHasRenameProvider && editorTextFocus && !editorReadonly"
