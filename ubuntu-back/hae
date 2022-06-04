@@ -14,4 +14,5 @@ else
 	monitor=$@
 fi
 
-xfreerdp /usr/local/bin/cpub.rdp /u:hkmc\\E156786 /p:Rhksgh1272\@ /smart-sizing /audio-mode:mode /floatbar:show:always,sticky:off,default:visible +auto-reconnect /auto-reconnect-max-retries:10 +clipboard /rfx /gfx /compression /compression-level:2 /bpp:16 $monitor
+#xfreerdp /home/khpark0203/Downloads/hae.rdp /d:HKMC /u:E156786 /p:Rhksgh1272\!\@ /smart-sizing /audio-mode:mode /floatbar:show:always,sticky:off,default:visible +auto-reconnect /auto-reconnect-max-retries:10 +clipboard /rfx /gfx /compression /compression-level:2 /multimon $monitor
+xfreerdp /v:10.40.105.177 /d:HKMC /u:E156786 /p:Rhksgh1272\! /smart-sizing /microphone /audio-mode:mode /floatbar:show:always,sticky:off,default:visible +auto-reconnect /auto-reconnect-max-retries:10 /rfx /gfx /compression /compression-level:2 +window-drag +clipboard +menu-anims /multimon $monitor

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+touch=`synclient | grep TouchpadOff | awk '{print $NF}'`
+
+if [ $touch -eq 1 ]; then
+	synclient TouchpadOff=0
+	notify-send -i /usr/local/share/icons/notify/touchpad_on.png "Touchpad" "On"
+else
+	synclient TouchpadOff=1
+	notify-send -i /usr/local/share/icons/notify/touchpad_off.png "Touchpad" "Off"
+fi
