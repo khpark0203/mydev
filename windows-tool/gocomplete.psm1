@@ -179,6 +179,63 @@ $goCompleter = {
                 "vet" {
                     break
                 }
+                "buildconstraint" {
+                    break
+                }
+                "buildmode" {
+                    break
+                }
+                "c" {
+                    break
+                }
+                "cache" {
+                    break
+                }
+                "environment" {
+                    break
+                }
+                "filetype" {
+                    break
+                }
+                "go.mod" {
+                    break
+                }
+                "gopath" {
+                    break
+                }
+                "gopath-get" {
+                    break
+                }
+                "goproxy" {
+                    break
+                }
+                "importpath" {
+                    break
+                }
+                "modules" {
+                    break
+                }
+                "module-get" {
+                    break
+                }
+                "module-auth" {
+                    break
+                }
+                "packages" {
+                    break
+                }
+                "private" {
+                    break
+                }
+                "testflag" {
+                    break
+                }
+                "testfunc" {
+                    break
+                }
+                "vcs" {
+                    break
+                }
 
                 default {
                     "bug"
@@ -199,6 +256,25 @@ $goCompleter = {
                     "tool"
                     "version"
                     "vet"
+                    "buildconstraint"
+                    "buildmode"
+                    "c"
+                    "cache"
+                    "environment"
+                    "filetype"
+                    "go.mod"
+                    "gopath"
+                    "gopath-get"
+                    "goproxy"
+                    "importpath"
+                    "modules"
+                    "module-get"
+                    "module-auth"
+                    "packages"
+                    "private"
+                    "testflag"
+                    "testfunc"
+                    "vcs"
                 }
             }
 
