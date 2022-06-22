@@ -66,6 +66,7 @@ $GitPromptScriptBlock = {
     # Get the current path - formatted correctly
     $promptPath = $settings.DefaultPromptPath.Expand()
 
+    $str = ""
     $branch = ""
     $curPath = [string](Get-Location)
     $isBranch = Test-Path .git/HEAD
@@ -73,13 +74,38 @@ $GitPromptScriptBlock = {
     while ($true) {
         if ($isBranch -eq $true) {
             $str = Get-Content $curPath/.git/HEAD
+            $green = "$([char]27)[38;5;2m"
+
+            if ($str.Length -eq 40) {
+                $list = Get-Content $curPath/.git/packed-refs | grep /c:refs/tags /c:^
+                $line = ""
+                $end = $false
+
+                for ($i = $list.count - 1; $i -ge 0; $i--) {
+                    if ($list[$i].Contains($str)) {
+                        $line = $list[$i]
+                        if ($list[$i][0] -eq "^") {
+                            $line = $list[$i - 1]
+                        }
+
+                        $tags = "refs/tags/"
+                        $idx = $line.IndexOf($tags)
+                        $branch = " $green" + "(HEAD detached at " + $line.Substring($idx + $tags.Length) + ")$([char]27)[0m"
+                        $end = $true
+                        break
+                    }
+                }
+
+                if ($end) {
+                    break
+                }
+            }
             $findstr = 'refs/heads'
             $idx = $str.IndexOf($findstr)
             $last = $idx
             if ($idx -ne -1) {
                 $last = $idx + $findstr.Length
             }
-            $green = "$([char]27)[38;5;2m"
             $branch = " $green" + $str.Substring($last + 1) + "$([char]27)[0m"
             break
         }
