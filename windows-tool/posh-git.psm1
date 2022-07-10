@@ -77,26 +77,13 @@ $GitPromptScriptBlock = {
             $green = "$([char]27)[38;5;2m"
 
             if ($str.Length -eq 40) {
-                $list = Get-Content $curPath/.git/packed-refs | grep /c:refs/tags /c:^
-                $line = ""
-                $end = $false
+                $line = Get-Content $curPath/.git/FETCH_HEAD | grep $str
+                if ($line.Length -ge 1) {
+                    $sidx = $line.IndexOf("'") + 1
+                    $edix = $line.LastIndexOf("'")
+                    $tag = $line.Substring($sidx, $edix - $sidx)
 
-                for ($i = $list.count - 1; $i -ge 0; $i--) {
-                    if ($list[$i].Contains($str)) {
-                        $line = $list[$i]
-                        if ($list[$i][0] -eq "^") {
-                            $line = $list[$i - 1]
-                        }
-
-                        $tags = "refs/tags/"
-                        $idx = $line.IndexOf($tags)
-                        $branch = " $green" + "(HEAD detached at " + $line.Substring($idx + $tags.Length) + ")$([char]27)[0m"
-                        $end = $true
-                        break
-                    }
-                }
-
-                if ($end) {
+                    $branch = " $green" + "(HEAD detached at " + $tag + ")$([char]27)[0m"
                     break
                 }
             }
