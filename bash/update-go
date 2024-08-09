@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# 최신버전 조회하기
+latest_version=$(curl -s https://go.dev/dl/ | grep linux-amd64.tar.gz | grep span | grep -oP '[0-9]+\.[0-9]+\.[0-9]+')
+version=$(go version | sed -n 's/^go version go\([0-9.]*\) .*/\1/p')
+
+if [ "$latest_version" = "$version" ]; then
+    echo "현재 버전과 최신 버전이 같습니다. version $version"
+    exit 1;
+fi
+
+echo "최신버전 : $latest_version / 현재버전 : $version"
+echo "최신버전 : $latest_version 설치 시작...."
+echo ""
+
+tarfile="go${latest_version}.linux-amd64.tar.gz"
+wget https://go.dev/dl/go${latest_version}.linux-amd64.tar.gz
+
+if [ ! -e "$tarfile" ]; then
+    echo "에러: '$tarfile' 파일이 존재하지 않습니다."
+    exit 1
+fi
+
+tar -xzf $tarfile
+echo "tar 압축해제 완료!"
+rm -f ./$tarfile
+rm -rf ./go
+
+version=`cat go/VERSION | head -n1`
+full_version=`expr $version : '\(go[0-9].[0-9][0-9]\)'`
+only_version=${full_version:2}
+
+sudo rm -r /usr/lib/go /usr/lib/go-*
+sudo cp -r go /usr/lib/go-${only_version}
+
+cd /usr/lib
+sudo ln -s go-${only_version} go
+
+cd /usr/bin
+sudo rm go gofmt
+
+sudo ln -s ../lib/go-${only_version}/bin/go go
+sudo ln -s ../lib/go-${only_version}/bin/gofmt gofmt
+
+go version
