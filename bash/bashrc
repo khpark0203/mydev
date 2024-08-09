@@ -1,0 +1,33 @@
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+complete -F _docker dk
+complete -F __start_kubectl k kc ku
+
+export GO111MODULE="auto"
+export GOPATH="$HOME/.go"
+export CODE_PATH="/mnt/c/Users/khpark0203/AppData/Local/Programs/Microsoft VS Code/bin"
+export JAVA_BASE=/opt/openjdk
+export JAVA_HOME=/opt/openjdk/21
+export GRADLE_HOME=/opt/gradle
+export PATH=$GOPATH/bin:/usr/local/bin/kafka:$JAVA_HOME/bin:$GRADLE_HOME/bin:$PATH
+
+
+complete -C $GOPATH/bin/gocomplete go
+complete -C '/usr/local/bin/aws_completer' aws
+source /opt/gitbash/gitstatus.prompt.sh
+
+export QT_IM_MODULE=fcitx
+export GTK_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+export DefaultIMModule=fcitx
+
+fcitx-autostart &>/dev/null
+
+export HOLIC_DEV_PEM=$HOME/github/holic/pem/holic-dev-ec2-key.pem
+export PS1="\[\e[1;30m\]\$(date +%H:%M:%S.%3N) \[\e[0m\]$PS1"
