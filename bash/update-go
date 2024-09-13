@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PWD=`pwd`
+CCPWD=`pwd`
 
 # 최신버전 조회하기
 latest_version=$(curl -s https://go.dev/dl/ | grep linux-amd64.tar.gz | grep span | grep -oP '[0-9]+\.[0-9]+\.[0-9]+')
@@ -43,7 +43,6 @@ sudo rm go gofmt
 sudo ln -s ../lib/go-${only_version}/bin/go go
 sudo ln -s ../lib/go-${only_version}/bin/gofmt gofmt
 
-cd $PWD
-rm -rf ./go
+rm -rf $CCPWD/go
 
 go version
