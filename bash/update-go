@@ -43,10 +43,6 @@ sudo rm go gofmt
 sudo ln -s ../lib/go-${only_version}/bin/go go
 sudo ln -s ../lib/go-${only_version}/bin/gofmt gofmt
 
-<<<<<<< HEAD
 rm -rf $CCPWD/go
-=======
-rm -rf $PWD/go
->>>>>>> 564bcbbe914f28e7c094f5680d983f9c4749cd66
 
 go version
