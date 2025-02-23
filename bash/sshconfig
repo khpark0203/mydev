@@ -1,0 +1,4 @@
+Host holic-dev
+	User ec2-user
+	HostName 3.38.93.250
+	IdentityFile /home/khpark0203/github/holic/pem/holic-dev-ec2-key.pem

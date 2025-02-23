@@ -1,0 +1,35 @@
+[log]
+	date = iso-local
+[user]
+	name = khpark0203
+	email = khpark0203@gmail.com
+[diff]
+    tool = default-difftool
+[difftool "default-difftool"]
+    cmd = code --wait --diff $LOCAL $REMOTE
+[credential]
+	helper = store
+[fetch]
+	prune = true
+[pull]
+	rebase = false
+[alias]
+	l = log --abbrev-commit
+	b = branch
+	s = status
+	p = pull
+	ch = checkout
+	ls-files = ls-files
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[gui]
+	encoding = UTF-8
+[push]
+	autoSetupRemote = true
+[core]
+	autocrlf = input
+	eol = lf
+	editor = vim
