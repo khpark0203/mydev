@@ -1,0 +1,8 @@
+alias ls="gls --color=auto"
+alias p="git pull"
+
+alias xc=pbcopy
+alias dk=docker
+alias k=kubectl
+alias na="open ."
+alias cdholic="cd /Users/khpark0203/github/khpark0203/holic-service"
