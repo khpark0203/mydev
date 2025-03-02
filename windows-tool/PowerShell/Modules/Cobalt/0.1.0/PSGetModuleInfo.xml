@@ -1,0 +1,152 @@
+<Objs Version="1.1.0.1" xmlns="http://schemas.microsoft.com/powershell/2004/04">
+  <Obj RefId="0">
+    <TN RefId="0">
+      <T>Microsoft.PowerShell.Commands.PSRepositoryItemInfo</T>
+      <T>System.Management.Automation.PSCustomObject</T>
+      <T>System.Object</T>
+    </TN>
+    <MS>
+      <S N="Name">Cobalt</S>
+      <Version N="Version">0.1.0</Version>
+      <S N="Type">Module</S>
+      <S N="Description">A PowerShell Crescendo wrapper for WinGet</S>
+      <S N="Author">Ethan Bergstrom</S>
+      <S N="CompanyName">ethanbergstrom</S>
+      <S N="Copyright">2021</S>
+      <DT N="PublishedDate">2022-02-06T15:18:09+09:00</DT>
+      <Obj N="InstalledDate" RefId="1">
+        <DT>2022-02-17T21:22:17.8873401+09:00</DT>
+        <MS>
+          <Obj N="DisplayHint" RefId="2">
+            <TN RefId="1">
+              <T>Microsoft.PowerShell.Commands.DisplayHintType</T>
+              <T>System.Enum</T>
+              <T>System.ValueType</T>
+              <T>System.Object</T>
+            </TN>
+            <ToString>DateTime</ToString>
+            <I32>2</I32>
+          </Obj>
+        </MS>
+      </Obj>
+      <Nil N="UpdatedDate" />
+      <URI N="LicenseUri">https://github.com/ethanbergstrom/Cobalt/blob/main/LICENSE.txt</URI>
+      <URI N="ProjectUri">https://github.com/ethanbergstrom/Cobalt</URI>
+      <Nil N="IconUri" />
+      <Obj N="Tags" RefId="3">
+        <TN RefId="2">
+          <T>System.Object[]</T>
+          <T>System.Array</T>
+          <T>System.Object</T>
+        </TN>
+        <LST>
+          <S>Crescendo</S>
+          <S>WinGet</S>
+          <S>PSEdition_Desktop</S>
+          <S>PSEdition_Core</S>
+          <S>Windows</S>
+          <S>CrescendoBuilt</S>
+          <S>PSModule</S>
+        </LST>
+      </Obj>
+      <Obj N="Includes" RefId="4">
+        <TN RefId="3">
+          <T>System.Collections.Hashtable</T>
+          <T>System.Object</T>
+        </TN>
+        <DCT>
+          <En>
+            <S N="Key">Command</S>
+            <Obj N="Value" RefId="5">
+              <TNRef RefId="2" />
+              <LST>
+                <S>Get-WinGetSource</S>
+                <S>Register-WinGetSource</S>
+                <S>Unregister-WinGetSource</S>
+                <S>Install-WinGetPackage</S>
+                <S>Get-WinGetPackage</S>
+                <S>Find-WinGetPackage</S>
+                <S>Update-WinGetPackage</S>
+                <S>Uninstall-WinGetPackage</S>
+              </LST>
+            </Obj>
+          </En>
+          <En>
+            <S N="Key">Workflow</S>
+            <Obj N="Value" RefId="6">
+              <TNRef RefId="2" />
+              <LST />
+            </Obj>
+          </En>
+          <En>
+            <S N="Key">RoleCapability</S>
+            <Ref N="Value" RefId="6" />
+          </En>
+          <En>
+            <S N="Key">DscResource</S>
+            <Ref N="Value" RefId="6" />
+          </En>
+          <En>
+            <S N="Key">Cmdlet</S>
+            <Ref N="Value" RefId="6" />
+          </En>
+          <En>
+            <S N="Key">Function</S>
+            <Obj N="Value" RefId="7">
+              <TNRef RefId="2" />
+              <LST>
+                <S>Get-WinGetSource</S>
+                <S>Register-WinGetSource</S>
+                <S>Unregister-WinGetSource</S>
+                <S>Install-WinGetPackage</S>
+                <S>Get-WinGetPackage</S>
+                <S>Find-WinGetPackage</S>
+                <S>Update-WinGetPackage</S>
+                <S>Uninstall-WinGetPackage</S>
+              </LST>
+            </Obj>
+          </En>
+        </DCT>
+      </Obj>
+      <Nil N="PowerShellGetFormatVersion" />
+      <Nil N="ReleaseNotes" />
+      <Obj N="Dependencies" RefId="8">
+        <TNRef RefId="2" />
+        <LST />
+      </Obj>
+      <S N="RepositorySourceLocation">https://www.powershellgallery.com/api/v2</S>
+      <S N="Repository">PSGallery</S>
+      <S N="PackageManagementProvider">NuGet</S>
+      <Obj N="AdditionalMetadata" RefId="9">
+        <TN RefId="4">
+          <T>System.Management.Automation.PSCustomObject</T>
+          <T>System.Object</T>
+        </TN>
+        <MS>
+          <S N="copyright">2021</S>
+          <S N="description">A PowerShell Crescendo wrapper for WinGet</S>
+          <S N="requireLicenseAcceptance">False</S>
+          <S N="isLatestVersion">True</S>
+          <S N="isAbsoluteLatestVersion">True</S>
+          <S N="versionDownloadCount">429</S>
+          <S N="downloadCount">6512</S>
+          <S N="packageSize">5690</S>
+          <S N="published">2022-02-06 오후 3:18:09 +09:00</S>
+          <S N="created">2022-02-06 오후 3:18:09 +09:00</S>
+          <S N="lastUpdated">2022-02-17 오전 11:16:42 +09:00</S>
+          <S N="tags">Crescendo WinGet PSEdition_Desktop PSEdition_Core Windows CrescendoBuilt PSModule PSFunction_Get-WinGetSource PSCommand_Get-WinGetSource PSFunction_Register-WinGetSource PSCommand_Register-WinGetSource PSFunction_Unregister-WinGetSource PSCommand_Unregister-WinGetSource PSFunction_Install-WinGetPackage PSCommand_Install-WinGetPackage PSFunction_Get-WinGetPackage PSCommand_Get-WinGetPackage PSFunction_Find-WinGetPackage PSCommand_Find-WinGetPackage PSFunction_Update-WinGetPackage PSCommand_Update-WinGetPackage PSFunction_Uninstall-WinGetPackage PSCommand_Uninstall-WinGetPackage PSIncludes_Function</S>
+          <S N="developmentDependency">False</S>
+          <S N="updated">2022-02-17T11:16:42Z</S>
+          <S N="NormalizedVersion">0.1.0</S>
+          <S N="Authors">Ethan Bergstrom</S>
+          <S N="IsPrerelease">false</S>
+          <S N="ItemType">Module</S>
+          <S N="FileList">Cobalt.nuspec|Cobalt.psd1|Cobalt.psm1</S>
+          <S N="GUID">9f295092-e7fd-4c52-b41e-3c5b0612fa52</S>
+          <S N="PowerShellVersion">5.1</S>
+        </MS>
+      </Obj>
+      <S N="InstalledLocation">C:\Users\박관호\Documents\PowerShell\Modules\Cobalt\0.1.0</S>
+    </MS>
+  </Obj>
+</Objs>
