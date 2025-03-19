@@ -79,8 +79,10 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git)
 
-if type /opt/homebrew/bin/brew &>/dev/null; then
-  FPATH=$(/opt/homebrew/bin/brew --prefix)/share/zsh/site-functions:$FPATH
+export HOMEBREW_HOME=/opt/homebrew
+
+if type $HOMEBREW_HOME/bin/brew &>/dev/null; then
+  FPATH=$($HOMEBREW_HOME/bin/brew --prefix)/share/zsh/site-functions:$FPATH
 fi
 
 source $ZSH/oh-my-zsh.sh
@@ -122,9 +124,16 @@ POWERLEVEL9K_ZSH_COMPDUMP=~/.zsh_compdump
 setopt noautomenu
 setopt nomenucomplete
 
-autoload -Uz compinit
-compinit
+autoload -Uz compinit && compinit
 source ~/.zsh_aliases
 
-export JAVA_HOME=/opt/homebrew/opt/openjdk@21
-export PATH=$JAVA_HOME/bin:/opt/homebrew/opt/grep/libexec/gnubin:/opt/homebrew/opt/coreutils/libexec/gnubin:/opt/homebrew/bin:$PATH
+export JAVA_HOME=$HOMEBREW_HOME/opt/openjdk@21
+export PATH=$JAVA_HOME/bin:$HOMEBREW_HOME/opt/grep/libexec/gnubin:$HOMEBREW_HOME/opt/coreutils/libexec/gnubin:$HOMEBREW_HOME/bin:$PATH
+eval "$(jenv init -)"
+
+# ~/.zshrc에서 추가
+if [[ -d "$HOME/.zsh_completions" ]]; then
+  for file in "$HOME/.zsh_completions"/*.zsh; do
+    [[ -r "$file" ]] && source "$file"
+  done
+fi
