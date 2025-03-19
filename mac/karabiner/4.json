@@ -1,0 +1,197 @@
+{
+    "description": "Change command option right/left/up/down",
+    "manipulators": [
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "up_arrow",
+                "modifiers": {
+                    "mandatory": ["left_command"],
+                    "optional": ["left_shift"]
+                }
+            },
+            "to": [
+                {
+                    "key_code": "up_arrow",
+                    "modifiers": ["left_option"]
+                }
+            ],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "down_arrow",
+                "modifiers": {
+                    "mandatory": ["left_command"],
+                    "optional": ["left_shift"]
+                }
+            },
+            "to": [
+                {
+                    "key_code": "down_arrow",
+                    "modifiers": ["left_option"]
+                }
+            ],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "up_arrow",
+                "modifiers": {
+                    "mandatory": ["left_option"],
+                    "optional": ["left_shift"]
+                }
+            },
+            "to": [
+                {
+                    "key_code": "up_arrow",
+                    "modifiers": ["left_command"]
+                }
+            ],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "down_arrow",
+                "modifiers": {
+                    "mandatory": ["left_option"],
+                    "optional": ["left_shift"]
+                }
+            },
+            "to": [
+                {
+                    "key_code": "down_arrow",
+                    "modifiers": ["left_command"]
+                }
+            ],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "right_arrow",
+                "modifiers": {
+                    "mandatory": ["left_command"],
+                    "optional": ["left_shift"]
+                }
+            },
+            "to": [
+                {
+                    "key_code": "right_arrow",
+                    "modifiers": ["left_option"]
+                }
+            ],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "left_arrow",
+                "modifiers": {
+                    "mandatory": ["left_command"],
+                    "optional": ["left_shift"]
+                }
+            },
+            "to": [
+                {
+                    "key_code": "left_arrow",
+                    "modifiers": ["left_option"]
+                }
+            ],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "right_arrow",
+                "modifiers": {
+                    "mandatory": ["left_option"],
+                    "optional": ["left_shift"]
+                }
+            },
+            "to": [
+                {
+                    "key_code": "right_arrow",
+                    "modifiers": ["left_command"]
+                }
+            ],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "left_arrow",
+                "modifiers": {
+                    "mandatory": ["left_option"],
+                    "optional": ["left_shift"]
+                }
+            },
+            "to": [
+                {
+                    "key_code": "left_arrow",
+                    "modifiers": ["left_command"]
+                }
+            ],
+            "type": "basic"
+        }
+    ]
+}

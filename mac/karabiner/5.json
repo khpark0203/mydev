@@ -1,0 +1,89 @@
+{
+    "description": "Change command + page up/down to command + shift + [/]",
+    "manipulators": [
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "page_down",
+                "modifiers": { "mandatory": ["left_command"] }
+            },
+            "to": [
+                {
+                    "key_code": "close_bracket",
+                    "modifiers": ["left_command", "left_shift"]
+                }
+            ],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "tab",
+                "modifiers": { "mandatory": ["left_command", "shift"] }
+            },
+            "to": [
+                {
+                    "key_code": "open_bracket",
+                    "modifiers": ["left_command", "left_shift"]
+                }
+            ],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "tab",
+                "modifiers": { "mandatory": ["left_command"] }
+            },
+            "to": [
+                {
+                    "key_code": "close_bracket",
+                    "modifiers": ["left_command", "left_shift"]
+                }
+            ],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "page_up",
+                "modifiers": { "mandatory": ["left_command"] }
+            },
+            "to": [
+                {
+                    "key_code": "open_bracket",
+                    "modifiers": ["left_command", "left_shift"]
+                }
+            ],
+            "type": "basic"
+        }
+    ]
+}

@@ -1,0 +1,53 @@
+{
+    "description": "add sound control",
+    "manipulators": [
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "e",
+                "modifiers": { "mandatory": ["left_control", "left_command"] }
+            },
+            "to": [{ "consumer_key_code": "volume_increment" }],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "w",
+                "modifiers": { "mandatory": ["left_control", "left_command"] }
+            },
+            "to": [{ "consumer_key_code": "volume_decrement" }],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "q",
+                "modifiers": { "mandatory": ["left_control", "left_command"] }
+            },
+            "to": [{ "consumer_key_code": "mute" }],
+            "type": "basic"
+        }
+    ]
+}

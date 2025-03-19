@@ -1,0 +1,26 @@
+{
+    "description": "Option tab/grave",
+    "manipulators": [
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "tab",
+                "modifiers": { "mandatory": ["left_option"] }
+            },
+            "to": [
+                {
+                    "key_code": "tab",
+                    "modifiers": ["left_command"]
+                }
+            ],
+            "type": "basic"
+        }
+    ]
+}

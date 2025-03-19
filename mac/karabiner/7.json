@@ -1,0 +1,85 @@
+{
+    "description": "Change VDI command/control",
+    "manipulators": [
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_if"
+                }
+            ],
+            "from": {
+                "key_code": "right_arrow",
+                "modifiers": {
+                    "mandatory": ["left_option", "left_control"],
+                    "optional": ["any"]
+                }
+            },
+            "to": [
+                {
+                    "key_code": "page_down",
+                    "modifiers": ["left_control"]
+                }
+            ],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_if"
+                }
+            ],
+            "from": {
+                "key_code": "left_arrow",
+                "modifiers": {
+                    "mandatory": ["left_option", "left_control"],
+                    "optional": ["any"]
+                }
+            },
+            "to": [
+                {
+                    "key_code": "page_up",
+                    "modifiers": ["left_control"]
+                }
+            ],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_if"
+                }
+            ],
+            "from": {
+                "key_code": "left_command",
+                "modifiers": { "optional": ["any"] }
+            },
+            "to": [{ "key_code": "left_control" }],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_if"
+                }
+            ],
+            "from": {
+                "key_code": "left_control",
+                "modifiers": { "optional": ["any"] }
+            },
+            "to": [{ "key_code": "left_command" }],
+            "type": "basic"
+        }
+    ]
+}
