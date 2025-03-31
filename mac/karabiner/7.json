@@ -5,7 +5,8 @@
             "conditions": [
                 {
                     "bundle_identifiers": [
-                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$",
+                        "^com\\.vmware\\.fusion$"
                     ],
                     "type": "frontmost_application_if"
                 }
@@ -29,7 +30,8 @@
             "conditions": [
                 {
                     "bundle_identifiers": [
-                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$",
+                        "^com\\.vmware\\.fusion$"
                     ],
                     "type": "frontmost_application_if"
                 }
@@ -53,7 +55,8 @@
             "conditions": [
                 {
                     "bundle_identifiers": [
-                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$",
+                        "^com\\.vmware\\.fusion$"
                     ],
                     "type": "frontmost_application_if"
                 }
@@ -69,7 +72,8 @@
             "conditions": [
                 {
                     "bundle_identifiers": [
-                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$",
+                        "^com\\.vmware\\.fusion$"
                     ],
                     "type": "frontmost_application_if"
                 }
