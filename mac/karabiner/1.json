@@ -1,5 +1,5 @@
 {
-    "description": "add sound control",
+    "description": "Open ctrl app",
     "manipulators": [
         {
             "conditions": [
@@ -11,10 +11,89 @@
                 }
             ],
             "from": {
-                "key_code": "e",
-                "modifiers": { "mandatory": ["left_control", "left_command"] }
+                "key_code": "1",
+                "modifiers": {
+                    "mandatory": ["left_control"],
+                    "optional": ["caps_lock"]
+                }
             },
-            "to": [{ "consumer_key_code": "volume_increment" }],
+            "to": [{ "shell_command": "/usr/local/bin/toggleapp 'iTerm' 'iTerm2'" }],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "2",
+                "modifiers": {
+                    "mandatory": ["left_control"],
+                    "optional": ["caps_lock"]
+                }
+            },
+            "to": [{ "shell_command": "/usr/local/bin/toggleapp 'Whale'" }],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "3",
+                "modifiers": {
+                    "mandatory": ["left_control"],
+                    "optional": ["caps_lock"]
+                }
+            },
+            "to": [{ "shell_command": "/usr/local/bin/toggleapp 'IntelliJ IDEA Ultimate' 'idea'" }],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "4",
+                "modifiers": {
+                    "mandatory": ["left_control"],
+                    "optional": ["caps_lock"]
+                }
+            },
+            "to": [{ "shell_command": "/usr/local/bin/toggleapp 'DataGrip'" }],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "5",
+                "modifiers": {
+                    "mandatory": ["left_control"],
+                    "optional": ["caps_lock"]
+                }
+            },
+            "to": [{ "shell_command": "/usr/local/bin/toggleapp 'Finder'" }],
             "type": "basic"
         },
         {
@@ -28,9 +107,12 @@
             ],
             "from": {
                 "key_code": "w",
-                "modifiers": { "mandatory": ["left_control", "left_command"] }
+                "modifiers": {
+                    "mandatory": ["left_control"],
+                    "optional": ["caps_lock"]
+                }
             },
-            "to": [{ "consumer_key_code": "volume_decrement" }],
+            "to": [{ "shell_command": "/usr/local/bin/toggleapp 'KakaoTalk'" }],
             "type": "basic"
         },
         {
@@ -44,9 +126,31 @@
             ],
             "from": {
                 "key_code": "q",
-                "modifiers": { "mandatory": ["left_control", "left_command"] }
+                "modifiers": {
+                    "mandatory": ["left_control"],
+                    "optional": ["caps_lock"]
+                }
             },
-            "to": [{ "consumer_key_code": "mute" }],
+            "to": [{ "shell_command": "/usr/local/bin/toggleapp 'Between'" }],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com\\.omnissa\\.horizon\\.client\\.mac$"
+                    ],
+                    "type": "frontmost_application_unless"
+                }
+            ],
+            "from": {
+                "key_code": "e",
+                "modifiers": {
+                    "mandatory": ["left_control"],
+                    "optional": ["caps_lock"]
+                }
+            },
+            "to": [{ "shell_command": "/usr/local/bin/toggleapp 'Visual Studio Code' 'Electron'" }],
             "type": "basic"
         }
     ]

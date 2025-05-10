@@ -12,7 +12,7 @@
             ],
             "from": {
                 "key_code": "page_down",
-                "modifiers": { "mandatory": ["left_command"] }
+                "modifiers": { "mandatory": ["left_command"], "optional": ["caps_lock"] }
             },
             "to": [
                 {
@@ -33,7 +33,7 @@
             ],
             "from": {
                 "key_code": "tab",
-                "modifiers": { "mandatory": ["left_command", "shift"] }
+                "modifiers": { "mandatory": ["left_command", "shift"], "optional": ["caps_lock"] }
             },
             "to": [
                 {
@@ -54,7 +54,7 @@
             ],
             "from": {
                 "key_code": "tab",
-                "modifiers": { "mandatory": ["left_command"] }
+                "modifiers": { "mandatory": ["left_command"], "optional": ["caps_lock"] }
             },
             "to": [
                 {
@@ -75,7 +75,7 @@
             ],
             "from": {
                 "key_code": "page_up",
-                "modifiers": { "mandatory": ["left_command"] }
+                "modifiers": { "mandatory": ["left_command"], "optional": ["caps_lock"] }
             },
             "to": [
                 {
