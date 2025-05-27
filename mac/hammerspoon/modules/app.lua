@@ -22,7 +22,7 @@ function toggleAppByBundleID(bundleID)
   if app:isHidden() or hs.fnutils.every(windows, function(win) return win:isMinimized() end) then
     for _, win in ipairs(windows) do
       if win:isMinimized() then
-        win:unminimize()
+        -- win:unminimize()
       end
       winTables[bundleID].lastWindow:focus()
     end
