@@ -4,6 +4,12 @@ local keyPressCount = 0
 local keyTables = {}
 local winTables = {}
 
+function focusWindowDelay(win, delay)
+  hs.timer.delayed.new(delay, function()
+    win:focus()
+  end):start()
+end
+
 function toggleAppByBundleID(bundleID)
   local app = hs.application.get(bundleID)
 
@@ -20,10 +26,28 @@ function toggleAppByBundleID(bundleID)
   end
 
   if app:isHidden() or hs.fnutils.every(windows, function(win) return win:isMinimized() end) then
+    local allMinimized = 0
+    local focused = false
     for _, win in ipairs(windows) do
       if win:isMinimized() then
-        -- win:unminimize()
+        if #windows == 1 then
+          win:unminimize()
+          focusWindowDelay(win, 0.05)
+          focused = true
+          break
+        end
+        
+        allMinimized = allMinimized + 1
+        
+        if allMinimized == #windows then
+          winTables[bundleID].lastWindow:unminimize()
+          focusWindowDelay(winTables[bundleID].lastWindow, 0.05)
+          focused = true
+        end
       end
+    end
+
+    if allMinimized ~= #windows and focused == false then
       winTables[bundleID].lastWindow:focus()
     end
   elseif app:isFrontmost() then
@@ -34,6 +58,7 @@ function toggleAppByBundleID(bundleID)
       if win:isStandard() and win:isVisible() and not win:isMinimized() then
         win:focus()
       end
+      focused = true
       winTables[bundleID].lastWindow:focus()
     end
     
@@ -97,7 +122,10 @@ end):start()
 local function watchFocusedWindow(bundleID)
   local app = hs.application.get(bundleID)
   if app then
-    winTables[bundleID].lastWindow = app:focusedWindow()
+    local focusedWindow = app:focusedWindow()
+    if focusedWindow ~= nil then
+      winTables[bundleID].lastWindow = focusedWindow
+    end
   end
 end
 
