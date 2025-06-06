@@ -31,8 +31,7 @@ function toggleAppByBundleID(bundleID)
     for _, win in ipairs(windows) do
       if win:isMinimized() then
         if #windows == 1 then
-          win:unminimize()
-          focusWindowDelay(win, 0.05)
+          focusWindowDelay(win:unminimize(), 0.05)
           focused = true
           break
         end
@@ -40,8 +39,11 @@ function toggleAppByBundleID(bundleID)
         allMinimized = allMinimized + 1
         
         if allMinimized == #windows then
-          winTables[bundleID].lastWindow:unminimize()
-          focusWindowDelay(winTables[bundleID].lastWindow, 0.05)
+          local lwin = winTables[bundleID].lastWindow
+          if lwin == nil then
+            lwin = win
+          end
+          focusWindowDelay(lwin:unminimize(), 0.05)
           focused = true
         end
       end
