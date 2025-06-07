@@ -10,6 +10,34 @@ function focusWindowDelay(win, delay)
   end):start()
 end
 
+function minimizeAndFocusNext()
+    local win = hs.window.frontmostWindow()
+    if not win then return end
+
+    local app = win:application()
+    win:minimize()
+
+    -- 같은 앱의 나머지 윈도우들 중 포커스 가능한 것 찾기
+    local windows = app:allWindows()
+    for _, w in ipairs(windows) do
+        if not w:isMinimized() and w:isStandard() then
+            w:focus()
+            return
+        end
+    end
+
+    -- 같은 앱 내에 다른 포커스 가능한 창이 없으면, 다음으로 최근에 사용한 윈도우로 전환
+    hs.timer.doAfter(0.1, function()
+        local orderedWindows = hs.window.orderedWindows()
+        for _, w in ipairs(orderedWindows) do
+            if w ~= win and not w:isMinimized() then
+                w:focus()
+                return
+            end
+        end
+    end)
+end
+
 function minimizeFocusedWindow()
   local win = hs.window.frontmostWindow()
   if win then
@@ -111,7 +139,7 @@ keyDownTap = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(event
   isKeyAlreadyPressed = true
 
   if target.bundleID == "m" then
-    minimizeFocusedWindow()
+    minimizeAndFocusNext()
     return true
   end
 
