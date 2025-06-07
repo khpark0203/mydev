@@ -10,6 +10,13 @@ function focusWindowDelay(win, delay)
   end):start()
 end
 
+function minimizeFocusedWindow()
+  local win = hs.window.frontmostWindow()
+  if win then
+    win:minimize()
+  end
+end
+
 function toggleAppByBundleID(bundleID)
   local app = hs.application.get(bundleID)
 
@@ -102,6 +109,12 @@ keyDownTap = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(event
   if skipSet[frontBundleID] then return false end
 
   isKeyAlreadyPressed = true
+
+  if target.bundleID == "m" then
+    minimizeFocusedWindow()
+    return true
+  end
+
   toggleAppByBundleID(target.bundleID)
 
   return true
@@ -180,3 +193,4 @@ bindToggleAppWithEventtap({"ctrl"}, "5", "com.apple.finder", {"com.omnissa.horiz
 bindToggleAppWithEventtap({"ctrl"}, "e", "com.microsoft.VSCode", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
 bindToggleAppWithEventtap({"ctrl"}, "w", "com.kakao.KakaoTalkMac", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
 bindToggleAppWithEventtap({"ctrl"}, "q", "kr.thingsflow.BetweenMac", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
+bindToggleAppWithEventtap({"ctrl"}, "m", "m", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
