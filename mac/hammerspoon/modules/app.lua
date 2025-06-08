@@ -10,11 +10,17 @@ function focusWindowDelay(win, delay)
   end):start()
 end
 
-function minimizeAndFocusNext()
+function minimizeAndFocusNext(hide)
     local win = hs.window.frontmostWindow()
     if not win then return end
 
     local app = win:application()
+
+    if hide == true then
+      app:hide()
+      return
+    end
+
     win:minimize()
 
     -- 같은 앱의 나머지 윈도우들 중 포커스 가능한 것 찾기
@@ -140,6 +146,8 @@ keyDownTap = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(event
 
   if target.bundleID == "m" then
     minimizeAndFocusNext()
+  elseif target.bundleID == "x" then
+    minimizeAndFocusNext(true)
     return true
   end
 
@@ -222,3 +230,4 @@ bindToggleAppWithEventtap({"ctrl"}, "e", "com.microsoft.VSCode", {"com.omnissa.h
 bindToggleAppWithEventtap({"ctrl"}, "w", "com.kakao.KakaoTalkMac", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
 bindToggleAppWithEventtap({"ctrl"}, "q", "kr.thingsflow.BetweenMac", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
 bindToggleAppWithEventtap({"ctrl"}, "m", "m", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
+bindToggleAppWithEventtap({"ctrl"}, "x", "x", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
