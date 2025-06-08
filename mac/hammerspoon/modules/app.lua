@@ -145,7 +145,8 @@ keyDownTap = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(event
   isKeyAlreadyPressed = true
 
   if target.bundleID == "m" then
-    minimizeAndFocusNext()
+    minimizeAndFocusNext(false)
+    return true
   elseif target.bundleID == "x" then
     minimizeAndFocusNext(true)
     return true
