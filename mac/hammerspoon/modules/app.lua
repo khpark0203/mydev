@@ -1,4 +1,3 @@
-local isKeyAlreadyPressed = false
 local keyPressCount = 0
 
 local keyTables = {}
@@ -72,7 +71,7 @@ function toggleAppByBundleID(bundleID)
     for _, win in ipairs(windows) do
       if win:isMinimized() then
         if #windows == 1 then
-          focusWindowDelay(win:unminimize(), 0.05)
+          focusWindowDelay(win:unminimize(), 0.1)
           focused = true
           break
         end
@@ -84,7 +83,7 @@ function toggleAppByBundleID(bundleID)
           if lwin == nil then
             lwin = win
           end
-          focusWindowDelay(lwin:unminimize(), 0.05)
+          focusWindowDelay(lwin:unminimize(), 0.1)
           focused = true
         end
       end
@@ -111,6 +110,38 @@ function toggleAppByBundleID(bundleID)
   end
 end
 
+function makeHashKey(modifiersOrEvent, keycode)
+    local modifiers = {}
+
+    if type(modifiersOrEvent) == "userdata" and modifiersOrEvent.getFlags then
+        -- modifiersOrEvent는 hs.eventtap.event 객체임
+        local flags = modifiersOrEvent:getFlags()
+        keycode = modifiersOrEvent:getKeyCode()
+        for _, mod in ipairs({ "ctrl", "alt", "shift", "cmd", "fn" }) do
+            if flags[mod] then
+                table.insert(modifiers, mod)
+            end
+        end
+    elseif type(modifiersOrEvent) == "table" and type(keycode) == "number" then
+        -- modifiers는 {"ctrl", "cmd"} 형태의 테이블임
+        local modifierSet = {}
+        for _, mod in ipairs(modifiersOrEvent) do
+            modifierSet[mod] = true
+        end
+        for _, mod in ipairs({ "ctrl", "alt", "shift", "cmd", "fn" }) do
+            if modifierSet[mod] then
+                table.insert(modifiers, mod)
+            end
+        end
+    else
+        error("Invalid arguments: expected (event) or (modifiers, keycode)")
+    end
+
+    -- keycode는 항상 문자열로 추가
+    table.insert(modifiers, tostring(keycode))
+    return table.concat(modifiers, "+")
+end
+
 -- modifiers가 정확히 일치하는지 확인하는 함수
 function exactModifiersMatch(expected, actual)
   local mods = { "cmd", "ctrl", "alt", "shift", "fn" }
@@ -122,9 +153,21 @@ function exactModifiersMatch(expected, actual)
   return true
 end
 
+function execute(keyTable)
+  if keyTable.command == "minimize" then
+    minimizeAndFocusNext(false)
+  elseif keyTable.command == "hide" then
+    minimizeAndFocusNext(true)
+  else
+    toggleAppByBundleID(keyTable.bundleID)
+  end
+
+  return true
+end
+
 keyDownTap = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(event)
   keyPressCount = keyPressCount + 1
-  local target = keyTables[event:getKeyCode()]
+  local target = keyTables[makeHashKey(event)]
   if not target then return false end
 
   local skipSet = {}
@@ -132,29 +175,18 @@ keyDownTap = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(event
     skipSet[bundleID] = true
   end
 
-  if isKeyAlreadyPressed then return true end
+  if target.isKeyAlreadyPressed then return true end
 
-  local flags = event:getFlags()
-  if not exactModifiersMatch(target.modifiers, flags) then return false end
+  -- local flags = event:getFlags()
+  -- if not exactModifiersMatch(target.modifiers, flags) then return false end
 
   local frontApp = hs.application.frontmostApplication()
   local frontBundleID = frontApp and frontApp:bundleID()
 
   if skipSet[frontBundleID] then return false end
 
-  isKeyAlreadyPressed = true
-
-  if target.bundleID == "m" then
-    minimizeAndFocusNext(false)
-    return true
-  elseif target.bundleID == "x" then
-    minimizeAndFocusNext(true)
-    return true
-  end
-
-  toggleAppByBundleID(target.bundleID)
-
-  return true
+  target.isKeyAlreadyPressed = true
+  return execute(target)
 end):start()
 
 keyUpTap = hs.eventtap.new({ hs.eventtap.event.types.keyUp }, function(event)
@@ -165,9 +197,9 @@ keyUpTap = hs.eventtap.new({ hs.eventtap.event.types.keyUp }, function(event)
     return true
   end
 
-  local target = keyTables[event:getKeyCode()]
+  local target = keyTables[makeHashKey(event)]
   if target then
-    isKeyAlreadyPressed = false
+    target.isKeyAlreadyPressed = false
   end
 end):start()
 
@@ -205,12 +237,15 @@ end
 appWatcher = hs.application.watcher.new(applicationWatcher)
 appWatcher:start()
 
-function bindToggleAppWithEventtap(modifiers, keyChar, targetBundleID, skipIfFrontBundleIDs)
-  keyTables[hs.keycodes.map[keyChar]] = {
+function bindToggleAppWithEventtap(command, modifiers, keyChar, targetBundleID, skipIfFrontBundleIDs)
+  local keyCode = hs.keycodes.map[keyChar]
+  keyTables[makeHashKey(modifiers, keyCode)] = {
+    command = command,
     modifiers = modifiers,
     keyChar = keyChar,
     bundleID = targetBundleID,
-    skipBundleIDs = skipIfFrontBundleIDs
+    skipBundleIDs = skipIfFrontBundleIDs,
+    isKeyAlreadyPressed = false
   }
 
   winTables[targetBundleID] = {
@@ -222,13 +257,13 @@ function bindToggleAppWithEventtap(modifiers, keyChar, targetBundleID, skipIfFro
 end
 
 -- 바인딩 설정
-bindToggleAppWithEventtap({"ctrl"}, "1", "com.googlecode.iterm2", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
-bindToggleAppWithEventtap({"ctrl"}, "2", "com.naver.Whale", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
-bindToggleAppWithEventtap({"ctrl"}, "3", "com.jetbrains.intellij", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
-bindToggleAppWithEventtap({"ctrl"}, "4", "com.jetbrains.datagrip", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
-bindToggleAppWithEventtap({"ctrl"}, "5", "com.apple.finder", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
-bindToggleAppWithEventtap({"ctrl"}, "e", "com.microsoft.VSCode", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
-bindToggleAppWithEventtap({"ctrl"}, "w", "com.kakao.KakaoTalkMac", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
-bindToggleAppWithEventtap({"ctrl"}, "q", "kr.thingsflow.BetweenMac", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
-bindToggleAppWithEventtap({"ctrl"}, "m", "m", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
-bindToggleAppWithEventtap({"ctrl"}, "x", "x", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
+bindToggleAppWithEventtap("", {"ctrl"}, "1", "com.googlecode.iterm2", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
+bindToggleAppWithEventtap("", {"ctrl"}, "2", "com.naver.Whale", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
+bindToggleAppWithEventtap("", {"ctrl"}, "3", "com.jetbrains.intellij", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
+bindToggleAppWithEventtap("", {"ctrl"}, "4", "com.jetbrains.datagrip", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
+bindToggleAppWithEventtap("", {"ctrl"}, "5", "com.apple.finder", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
+bindToggleAppWithEventtap("", {"ctrl"}, "e", "com.microsoft.VSCode", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
+bindToggleAppWithEventtap("", {"ctrl"}, "w", "com.kakao.KakaoTalkMac", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
+bindToggleAppWithEventtap("", {"ctrl"}, "q", "kr.thingsflow.BetweenMac", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
+bindToggleAppWithEventtap("", {"ctrl"}, "m", "m", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
+bindToggleAppWithEventtap("", {"ctrl"}, "x", "x", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"})
