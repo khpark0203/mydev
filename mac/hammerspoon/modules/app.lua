@@ -323,8 +323,10 @@ keyUpTap = hs.eventtap.new({ hs.eventtap.event.types.keyUp }, function(event)
     return true
   end
 
-  for _, val in pairs(keyCodeWithTables[event:getKeyCode()]) do
-    keyTables[val].isKeyAlreadyPressed = false
+  if keyCodeWithTables[event:getKeyCode()] ~= nil then
+    for _, val in pairs(keyCodeWithTables[event:getKeyCode()]) do
+      keyTables[val].isKeyAlreadyPressed = false
+    end
   end
 end):start()
 
