@@ -11,26 +11,24 @@ function execute(target)
   end
   -- hs.window.animationDuration = 0.2
 
-  if target.bundleID ~= nil then
+  if target.command == "app" then
     toggleAppByBundleID(target.bundleID)
-  else
-    if target.command == "minimize" then
-      minimizeAndFocusNext(false)
-    elseif target.command == "hide" then
-      minimizeAndFocusNext(true)
-    elseif target.command == "moveLeft" then
-      moveWinTo("left")
-    elseif target.command == "moveRight" then
-      moveWinTo("right")
-    elseif target.command == "moveUp" then
-      moveWinTo("up")
-    elseif target.command == "moveDown" then
-      moveWinTo("down")
-    elseif target.command == "screenLeft" then
-      moveWinToNextScreen("left")
-    elseif target.command == "screenRight" then
-      moveWinToNextScreen("right")
-    end
+  elseif target.command == "minimize" then
+    minimizeAndFocusNext(false)
+  elseif target.command == "hide" then
+    minimizeAndFocusNext(true)
+  elseif target.command == "moveLeft" then
+    moveWinTo("left")
+  elseif target.command == "moveRight" then
+    moveWinTo("right")
+  elseif target.command == "moveUp" then
+    moveWinTo("up")
+  elseif target.command == "moveDown" then
+    moveWinTo("down")
+  elseif target.command == "screenLeft" then
+    moveWinToNextScreen("left")
+  elseif target.command == "screenRight" then
+    moveWinToNextScreen("right")
   end
 
   return true
@@ -395,16 +393,16 @@ function bindToggleAppWithEventtap(command, modifiers, keyChar, targetBundleID, 
 end
 
 -- 바인딩 설정
-bindToggleAppWithEventtap("", {"ctrl"}, "1", "com.googlecode.iterm2", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
-bindToggleAppWithEventtap("", {"ctrl"}, "2", "com.naver.Whale", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
-bindToggleAppWithEventtap("", {"ctrl"}, "3", "com.jetbrains.intellij", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
-bindToggleAppWithEventtap("", {"ctrl"}, "4", "com.jetbrains.datagrip", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
-bindToggleAppWithEventtap("", {"ctrl"}, "5", "com.apple.finder", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
-bindToggleAppWithEventtap("", {"ctrl"}, "e", "com.microsoft.VSCode", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
-bindToggleAppWithEventtap("", {"ctrl"}, "w", "com.kakao.KakaoTalkMac", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
-bindToggleAppWithEventtap("", {"ctrl"}, "q", "kr.thingsflow.BetweenMac", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
-bindToggleAppWithEventtap("", {"ctrl"}, "m", "m", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
-bindToggleAppWithEventtap("", {"ctrl"}, "x", "x", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("app", {"ctrl"}, "1", "com.googlecode.iterm2", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("app", {"ctrl"}, "2", "com.naver.Whale", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("app", {"ctrl"}, "3", "com.jetbrains.intellij", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("app", {"ctrl"}, "4", "com.jetbrains.datagrip", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("app", {"ctrl"}, "5", "com.apple.finder", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("app", {"ctrl"}, "e", "com.microsoft.VSCode", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("app", {"ctrl"}, "w", "com.kakao.KakaoTalkMac", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("app", {"ctrl"}, "q", "kr.thingsflow.BetweenMac", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("app", {"ctrl"}, "m", "m", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("app", {"ctrl"}, "x", "x", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 
 bindToggleAppWithEventtap("minimize", {"ctrl"}, "m", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("hide", {"ctrl"}, "x", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
