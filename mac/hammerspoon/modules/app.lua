@@ -125,7 +125,7 @@ function moveWinTo(where)
     frame.w = screen.w / 2      -- width를 화면의 1/2 로 조정
     frame.x = screen.x + frame.w -- 윈도우의 x 좌표를 화면 width의 1/2 로 조정
   elseif where == "down" then
-    frame.w = screen.w * 2 / 3  -- width를 화면의 2/3로 조정
+    frame.w = screen.w * 1 / 2  -- width를 화면의 2/3로 조정
     frame.h = screen.h * 2 / 3  -- height를 화면의 2/3로 조정
     frame.x = screen.x + (screen.w - frame.w) / 2 -- x 좌표를 중앙으로 설정
     frame.y = screen.y + (screen.h - frame.h) / 2 -- y 좌표를 중앙으로 설정
