@@ -25,7 +25,6 @@ end
 
 function moveWinToNextScreen(direction)
   local win = hs.window.focusedWindow()   -- 현재 활성화된 앱의 윈도우
-
   -- 현재 활성화된 윈도우가 없으면 종료
   if not win then
     return
@@ -58,7 +57,6 @@ function moveWinToNextScreen(direction)
                       (frame.h == currentScreen:frame().h)
 
   if isMaximized then
-    print(isMaximized)
     -- 현재 창이 최대화 되어 있을 경우, 타겟 스크린에 맞춰 프레임 설정
     frame.x = targetFrame.x
     frame.y = targetFrame.y
@@ -381,11 +379,21 @@ bindToggleAppWithEventtap("", {"ctrl"}, "w", "com.kakao.KakaoTalkMac", {"com.omn
 bindToggleAppWithEventtap("", {"ctrl"}, "q", "kr.thingsflow.BetweenMac", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("", {"ctrl"}, "m", "m", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("", {"ctrl"}, "x", "x", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+
 bindToggleAppWithEventtap("minimize", {"ctrl"}, "m", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("hide", {"ctrl"}, "x", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+
 bindToggleAppWithEventtap("move", {"ctrl", "fn"}, "left", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("move", {"ctrl", "fn"}, "right", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("move", {"ctrl", "fn"}, "up", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("move", {"ctrl", "fn"}, "down", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+
 bindToggleAppWithEventtap("screen", {"ctrl", "shift", "fn"}, "left", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("screen", {"ctrl", "shift", "fn"}, "right", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+
+-- for logi
+bindToggleAppWithEventtap("move", {"ctrl", "cmd", "alt", "fn"}, "left", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("move", {"ctrl", "cmd", "alt", "fn"}, "right", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("move", {"ctrl", "cmd", "alt", "fn"}, "up", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("move", {"ctrl", "cmd", "alt", "fn"}, "down", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("screen", {"ctrl", "shift", "cmd", "alt", "fn"}, "right", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
