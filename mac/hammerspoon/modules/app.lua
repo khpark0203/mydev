@@ -3,6 +3,8 @@ local keyPressCount = 0
 local keyTables = {}
 local winTables = {}
 
+local keyCodeWithTables = {}
+
 function execute(target)
   if target.duplicate == false then
     target.isKeyAlreadyPressed = true
@@ -321,10 +323,8 @@ keyUpTap = hs.eventtap.new({ hs.eventtap.event.types.keyUp }, function(event)
     return true
   end
 
-  for key, _ in pairs(keyTables) do
-    if keyTables[key].keyCode == event:getKeyCode() then
-      keyTables[key].isKeyAlreadyPressed = false
-    end
+  for _, val in pairs(keyCodeWithTables[event:getKeyCode()]) do
+    keyTables[val].isKeyAlreadyPressed = false
   end
 end):start()
 
@@ -364,7 +364,8 @@ appWatcher:start()
 
 function bindToggleAppWithEventtap(command, modifiers, keyChar, targetBundleID, skipIfFrontBundleIDs, duplicate)
   local keyCode = hs.keycodes.map[keyChar]
-  keyTables[makeHashKey(modifiers, keyCode)] = {
+  local hashKey = makeHashKey(modifiers, keyCode)
+  keyTables[hashKey] = {
     command = command,
     modifiers = modifiers,
     keyChar = keyChar,
@@ -374,6 +375,12 @@ function bindToggleAppWithEventtap(command, modifiers, keyChar, targetBundleID, 
     isKeyAlreadyPressed = false,
     duplicate = duplicate
   }
+
+  if keyCodeWithTables[keyCode] == nil then
+    keyCodeWithTables[keyCode] = {}
+  end
+
+  table.insert(keyCodeWithTables[keyCode], hashKey)
 
   if targetBundleID ~= nil then
     winTables[targetBundleID] = {
