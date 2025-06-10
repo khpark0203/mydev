@@ -4,7 +4,9 @@ local keyTables = {}
 local winTables = {}
 
 function execute(target)
-  target.isKeyAlreadyPressed = true
+  if target.duplicate == false then
+    target.isKeyAlreadyPressed = true
+  end
   -- hs.window.animationDuration = 0.2
 
   if target.command == "minimize" then
@@ -25,10 +27,6 @@ function execute(target)
     moveWinToNextScreen("right")
   else
     toggleAppByBundleID(target.bundleID)
-  end
-
-  if target.duplicate == true then
-    target.isKeyAlreadyPressed = false
   end
 
   return true
