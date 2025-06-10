@@ -9,24 +9,26 @@ function execute(target)
   end
   -- hs.window.animationDuration = 0.2
 
-  if target.command == "minimize" then
-    minimizeAndFocusNext(false)
-  elseif target.command == "hide" then
-    minimizeAndFocusNext(true)
-  elseif target.command == "moveLeft" then
-    moveWinTo("left")
-  elseif target.command == "moveRight" then
-    moveWinTo("right")
-  elseif target.command == "moveUp" then
-    moveWinTo("up")
-  elseif target.command == "moveDown" then
-    moveWinTo("down")
-  elseif target.command == "screenLeft" then
-    moveWinToNextScreen("left")
-  elseif target.command == "screenRight" then
-    moveWinToNextScreen("right")
-  else
+  if target.bundleID ~= nil then
     toggleAppByBundleID(target.bundleID)
+  else
+    if target.command == "minimize" then
+      minimizeAndFocusNext(false)
+    elseif target.command == "hide" then
+      minimizeAndFocusNext(true)
+    elseif target.command == "moveLeft" then
+      moveWinTo("left")
+    elseif target.command == "moveRight" then
+      moveWinTo("right")
+    elseif target.command == "moveUp" then
+      moveWinTo("up")
+    elseif target.command == "moveDown" then
+      moveWinTo("down")
+    elseif target.command == "screenLeft" then
+      moveWinToNextScreen("left")
+    elseif target.command == "screenRight" then
+      moveWinToNextScreen("right")
+    end
   end
 
   return true
@@ -287,14 +289,18 @@ end
 keyDownTap = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(event)
   keyPressCount = keyPressCount + 1
   local target = keyTables[makeHashKey(event)]
-  if not target then return false end
+  if not target then
+    return false
+  end
 
   local skipSet = {}
   for _, bundleID in ipairs(target.skipBundleIDs or {}) do
     skipSet[bundleID] = true
   end
 
-  if target.isKeyAlreadyPressed then return true end
+  if target.isKeyAlreadyPressed then
+    return true
+  end
 
   -- local flags = event:getFlags()
   -- if not exactModifiersMatch(target.modifiers, flags) then return false end
@@ -315,9 +321,10 @@ keyUpTap = hs.eventtap.new({ hs.eventtap.event.types.keyUp }, function(event)
     return true
   end
 
-  local target = keyTables[makeHashKey(event)]
-  if target then
-    target.isKeyAlreadyPressed = false
+  for key, _ in pairs(keyTables) do
+    if keyTables[key].keyCode == event:getKeyCode() then
+      keyTables[key].isKeyAlreadyPressed = false
+    end
   end
 end):start()
 
@@ -361,6 +368,7 @@ function bindToggleAppWithEventtap(command, modifiers, keyChar, targetBundleID, 
     command = command,
     modifiers = modifiers,
     keyChar = keyChar,
+    keyCode = keyCode,
     bundleID = targetBundleID,
     skipBundleIDs = skipIfFrontBundleIDs,
     isKeyAlreadyPressed = false,
@@ -392,10 +400,10 @@ bindToggleAppWithEventtap("", {"ctrl"}, "x", "x", {"com.omnissa.horizon.client.m
 bindToggleAppWithEventtap("minimize", {"ctrl"}, "m", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("hide", {"ctrl"}, "x", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 
-bindToggleAppWithEventtap("moveLeft", {"ctrl", "fn"}, "left", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
-bindToggleAppWithEventtap("moveRight", {"ctrl", "fn"}, "right", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
-bindToggleAppWithEventtap("moveUp", {"ctrl", "fn"}, "up", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
-bindToggleAppWithEventtap("moveDown", {"ctrl", "fn"}, "down", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("moveLeft", {"ctrl", "fn"}, "left", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("moveRight", {"ctrl", "fn"}, "right", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("moveUp", {"ctrl", "fn"}, "up", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("moveDown", {"ctrl", "fn"}, "down", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 
 bindToggleAppWithEventtap("screenLeft", {"ctrl", "shift", "fn"}, "left", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("screenRight", {"ctrl", "shift", "fn"}, "right", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
@@ -403,6 +411,3 @@ bindToggleAppWithEventtap("screenLeft", {"ctrl", "shift"}, "c", nil, {"com.omnis
 bindToggleAppWithEventtap("screenRight", {"ctrl", "shift"}, "z", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("screenLeft", {"ctrl", "shift"}, "d", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("screenRight", {"ctrl", "shift"}, "a", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
-
--- for logi
-bindToggleAppWithEventtap("screenRight", {"ctrl", "shift", "cmd", "alt", "fn"}, "right", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
