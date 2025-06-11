@@ -18,13 +18,25 @@ function execute(target)
   elseif target.command == "hide" then
     minimizeAndFocusNext(true)
   elseif target.command == "moveLeft" then
-    moveWinTo("left")
+    moveWinTo(hs.window.focusedWindow(), "left")
   elseif target.command == "moveRight" then
-    moveWinTo("right")
+    moveWinTo(hs.window.focusedWindow(), "right")
   elseif target.command == "moveUp" then
-    moveWinTo("up")
+    moveWinTo(hs.window.focusedWindow(), "up")
   elseif target.command == "moveDown" then
-    moveWinTo("down")
+    moveWinTo(hs.window.focusedWindow(), "down")
+  elseif target.command == "moveLeftPair" then
+    moveWinTo(hs.window.focusedWindow(), "left")
+    moveWinTo(getNextWindowOnCurrentScreen(), "right")
+  elseif target.command == "moveRightPair" then
+    moveWinTo(hs.window.focusedWindow(), "right")
+    moveWinTo(getNextWindowOnCurrentScreen(), "left")
+  elseif target.command == "moveUpPair" then
+    moveWinTo(hs.window.focusedWindow(), "up")
+    moveWinTo(getNextWindowOnCurrentScreen(), "down")
+  elseif target.command == "moveDownPair" then
+    moveWinTo(hs.window.focusedWindow(), "down")
+    moveWinTo(getNextWindowOnCurrentScreen(), "up")
   elseif target.command == "screenLeft" then
     moveWinToNextScreen("left")
   elseif target.command == "screenRight" then
@@ -33,6 +45,38 @@ function execute(target)
 
   return true
 end
+
+function getNextWindowOnCurrentScreen()
+    local currentWindow = hs.window.focusedWindow()
+
+    if not currentWindow then
+        return nil -- 포커스된 창이 없을 경우 nil 반환
+    end
+
+    -- 현재 윈도우의 스크린 정보 가져오기
+    local currentScreen = currentWindow:screen()
+
+    -- 현재 모니터에서 모든 윈도우 가져오기
+    local windowsOnScreen = hs.window.orderedWindows()
+
+    -- 현재 스크린의 윈도우만 필터링
+    local windowsOnCurrentScreen = {}
+    local c = 0
+    for _, window in ipairs(windowsOnScreen) do
+        if window:screen() == currentScreen then
+          if window:title() ~= "" then
+            c = c + 1
+          end
+        end
+
+        if c == 2 then
+          return window
+        end
+    end
+
+    return nil -- 창을 찾을 수 없을 경우 nil 반환
+end
+
 
 function moveWinToNextScreen(direction)
   local win = hs.window.focusedWindow()   -- 현재 활성화된 앱의 윈도우
@@ -109,8 +153,11 @@ function moveWinToNextScreen(direction)
   win:setFrame(frame)  -- 프레임을 설정
 end
 
-function moveWinTo(where)
-  local win = hs.window.focusedWindow()   -- 현재 활성화된 앱의 윈도우
+function moveWinTo(win, where)
+  if win == nil then
+    return
+  end
+  -- local win = hs.window.focusedWindow()   -- 현재 활성화된 앱의 윈도우
   local frame = win:frame()
   local screen = win:screen():frame()     -- 현재 화면
 
@@ -130,11 +177,15 @@ function moveWinTo(where)
     frame.x = screen.x + (screen.w - frame.w) / 2 -- x 좌표를 중앙으로 설정
     frame.y = screen.y + (screen.h - frame.h) / 2 -- y 좌표를 중앙으로 설정
   elseif where == "up" then
+  elseif where == "uphalf" then
+    frame.h = screen.h / 2
+  elseif where == "downhalf" then
+    frame.h = screen.h / 2
+    frame.y = screen.y + frame.h
   end
 
   win:setFrame(frame)
 end
-
 
 function focusWindowDelay(win, delay)
   hs.timer.delayed.new(delay, function()
@@ -415,6 +466,11 @@ bindToggleAppWithEventtap("moveLeft", {"ctrl", "shift"}, "a", nil, {"com.omnissa
 bindToggleAppWithEventtap("moveRight", {"ctrl", "shift"}, "d", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("moveUp", {"ctrl", "shift"}, "w", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("moveDown", {"ctrl", "shift"}, "s", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+
+bindToggleAppWithEventtap("moveLeftPair", {"ctrl", "cmd", "alt", "fn"}, "left", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("moveRightPair", {"ctrl", "cmd", "alt", "fn"}, "right", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("moveUpPair", {"ctrl", "cmd", "alt", "fn"}, "up", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("moveDownPair", {"ctrl", "cmd", "alt", "fn"}, "down", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 
 bindToggleAppWithEventtap("screenLeft", {"ctrl", "shift", "fn"}, "left", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("screenRight", {"ctrl", "shift", "fn"}, "right", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
