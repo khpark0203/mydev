@@ -553,6 +553,12 @@ bindToggleAppWithEventtap("expandHorizontal", {"ctrl", "alt"}, "l", nil, {"com.o
 bindToggleAppWithEventtap("reduceHorizontal", {"ctrl", "alt"}, "j", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
 bindToggleAppWithEventtap("expandVertical", {"ctrl", "alt"}, "i", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
 bindToggleAppWithEventtap("reduceVertical", {"ctrl", "alt"}, "k", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("expandWindow", {"ctrl", "shift"}, "=", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("reduceWindow", {"ctrl", "shift"}, "-", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("expandHorizontal", {"ctrl", "shift"}, "l", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("reduceHorizontal", {"ctrl", "shift"}, "j", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("expandVertical", {"ctrl", "shift"}, "i", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("reduceVertical", {"ctrl", "shift"}, "k", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
 
 bindToggleAppWithEventtap("screenLeft", {"ctrl", "shift", "fn"}, "left", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("screenRight", {"ctrl", "shift", "fn"}, "right", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
