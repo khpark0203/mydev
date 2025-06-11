@@ -47,14 +47,18 @@ function execute(target)
     moveWinToNextScreen("left")
   elseif target.command == "screenRight" then
     moveWinToNextScreen("right")
+  elseif target.command == "expandWindow" then
+    resizeWin(hs.window.focusedWindow(), "expand", 50)
+  elseif target.command == "reduceWindow" then
+    resizeWin(hs.window.focusedWindow(), "reduce", 50)
   elseif target.command == "expandHorizontal" then
-    resizeWin(hs.window.focusedWindow(), "right", 25)
+    resizeWin(hs.window.focusedWindow(), "right", 50)
   elseif target.command == "reduceHorizontal" then
-    resizeWin(hs.window.focusedWindow(), "left", 25)
+    resizeWin(hs.window.focusedWindow(), "left", 50)
   elseif target.command == "expandVertical" then
-    resizeWin(hs.window.focusedWindow(), "up", 25)
+    resizeWin(hs.window.focusedWindow(), "up", 50)
   elseif target.command == "reduceVertical" then
-    resizeWin(hs.window.focusedWindow(), "down", 25)
+    resizeWin(hs.window.focusedWindow(), "down", 50)
   end
 
   return true
@@ -109,10 +113,10 @@ function moveWinToNextScreen(direction)
   end
 
   local targetIndex
-  if direction == "right" then
-    targetIndex = (currentIndex % #screens) + 1  -- 다음 스크린 인덱스
-  elseif direction == "left" then
-    targetIndex = ((currentIndex - 2) % #screens) + 1  -- 이전 스크린 인덱스
+  if direction == "left" then
+    targetIndex = (currentIndex % #screens) + 1  -- 이전 스크린 인덱스
+  elseif direction == "right" then
+    targetIndex = ((currentIndex - 2) % #screens) + 1  -- 다음 스크린 인덱스
   end
 
   local targetScreen = screens[targetIndex]
@@ -192,6 +196,16 @@ function resizeWin(win, direction, adjustment)
   elseif direction == "down" then
     frame.h = math.max(frame.h - adjustment, 0)  -- 최소 크기를 0으로 제한 (↓ 방향으로 감소)
     frame.y = centerY - (frame.h / 2)  -- 중심 유지
+  elseif direction == "expand" then
+    frame.w = math.max(frame.w + adjustment, 0)  -- 최소 크기를 0으로 제한
+    frame.x = centerX - (frame.w / 2)  -- 중심 유지
+    frame.h = math.max(frame.h + adjustment, 0)  -- 최소 크기를 0으로 제한 (↑ 방향으로 증가)
+    frame.y = centerY - (frame.h / 2)  -- 중심 유지
+  elseif direction == "reduce" then
+    frame.h = math.max(frame.h - adjustment, 0)  -- 최소 크기를 0으로 제한 (↓ 방향으로 감소)
+    frame.y = centerY - (frame.h / 2)  -- 중심 유지
+    frame.w = math.max(frame.w - adjustment, 0)  -- 최소 크기를 0으로 제한
+    frame.x = centerX - (frame.w / 2)  -- 중심 유지
   end
 
   -- 스크린 범위를 넘지 않도록 조정
@@ -533,12 +547,14 @@ bindToggleAppWithEventtap("moveRightPair", {"ctrl", "cmd", "shift", "fn"}, "righ
 bindToggleAppWithEventtap("moveUpPairHalf", {"ctrl", "cmd", "shift", "fn"}, "up", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("moveDownPairHalf", {"ctrl", "cmd", "shift", "fn"}, "down", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 
-bindToggleAppWithEventtap("expandHorizontal", {"ctrl", "cmd", "shift", "alt", "fn"}, "right", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
-bindToggleAppWithEventtap("reduceHorizontal", {"ctrl", "cmd", "shift", "alt", "fn"}, "left", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
-bindToggleAppWithEventtap("expandVertical", {"ctrl", "cmd", "shift", "alt", "fn"}, "up", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
-bindToggleAppWithEventtap("reduceVertical", {"ctrl", "cmd", "shift", "alt", "fn"}, "down", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("expandWindow", {"ctrl", "alt"}, "=", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("reduceWindow", {"ctrl", "alt"}, "-", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("expandHorizontal", {"ctrl", "alt"}, "l", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("reduceHorizontal", {"ctrl", "alt"}, "j", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("expandVertical", {"ctrl", "alt"}, "i", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("reduceVertical", {"ctrl", "alt"}, "k", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
 
 bindToggleAppWithEventtap("screenLeft", {"ctrl", "shift", "fn"}, "left", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("screenRight", {"ctrl", "shift", "fn"}, "right", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
-bindToggleAppWithEventtap("screenLeft", {"ctrl", "shift"}, "c", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
-bindToggleAppWithEventtap("screenRight", {"ctrl", "shift"}, "z", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("screenLeft", {"ctrl", "shift"}, "z", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("screenRight", {"ctrl", "shift"}, "c", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
