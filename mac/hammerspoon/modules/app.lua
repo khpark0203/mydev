@@ -586,8 +586,8 @@ bindToggleAppWithEventtap("screenRight", {"ctrl", "shift", "fn"}, "right", nil, 
 bindToggleAppWithEventtap("screenLeft", {"ctrl", "shift"}, "z", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("screenRight", {"ctrl", "shift"}, "c", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 
-bindToggleAppWithEventtap("toggleMissionControl", {"ctrl"}, "`", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
-bindToggleAppWithEventtap("toggleAppExpose", {"ctrl"}, "tab", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("toggleMissionControl", {"ctrl"}, "tab", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("toggleAppExpose", {"ctrl"}, "`", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("toggleLaunchPad", {"ctrl", "cmd"}, "a", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 
 bindToggleAppWithEventtap("volumeUp", {"ctrl", "cmd"}, "e", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
