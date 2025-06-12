@@ -59,9 +59,34 @@ function execute(target)
     resizeWin(hs.window.focusedWindow(), "up", 50)
   elseif target.command == "reduceVertical" then
     resizeWin(hs.window.focusedWindow(), "down", 50)
+  elseif target.command == "toggleMissionControl" then
+    hs.spaces.toggleMissionControl()
+  elseif target.command == "toggleAppExpose" then
+    hs.spaces.toggleAppExpose()
+  elseif target.command == "toggleLaunchPad" then
+    hs.spaces.toggleLaunchPad()
+  elseif target.command == "volumeUp" then
+    volume(1)
+  elseif target.command == "volumeDown" then
+    volume(-1)
+  elseif target.command == "volumeMute" then
+    volume(0)
   end
 
   return true
+end
+
+function volume(direction)
+  if direction == 1 then
+    hs.eventtap.event.newSystemKeyEvent("SOUND_UP", true):post()
+    hs.eventtap.event.newSystemKeyEvent("SOUND_UP", false):post()
+  elseif direction == -1 then
+    hs.eventtap.event.newSystemKeyEvent("SOUND_DOWN", true):post()
+    hs.eventtap.event.newSystemKeyEvent("SOUND_DOWN", false):post()
+  elseif direction == 0 then
+    hs.eventtap.event.newSystemKeyEvent("MUTE", true):post()
+    hs.eventtap.event.newSystemKeyEvent("MUTE", false):post()
+  end
 end
 
 function getNextWindowOnCurrentScreen()
@@ -411,6 +436,7 @@ end
 keyDownTap = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(event)
   keyPressCount = keyPressCount + 1
   local target = keyTables[makeHashKey(event)]
+  -- print(makeHashKey(event), event:getKeyCode())
   if not target then
     return false
   end
@@ -484,7 +510,7 @@ end
 appWatcher = hs.application.watcher.new(applicationWatcher)
 appWatcher:start()
 
-function bindToggleAppWithEventtap(command, modifiers, keyChar, targetBundleID, skipIfFrontBundleIDs, duplicate)
+function bindToggleAppWithEventtap(command, modifiers, keyChar, targetBundleID, skipIfFrontBundleIDs, duplicate, fn)
   local keyCode = hs.keycodes.map[keyChar]
   local hashKey = makeHashKey(modifiers, keyCode)
   keyTables[hashKey] = {
@@ -495,7 +521,8 @@ function bindToggleAppWithEventtap(command, modifiers, keyChar, targetBundleID, 
     bundleID = targetBundleID,
     skipBundleIDs = skipIfFrontBundleIDs,
     isKeyAlreadyPressed = false,
-    duplicate = duplicate
+    duplicate = duplicate,
+    fn = fn
   }
 
   if keyCodeWithTables[keyCode] == nil then
@@ -558,3 +585,11 @@ bindToggleAppWithEventtap("screenLeft", {"ctrl", "shift", "fn"}, "left", nil, {"
 bindToggleAppWithEventtap("screenRight", {"ctrl", "shift", "fn"}, "right", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("screenLeft", {"ctrl", "shift"}, "z", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("screenRight", {"ctrl", "shift"}, "c", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+
+bindToggleAppWithEventtap("toggleMissionControl", {"ctrl"}, "`", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("toggleAppExpose", {"ctrl"}, "tab", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("toggleLaunchPad", {"ctrl", "cmd"}, "a", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+
+bindToggleAppWithEventtap("volumeUp", {"ctrl", "cmd"}, "e", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("volumeDown", {"ctrl", "cmd"}, "w", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, true)
+bindToggleAppWithEventtap("volumeMute", {"ctrl", "cmd"}, "q", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
