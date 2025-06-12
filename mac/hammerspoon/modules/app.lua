@@ -610,6 +610,7 @@ bindToggleAppWithEventtap("app", {"ctrl"}, "m", "m", {"com.omnissa.horizon.clien
 bindToggleAppWithEventtap("app", {"ctrl"}, "x", "x", {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 
 bindToggleAppWithEventtap("minimize", {"ctrl"}, "m", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
+bindToggleAppWithEventtap("minimize", {"ctrl", "shift"}, "x", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 bindToggleAppWithEventtap("hide", {"ctrl"}, "x", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
 
 bindToggleAppWithEventtap("moveLeft", {"ctrl", "fn"}, "left", nil, {"com.omnissa.horizon.client.mac", "com.vmware.fusion"}, false)
