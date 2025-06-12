@@ -11,67 +11,7 @@ function execute(target)
   end
   -- hs.window.animationDuration = 0.2
 
-  if target.command == "app" then
-    toggleAppByBundleID(target.bundleID)
-  elseif target.command == "minimize" then
-    minimizeAndFocusNext(false)
-  elseif target.command == "hide" then
-    minimizeAndFocusNext(true)
-  elseif target.command == "moveLeft" then
-    moveWinTo(hs.window.focusedWindow(), "left")
-  elseif target.command == "moveRight" then
-    moveWinTo(hs.window.focusedWindow(), "right")
-  elseif target.command == "moveUp" then
-    moveWinTo(hs.window.focusedWindow(), "up")
-  elseif target.command == "moveDown" then
-    moveWinTo(hs.window.focusedWindow(), "down")
-  elseif target.command == "moveLeftPair" then
-    moveWinTo(hs.window.focusedWindow(), "left")
-    moveWinTo(getNextWindowOnCurrentScreen(), "right")
-  elseif target.command == "moveRightPair" then
-    moveWinTo(hs.window.focusedWindow(), "right")
-    moveWinTo(getNextWindowOnCurrentScreen(), "left")
-  elseif target.command == "moveUpPair" then
-    moveWinTo(hs.window.focusedWindow(), "up")
-    moveWinTo(getNextWindowOnCurrentScreen(), "down")
-  elseif target.command == "moveDownPair" then
-    moveWinTo(hs.window.focusedWindow(), "down")
-    moveWinTo(getNextWindowOnCurrentScreen(), "up")
-  elseif target.command == "moveUpPairHalf" then
-    moveWinTo(hs.window.focusedWindow(), "uphalf")
-    moveWinTo(getNextWindowOnCurrentScreen(), "downhalf")
-  elseif target.command == "moveDownPairHalf" then
-    moveWinTo(hs.window.focusedWindow(), "downhalf")
-    moveWinTo(getNextWindowOnCurrentScreen(), "uphalf")
-  elseif target.command == "screenLeft" then
-    moveWinToNextScreen("left")
-  elseif target.command == "screenRight" then
-    moveWinToNextScreen("right")
-  elseif target.command == "expandWindow" then
-    resizeWin(hs.window.focusedWindow(), "expand", 50)
-  elseif target.command == "reduceWindow" then
-    resizeWin(hs.window.focusedWindow(), "reduce", 50)
-  elseif target.command == "expandHorizontal" then
-    resizeWin(hs.window.focusedWindow(), "right", 50)
-  elseif target.command == "reduceHorizontal" then
-    resizeWin(hs.window.focusedWindow(), "left", 50)
-  elseif target.command == "expandVertical" then
-    resizeWin(hs.window.focusedWindow(), "up", 50)
-  elseif target.command == "reduceVertical" then
-    resizeWin(hs.window.focusedWindow(), "down", 50)
-  elseif target.command == "toggleMissionControl" then
-    hs.spaces.toggleMissionControl()
-  elseif target.command == "toggleAppExpose" then
-    hs.spaces.toggleAppExpose()
-  elseif target.command == "toggleLaunchPad" then
-    hs.spaces.toggleLaunchPad()
-  elseif target.command == "volumeUp" then
-    volume(1)
-  elseif target.command == "volumeDown" then
-    volume(-1)
-  elseif target.command == "volumeMute" then
-    volume(0)
-  end
+  target.fn()
 
   return true
 end
@@ -510,7 +450,7 @@ end
 appWatcher = hs.application.watcher.new(applicationWatcher)
 appWatcher:start()
 
-function bindToggleAppWithEventtap(command, modifiers, keyChar, targetBundleID, skipIfFrontBundleIDs, duplicate, fn)
+function bindToggleAppWithEventtap(command, modifiers, keyChar, targetBundleID, skipIfFrontBundleIDs, duplicate)
   local keyCode = hs.keycodes.map[keyChar]
   local hashKey = makeHashKey(modifiers, keyCode)
   keyTables[hashKey] = {
@@ -522,7 +462,7 @@ function bindToggleAppWithEventtap(command, modifiers, keyChar, targetBundleID, 
     skipBundleIDs = skipIfFrontBundleIDs,
     isKeyAlreadyPressed = false,
     duplicate = duplicate,
-    fn = fn
+    fn = nil
   }
 
   if keyCodeWithTables[keyCode] == nil then
@@ -538,6 +478,122 @@ function bindToggleAppWithEventtap(command, modifiers, keyChar, targetBundleID, 
         watchFocusedWindow(targetBundleID)
       end)
     }
+  end
+
+  if command == "app" then
+    keyTables[hashKey].fn = function()
+      toggleAppByBundleID(targetBundleID)
+    end
+  elseif command == "minimize" then
+    keyTables[hashKey].fn = function()
+      minimizeAndFocusNext(false)
+    end
+  elseif command == "hide" then
+    keyTables[hashKey].fn = function()
+      minimizeAndFocusNext(true)
+    end
+  elseif command == "moveLeft" then
+    keyTables[hashKey].fn = function()
+      moveWinTo(hs.window.focusedWindow(), "left")
+    end
+  elseif command == "moveRight" then
+    keyTables[hashKey].fn = function()
+      moveWinTo(hs.window.focusedWindow(), "right")
+    end
+  elseif command == "moveUp" then
+    keyTables[hashKey].fn = function()
+      moveWinTo(hs.window.focusedWindow(), "up")
+    end
+  elseif command == "moveDown" then
+    keyTables[hashKey].fn = function()
+      moveWinTo(hs.window.focusedWindow(), "down")
+    end
+  elseif command == "moveLeftPair" then
+    keyTables[hashKey].fn = function()
+      moveWinTo(hs.window.focusedWindow(), "left")
+      moveWinTo(getNextWindowOnCurrentScreen(), "right")
+    end
+  elseif command == "moveRightPair" then
+    keyTables[hashKey].fn = function()
+      moveWinTo(hs.window.focusedWindow(), "right")
+      moveWinTo(getNextWindowOnCurrentScreen(), "left")
+    end
+  elseif command == "moveUpPair" then
+    keyTables[hashKey].fn = function()
+      moveWinTo(hs.window.focusedWindow(), "up")
+      moveWinTo(getNextWindowOnCurrentScreen(), "down")
+    end
+  elseif command == "moveDownPair" then
+    keyTables[hashKey].fn = function()
+      moveWinTo(hs.window.focusedWindow(), "down")
+      moveWinTo(getNextWindowOnCurrentScreen(), "up")
+    end
+  elseif command == "moveUpPairHalf" then
+    keyTables[hashKey].fn = function()
+      moveWinTo(hs.window.focusedWindow(), "uphalf")
+      moveWinTo(getNextWindowOnCurrentScreen(), "downhalf")
+    end
+  elseif command == "moveDownPairHalf" then
+    keyTables[hashKey].fn = function()
+      moveWinTo(hs.window.focusedWindow(), "downhalf")
+      moveWinTo(getNextWindowOnCurrentScreen(), "uphalf")
+    end
+  elseif command == "screenLeft" then
+    keyTables[hashKey].fn = function()
+      moveWinToNextScreen("left")
+    end
+  elseif command == "screenRight" then
+    keyTables[hashKey].fn = function()
+      moveWinToNextScreen("right")
+    end
+  elseif command == "expandWindow" then
+    keyTables[hashKey].fn = function()
+      resizeWin(hs.window.focusedWindow(), "expand", 50)
+    end
+  elseif command == "reduceWindow" then
+    keyTables[hashKey].fn = function()
+      resizeWin(hs.window.focusedWindow(), "reduce", 50)
+    end
+  elseif command == "expandHorizontal" then
+    keyTables[hashKey].fn = function()
+      resizeWin(hs.window.focusedWindow(), "right", 50)
+    end
+  elseif command == "reduceHorizontal" then
+    keyTables[hashKey].fn = function()
+      resizeWin(hs.window.focusedWindow(), "left", 50)
+    end
+  elseif command == "expandVertical" then
+    keyTables[hashKey].fn = function()
+      resizeWin(hs.window.focusedWindow(), "up", 50)
+    end
+  elseif command == "reduceVertical" then
+    keyTables[hashKey].fn = function()
+      resizeWin(hs.window.focusedWindow(), "down", 50)
+    end
+  elseif command == "toggleMissionControl" then
+    keyTables[hashKey].fn = function()
+      hs.spaces.toggleMissionControl()
+    end
+  elseif command == "toggleAppExpose" then
+    keyTables[hashKey].fn = function()
+      hs.spaces.toggleAppExpose()
+    end
+  elseif command == "toggleLaunchPad" then
+    keyTables[hashKey].fn = function()
+      hs.spaces.toggleLaunchPad()
+    end
+  elseif command == "volumeUp" then
+    keyTables[hashKey].fn = function()
+      volume(1)
+    end
+  elseif command == "volumeDown" then
+    keyTables[hashKey].fn = function()
+      volume(-1)
+    end
+  elseif command == "volumeMute" then
+    keyTables[hashKey].fn = function()
+      volume(0)
+    end
   end
 end
 
