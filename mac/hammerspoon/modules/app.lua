@@ -69,22 +69,18 @@ function moveWinToNextScreen(direction)
   end
 
   local currentScreen = win:screen()       -- 현재 윈도우의 화면
-  local screens = hs.screen.allScreens()   -- 모든 스크린 정보를 가져옴
-  local currentIndex = hs.fnutils.indexOf(screens, currentScreen) -- 현재 스크린의 인덱스를 찾음
-
-  -- currentIndex가 nil에 대해 예외 처리
-  if not currentIndex then
+  local targetScreen = currentScreen:next()
+  
+  if not targetScreen or currentScreen == targetScreen then
     return
   end
-
-  local targetIndex
+  
   if direction == "left" then
-    targetIndex = (currentIndex % #screens) + 1  -- 이전 스크린 인덱스
+    targetScreen = currentScreen:next()
   elseif direction == "right" then
-    targetIndex = ((currentIndex - 2) % #screens) + 1  -- 다음 스크린 인덱스
+    targetScreen = currentScreen:previous()
   end
 
-  local targetScreen = screens[targetIndex]
   local frame = win:frame()
   local targetFrame = targetScreen:frame()
 
