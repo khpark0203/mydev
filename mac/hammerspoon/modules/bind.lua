@@ -515,12 +515,12 @@ local function updateHotkeysForApp(bundleId)
   end
 end
 
-local appWatcherCount = 0
+-- local appWatcherCount = 0
 
 -- 앱 전환 감지
 appWatcher = hs.application.watcher.new(function(appName, eventType, app)
   local bundleId = app:bundleID()
-  appWatcherCount = appWatcherCount + 1
+  -- appWatcherCount = appWatcherCount + 1
   
   if eventType == hs.application.watcher.activated then
     updateHotkeysForApp(bundleId)
@@ -534,11 +534,11 @@ appWatcher = hs.application.watcher.new(function(appName, eventType, app)
     end
   end
 
-  if appWatcherCount > 20 then
-    appWatcher:stop()
-    appWatcher:start()
-    applicationWatcher = 0
-  end
+  -- if appWatcherCount > 20 then
+  --   appWatcher:stop()
+  --   appWatcher:start()
+  --   applicationWatcher = 0
+  -- end
 end)
 
 appWatcher:start()
