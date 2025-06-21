@@ -350,13 +350,13 @@ local function getFocusedBundleId()
   return app and app:bundleID() or ""
 end
 
-local function addHotKeyDefinition(modifiers, key, command, repeatCommand, targetAppId)
+local function addHotKeyDefinition(modifiers, key, command, repeatCommand, subCommand)
   table.insert(hotkeyDefinitions, {
     modifiers = modifiers,
     key = key,
     command = command,
     repeatCommand = repeatCommand,
-    targetAppId = targetAppId,
+    subCommand = subCommand,
   })
 end
 
@@ -367,7 +367,7 @@ local function enableAllHotkeys()
   for _, def in ipairs(hotkeyDefinitions) do
     if def.command == "app" then
       def.pressAction = function()
-        toggleApp(def.targetAppId)
+        toggleApp(def.subCommand)
       end
     elseif def.command == "minimize" then
       def.pressAction = function()
@@ -478,6 +478,10 @@ local function enableAllHotkeys()
     elseif def.command == "volumeMute" then
       def.pressAction = function()
         volume(0)
+      end
+    elseif def.command == "custom" then
+      def.pressAction = function()
+        def.subCommand()
       end
     end
     if def.repeatCommand and def.repeatCommand == true then
