@@ -1,10 +1,7 @@
 local winTables = {}
 local hotkeyDefinitions = {}
 local activeHotkeys = {}
-local ignoredBundleIds = {
-  "com.omnissa.horizon.client.mac",
-  "com.vmware.fusion",
-}
+local ignoredBundleIds = {}
 
 function volume(direction)
   if direction == 1 then
@@ -503,16 +500,18 @@ end
 -- 앱이 바뀔 때 hotkey를 업데이트
 local function updateHotkeysForApp(bundleId)
   local enable = true
-  for _, id in ipairs(ignoredBundleIds) do
-    if bundleId == id then
-      disableAllHotkeys()
-      enable = false
-      break
-    end
+  if ignoredBundleIds[bundleId] then
+    disableAllHotkeys()
+    enable = false
   end
+  
   if enable then
     enableAllHotkeys()
   end
+end
+
+local function addIgnoredBundleId(bundleId)
+  ignoredBundleIds[bundleId] = true
 end
 
 -- local appWatcherCount = 0
@@ -543,6 +542,8 @@ end)
 
 appWatcher:start()
 
+addIgnoredBundleId("com.omnissa.horizon.client.mac")
+addIgnoredBundleId("com.vmware.fusion")
 addHotKeyDefinition({"ctrl"}, "1", "app", false, "com.googlecode.iterm2")
 addHotKeyDefinition({"ctrl"}, "2", "app", false, "com.naver.Whale")
 addHotKeyDefinition({"ctrl"}, "3", "app", false, "com.jetbrains.intellij")
