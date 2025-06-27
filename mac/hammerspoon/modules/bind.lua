@@ -101,6 +101,10 @@ function moveWinToNextScreen(direction)
     frame.y = math.ceil(frame.y)
     frame.w = math.ceil(frame.w)
     frame.h = math.ceil(frame.h)
+
+    if math.abs(frame.h - targetFrame.h) <= 2 then
+      frame.h = targetFrame.h  -- 높이가 거의 같으면 타겟 화면의 높이로 설정
+    end
   end
 
   -- 윈도우가 타겟 스크린의 경계를 넘지 않도록 보정
