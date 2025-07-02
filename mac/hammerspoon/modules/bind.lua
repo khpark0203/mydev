@@ -3,6 +3,16 @@ local hotkeyDefinitions = {}
 local activeHotkeys = {}
 local ignoredBundleIds = {}
 
+function changeKeyboard()
+  local en = "org.unknown.keylayout.UnicodeHexInput-fixed"
+  local kr = "org.youknowone.inputmethod.Gureum.han2"
+  if hs.keycodes.currentSourceID() == en then
+    hs.keycodes.currentSourceID(kr)
+  else
+    hs.keycodes.currentSourceID(en)
+  end
+end
+
 function volume(direction)
   if direction == 1 then
     hs.eventtap.event.newSystemKeyEvent("SOUND_UP", true):post()
@@ -592,6 +602,7 @@ addHotKeyDefinition({"ctrl", "cmd"}, "a", "toggleLaunchPad")
 addHotKeyDefinition({"ctrl", "cmd"}, "e", "volumeUp", true)
 addHotKeyDefinition({"ctrl", "cmd"}, "w", "volumeDown", true)
 addHotKeyDefinition({"ctrl", "cmd"}, "q", "volumeMute")
+addHotKeyDefinition({}, "f18", "custom", false, changeKeyboard)
 
 -- 스크립트 시작 시 현재 앱 상태 반영
 updateHotkeysForApp(getFocusedBundleId())
