@@ -8,8 +8,16 @@ function changeKeyboard()
   local kr = "org.youknowone.inputmethod.Gureum.han2"
   if hs.keycodes.currentSourceID() == en then
     hs.keycodes.currentSourceID(kr)
+    while hs.keycodes.currentSourceID() == en do
+      hs.keycodes.currentSourceID(kr)
+      hs.timer.usleep(1000)
+    end
   else
     hs.keycodes.currentSourceID(en)
+    while hs.keycodes.currentSourceID() == kr do
+      hs.keycodes.currentSourceID(en)
+      hs.timer.usleep(1000)
+    end
   end
 end
 
