@@ -212,6 +212,11 @@ function moveWinTo(win, where)
   local frame = win:frame()
   local screen = win:screen():frame()     -- 현재 화면
 
+  if win:isFullScreen() and where == "down" then
+    win:setFullScreen(false)
+    return
+  end
+
   frame.x = screen.x
   frame.y = screen.y
   frame.w = screen.w
