@@ -75,9 +75,14 @@ function moveWinToNextScreen(direction)
 
   local currentScreen = win:screen()       -- 현재 윈도우의 화면
   local targetScreen = currentScreen:next()
-  
+  local wasFs = win:isFullScreen()
+
   if not targetScreen or currentScreen == targetScreen then
     return
+  end
+
+  if wasFs then
+    win:setFullScreen(false)
   end
   
   if direction == "left" then
@@ -95,7 +100,7 @@ function moveWinToNextScreen(direction)
                       (frame.w == currentScreen:frame().w) and 
                       (frame.h == currentScreen:frame().h)
 
-  if isMaximized then
+  if isMaximized or wasFs then
     -- 현재 창이 최대화 되어 있을 경우, 타겟 스크린에 맞춰 프레임 설정
     frame.x = targetFrame.x
     frame.y = targetFrame.y
@@ -139,6 +144,13 @@ function moveWinToNextScreen(direction)
   end
 
   win:setFrame(frame)  -- 프레임을 설정
+
+  if wasFs then
+    hs.timer.usleep(500000) -- 0.5초 대기
+    moveWinTo(hs.window.focusedWindow(), "down")
+    hs.timer.usleep(100000) -- 0.1초 대기
+    win:setFullScreen(true)
+  end
 end
 
 function resizeWin(win, direction, adjustment)
@@ -573,10 +585,10 @@ addHotKeyDefinition({"ctrl"}, "4", "app", false, "com.jetbrains.datagrip")
 addHotKeyDefinition({"ctrl"}, "5", "app", false, "com.apple.finder")
 addHotKeyDefinition({"ctrl"}, "e", "app", false, "com.microsoft.VSCode")
 addHotKeyDefinition({"ctrl"}, "w", "app", false, "com.kakao.KakaoTalkMac")
-addHotKeyDefinition({"ctrl"}, "q", "app", false, "kr.thingsflow.BetweenMac")
+addHotKeyDefinition({"ctrl"}, "q", "app", false, "md.obsidian")
 addHotKeyDefinition({"ctrl"}, "f", "app", false, "com.apidog.app")
 addHotKeyDefinition({"ctrl"}, "a", "app", false, "com.naver.Whale.app.cinhimbnkkaeohfgghhklpknlkffjgod")
-addHotKeyDefinition({"alt"}, "space", "app", false, "com.openai.chat")
+addHotKeyDefinition({"alt"}, "space", "app", false, "com.naver.Whale.app.djdhnpipjdpebeglebpakojhngmhcpnc")
 addHotKeyDefinition({"ctrl"}, "left", "moveLeft")
 addHotKeyDefinition({"ctrl"}, "right", "moveRight")
 addHotKeyDefinition({"ctrl"}, "up", "moveUp")
