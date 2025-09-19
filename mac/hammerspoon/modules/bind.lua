@@ -100,7 +100,7 @@ function moveWinToNextScreen(direction)
                       (frame.w == currentScreen:frame().w) and 
                       (frame.h == currentScreen:frame().h)
 
-  if isMaximized or wasFs then
+  if isMaximized then
     -- 현재 창이 최대화 되어 있을 경우, 타겟 스크린에 맞춰 프레임 설정
     frame.x = targetFrame.x
     frame.y = targetFrame.y
@@ -146,9 +146,7 @@ function moveWinToNextScreen(direction)
   win:setFrame(frame)  -- 프레임을 설정
 
   if wasFs then
-    hs.timer.usleep(500000) -- 0.5초 대기
-    moveWinTo(hs.window.focusedWindow(), "down")
-    hs.timer.usleep(100000) -- 0.1초 대기
+    hs.timer.usleep(600000) -- 0.6초 대기
     win:setFullScreen(true)
   end
 end
