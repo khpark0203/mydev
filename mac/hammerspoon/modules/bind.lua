@@ -145,7 +145,7 @@ function moveWinToNextScreen(direction)
   win:setFrame(frame)  -- 프레임을 설정
 
   if wasFs then
-    hs.timer.usleep(600000) -- 0.6초 대기
+    hs.timer.usleep(700000) -- 0.6초 대기
     win:setFullScreen(true)
   end
 end
