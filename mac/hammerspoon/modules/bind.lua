@@ -65,7 +65,6 @@ function getNextWindowOnCurrentScreen()
     return nil -- 창을 찾을 수 없을 경우 nil 반환
 end
 
-
 function moveWinToNextScreen(direction)
   local win = hs.window.focusedWindow()   -- 현재 활성화된 앱의 윈도우
   -- 현재 활성화된 윈도우가 없으면 종료
@@ -211,11 +210,6 @@ function moveWinTo(win, where)
   -- local win = hs.window.focusedWindow()   -- 현재 활성화된 앱의 윈도우
   local frame = win:frame()
   local screen = win:screen():frame()     -- 현재 화면
-
-  if win:isFullScreen() and where == "down" then
-    win:setFullScreen(false)
-    return
-  end
 
   frame.x = screen.x
   frame.y = screen.y
@@ -457,6 +451,14 @@ local function enableAllHotkeys()
         moveWinTo(hs.window.focusedWindow(), "downhalf")
         moveWinTo(getNextWindowOnCurrentScreen(), "uphalf")
       end
+    elseif def.command == "fullScreenOn" then
+      def.pressAction = function()
+        hs.window.focusedWindow():setFullScreen(true)
+      end
+    elseif def.command == "fullScreenOff" then
+      def.pressAction = function()
+        hs.window.focusedWindow():setFullScreen(false)
+      end
     elseif def.command == "screenLeft" then
       def.pressAction = function()
         moveWinToNextScreen("left")
@@ -619,6 +621,8 @@ addHotKeyDefinition({"ctrl", "shift"}, "i", "expandVertical", true)
 addHotKeyDefinition({"ctrl", "shift"}, "k", "reduceVertical", true)
 addHotKeyDefinition({"ctrl", "shift"}, "left", "screenLeft")
 addHotKeyDefinition({"ctrl", "shift"}, "right", "screenRight")
+addHotKeyDefinition({"ctrl", "shift"}, "up", "fullScreenOn")
+addHotKeyDefinition({"ctrl", "shift"}, "down", "fullScreenOff")
 addHotKeyDefinition({"ctrl", "shift"}, "z", "screenLeft")
 addHotKeyDefinition({"ctrl", "shift"}, "c", "screenRight")
 addHotKeyDefinition({"ctrl"}, "tab", "toggleMissionControl")
