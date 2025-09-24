@@ -3,6 +3,42 @@ local hotkeyDefinitions = {}
 local activeHotkeys = {}
 local ignoredBundleIds = {}
 
+function moveMouseToScreen(direction)
+  local currentScreen = hs.mouse.getCurrentScreen()
+  local screens = hs.screen.allScreens()
+  local currentIndex = nil
+
+  -- 현재 화면의 인덱스 찾기
+  for i, screen in ipairs(screens) do
+      if screen == currentScreen then
+          currentIndex = i
+          break
+      end
+  end
+
+  if not currentIndex then return end
+
+  local targetIndex
+  if direction == "left" then
+      targetIndex = currentIndex + 1
+      if targetIndex > #screens then
+          targetIndex = 1 -- 맨 오른쪽에서 오른쪽 → 맨 왼쪽
+      end
+  elseif direction == "right" then
+      targetIndex = currentIndex - 1
+      if targetIndex < 1 then
+          targetIndex = #screens -- 맨 왼쪽에서 왼쪽 → 맨 오른쪽
+      end
+  end
+
+  local targetScreen = screens[targetIndex]
+  local rect = targetScreen:frame()
+
+  -- 화면 중앙으로 마우스 이동
+  local center = hs.geometry.rectMidPoint(rect)
+  hs.mouse.setAbsolutePosition(center)
+end
+
 function changeKeyboard()
   local en = "org.unknown.keylayout.UnicodeHexInput-fixed"
   local kr = "org.youknowone.inputmethod.Gureum.han2"
@@ -515,6 +551,14 @@ local function enableAllHotkeys()
       def.pressAction = function()
         volume(0)
       end
+    elseif def.command == "moveMouseRight" then
+      def.pressAction = function()
+        moveMouseToScreen("right")
+      end
+    elseif def.command == "moveMouseLeft" then
+      def.pressAction = function()
+        moveMouseToScreen("left")
+      end
     elseif def.command == "custom" then
       def.pressAction = function()
         def.subCommand()
@@ -602,6 +646,8 @@ addHotKeyDefinition({"ctrl", "shift"}, "a", "moveLeft")
 addHotKeyDefinition({"ctrl", "shift"}, "d", "moveRight")
 addHotKeyDefinition({"ctrl", "shift"}, "w", "moveUp")
 addHotKeyDefinition({"ctrl", "shift"}, "s", "moveDown")
+addHotKeyDefinition({"cmd", "ctrl"}, ".", "moveMouseRight")
+addHotKeyDefinition({"cmd", "ctrl"}, ",", "moveMouseLeft")
 addHotKeyDefinition({"ctrl"}, "m", "minimize")
 addHotKeyDefinition({"ctrl", "shift"}, "x", "minimize")
 addHotKeyDefinition({"ctrl"}, "x", "hide")
